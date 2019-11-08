@@ -8,4 +8,7 @@ router.use('/auth', authController);
 const userController = require('./userController');
 router.use('/user', userController);
 
+const hwController = require('./hwController');
+router.use('/', hwController);
+
 module.exports = router;
