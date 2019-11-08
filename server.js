@@ -11,7 +11,7 @@ const sessionStore = require('./config/sessionStore');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
-    key: 'project4',
+    key: 'hotel-worx-3',
     secret: process.env.SESSION_SECRET,
     store: sessionStore,
     resave: false,
@@ -32,5 +32,5 @@ app.use('/api', controllers);
 
 app.listen(PORT, () => {
     // eslint-disable-next-line no-console
-    console.log(`Server now listening on PORT ${PORT}!`);
+    console.log(`Express API Server now listening on PORT ${PORT}!`);
 });

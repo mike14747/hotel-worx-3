@@ -20,7 +20,7 @@ export default function App() {
                             <Link to="/about">About</Link>
                         </li>
                         <li>
-                            <Link to="/customers">Customers</Link>
+                            <Link to="/user">User</Link>
                         </li>
                         <li>
                             <Link to="/generic">Generic</Link>
@@ -34,8 +34,8 @@ export default function App() {
                     <Route exact path="/about">
                         <About />
                     </Route>
-                    <Route exact path="/customers">
-                        <Customers />
+                    <Route exact path="/user">
+                        <User />
                     </Route>
                     <Route exact path="/">
                         <Home />
@@ -60,16 +60,16 @@ function About() {
     return <h2>About</h2>;
 }
 
-class Customers extends Component {
+class User extends Component {
     state = {
-        customerArray: [],
+        userArray: [],
     };
 
     componentDidMount() {
-        fetch('/api/customer/id/1')
+        fetch('/api/user/id/1')
             .then(response => response.json())
             .then(data => {
-                this.setState({ customerArray: data });
+                this.setState({ userArray: data });
             })
             .catch(error => {
                 console.log('There has been an error.\n\n' + error);
@@ -79,11 +79,13 @@ class Customers extends Component {
     render() {
         return (
             <div>
-                {this.state.customerArray.map(customer => (
-                    <div key={customer.customer_id}>
-                        <p>Customer ID: {customer.customer_id}</p>
-                        <p>Username: {customer.username}</p>
-                        <p>Email: {customer.email}</p>
+                {this.state.userArray.map(user => (
+                    <div key={user.user_id}>
+                        <p>user ID: {user.user_id}</p>
+                        <p>Username: {user.username}</p>
+                        <p>Password: {user.password}</p>
+                        <p>Access Level: {user.type}</p>
+                        <p>Active: {user.active}</p>
                     </div>
                 ))}
             </div>
