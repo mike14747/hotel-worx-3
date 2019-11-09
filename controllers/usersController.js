@@ -10,6 +10,12 @@ router.route('/').get((req, res) => {
     res.status(200).send('Sending this from the /api/users route root!');
 });
 
+router.get('/all', (req, res) => {
+    User.getAllUsers((data) => {
+        res.json(data);
+    });
+});
+
 router.get('/:id', (req, res) => {
     User.getUserById(req.params.id, (data) => {
         res.json(data);
@@ -17,8 +23,6 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    // req.body needs to be in this format:
-    // { "username": "submitted_username", "password": "submitted_passord", "access_id": 1, "active":1 }
     // input validation is needed here for the username and password
     if (req.body.username.length < 6 || req.body.password.length < 6) {
         res.status(406).send('Username and/or Password don\'t meet length standards!');
@@ -49,9 +53,6 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    // req.body needs to be in this format:
-    // { "username": "submitted_username", "password": "submitted_passord", "access_id": 1, "active": 1 }
-
     // input validation is needed here for the username and password
     if (req.body.username.length < 6 || req.body.password.length < 6) {
         res.status(406).send('Username and/or Password don\'t meet length standards!');

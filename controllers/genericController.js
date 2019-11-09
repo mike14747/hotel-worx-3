@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const db = require('../models/index.js');
 // or
-// const Generic = ('../models/generic');
+// const Generic = require('../models/generic');
 
 // all these routes point to /api/generic as specified in server.js and controllers/index.js
 

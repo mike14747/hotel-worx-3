@@ -1,6 +1,13 @@
 const connection = require('../config/connection');
 
 const User = {
+    getAllUsers: (cb) => {
+        const queryString = 'SELECT u.user_id, u.username, u.password, a.type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id;';
+        connection.execute(queryString, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
     getUserById: (id, cb) => {
         const queryString = 'SELECT u.user_id, u.username, u.password, a.type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id WHERE u.user_id=? LIMIT 1;';
         const queryParams = [id];
