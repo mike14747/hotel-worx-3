@@ -43,7 +43,7 @@ passport.use(new LocalStrategy({
 // all these routes point to api/auth as specified in server.js and controllers/index.js
 
 router.route('/').get((req, res) => {
-    res.status(200).send('Sending this from the /auth route root!');
+    res.status(200).send('Sending this from the /api/auth route root!');
 });
 
 router.get('/logout', (req, res) => {
@@ -55,38 +55,5 @@ router.post('/login', passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login',
 }));
-
-router.post('/addUser', (req, res) => {
-    // input validation is needed here for the username and password
-    if (req.body.username.length < 6 || req.body.password.length < 6) {
-        res.redirect('/addUser');
-    } else {
-        const saltRounds = 10;
-        User.checkExistingUsername(req.body.username, (data) => {
-            if (data.length === 0) {
-                bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
-                    if (err) throw err;
-                    const paramsObj = {
-                        username: req.body.username,
-                        password: hash,
-                        access_level: req.body.access_level,
-                    };
-                    User.addNewUser(paramsObj, (result) => {
-                        if (result.insertId) {
-                            // redirect somewhere other than login, but I don't know where just yet
-                            res.redirect('/login');
-                        } else {
-                            // the new user wasn't added to the database
-                            res.redirect('/addUser');
-                        }
-                    });
-                });
-            } else {
-                // that username is already taken
-                res.redirect('/addUser');
-            }
-        });
-    }
-});
 
 module.exports = router;

@@ -5,8 +5,8 @@ const router = require('express').Router();
 const authController = require('./authController');
 router.use('/auth', authController);
 
-const userController = require('./userController');
-router.use('/user', userController);
+const usersController = require('./usersController');
+router.use('/users', usersController);
 
 const hwController = require('./hwController');
 router.use('/', hwController);

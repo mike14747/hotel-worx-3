@@ -1,34 +1,10 @@
 const router = require('express').Router();
 
-const db = require('../../models/index.js');
+const db = require('../models/index.js');
 
 // '/api/hw' route
 router.route('/').get((req, res) => {
     res.status(200).send('sending this from the /api/hw route root');
-});
-
-router.get('/users/:id', (req, res) => {
-    db.User.selectOneById(req.params.id, (data) => {
-        res.json(data);
-    });
-});
-
-// this route will need to be sent data like: { "vals": ["test_user", "111111", 1] }
-router.post('/users', (req, res) => {
-    db.User.insertOne(req.body.vals, (result) => {
-        res.json({ id: result.insertId });
-    });
-});
-
-// this route will need to be sent data like: { "vals": ["test_user", "111111", 1] }
-router.put('/users/:id', (req, res) => {
-    db.User.updateOne(req.body.vals, req.params.id, (result) => {
-        if (result.changedRows === 0) {
-            res.status(204).end();
-        } else {
-            res.status(200).end();
-        }
-    });
 });
 
 router.get('/customers', (req, res) => {
