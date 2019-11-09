@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const db = require('../../models/index.js');
+const db = require('../models/index.js');
 
 // '/api/hw' route
 router.route('/').get((req, res) => {
