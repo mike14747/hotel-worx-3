@@ -31,6 +31,33 @@ router.get('/house-status', (req, res) => {
     });
 });
 
+router.get('/housekeeping-status', (req, res) => {
+    const paramsObj = { ...req.query };
+    paramsObj.active2 = Number(paramsObj.inactive) === 1 ? 0 : 1;
+    paramsObj.clean2 = Number(paramsObj.dirty) === 1 ? 0 : 1;
+    paramsObj.occupied2 = Number(paramsObj.vacant) === 1 ? 0 : 1;
+    const conditionsArray = [];
+    Number(paramsObj.arrived) === 1 && conditionsArray.push('(rr.checked_in=1 && rr.check_in_date=CURDATE() && rr.checked_out=0)');
+    Number(paramsObj.departed) === 1 && conditionsArray.push('(rr.check_out_date=CURDATE() && rr.checked_out=1)');
+    Number(paramsObj.stayover) === 1 && conditionsArray.push('(CURDATE()>rr.check_in_date && CURDATE()<rr.check_out_date)');
+    Number(paramsObj.dueout) === 1 && conditionsArray.push('(rr.check_out_date=CURDATE() && rr.checked_out=0)');
+    Number(paramsObj.notreserved) === 1 && conditionsArray.push('(rr.check_in_date IS NULL || (CURDATE() NOT BETWEEN rr.check_in_date AND rr.check_out_date))');
+    if (conditionsArray.length > 0) {
+        paramsObj.extraConditions = ' && (' + conditionsArray.join(' || ') + ')';
+    } else {
+        paramsObj.extraConditions = '';
+    }
+    Room.getRoomsHousekeepingStatus(paramsObj, (data) => {
+        res.json(data);
+    });
+});
+
+router.get('/available-list/:date', (req, res) => {
+    Room.getAvailableRoomListByDate(req.params.date, (data) => {
+        res.json(data);
+    });
+});
+
 router.post('/', (req, res) => {
     const paramsObj = {
         room_num: req.body.room_num,

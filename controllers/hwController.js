@@ -2,12 +2,6 @@ const router = require('express').Router();
 
 const db = require('../models/index.js');
 
-router.get('/roomsIdNum', (req, res) => {
-    db.Room.selectAllIdNum((data) => {
-        res.json(data);
-    });
-});
-
 router.get('/housekeeping_status/:clean/:dirty/:vacant/:occupied/:arrived/:stayOver/:dueOut/:departed/:notReserved', (req, res) => {
     const conditions = [];
     let c1;
@@ -39,12 +33,6 @@ router.get('/housekeeping_status/:clean/:dirty/:vacant/:occupied/:arrived/:stayO
         conditions.push(c4);
     }
     db.Room.housekeepingStatus(conditions, (data) => {
-        res.json(data);
-    });
-});
-
-router.delete('/rooms/:id', (req, res) => {
-    db.Room.deleteOne(req.params.id, (data) => {
         res.json(data);
     });
 });
