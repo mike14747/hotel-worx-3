@@ -13,7 +13,7 @@ router.get('/all', (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/id/:id', (req, res) => {
     Customer.getCustomerById(req.params.id, (data) => {
         res.json(data);
     });
@@ -41,7 +41,7 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/id/:id', (req, res) => {
     const paramsObj = {
         customer_id: req.params.id,
         first_name: req.body.first_name,
@@ -64,7 +64,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/id/:id', (req, res) => {
     Customer.deleteCustomerById(req.params.id, (data) => {
         if (data.affectedRows === 1) {
             res.status(201).send('Customer was successfully deleted!');

@@ -11,4 +11,7 @@ router.use('/users', usersController);
 const customersController = require('./customersController');
 router.use('/customers', customersController);
 
+const roomsController = require('./roomsController');
+router.use('/rooms', roomsController);
+
 module.exports = router;

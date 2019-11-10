@@ -16,7 +16,7 @@ router.get('/all', (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/id/:id', (req, res) => {
     User.getUserById(req.params.id, (data) => {
         res.json(data);
     });
@@ -52,7 +52,7 @@ router.post('/', (req, res) => {
     }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/id/:id', (req, res) => {
     // input validation is needed here for the username and password
     if (req.body.username.length < 6 || req.body.password.length < 6) {
         res.status(406).send('Username and/or Password don\'t meet length standards!');
@@ -83,7 +83,7 @@ router.put('/:id', (req, res) => {
     }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/id/:id', (req, res) => {
     User.deleteUserById(req.params.id, (data) => {
         if (data.affectedRows === 1) {
             res.status(201).send('User was successfully deleted!');
