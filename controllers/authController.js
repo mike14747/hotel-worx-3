@@ -42,7 +42,7 @@ passport.use(new LocalStrategy({
 
 // all these routes point to api/auth as specified in server.js and controllers/index.js
 
-router.route('/').get((req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/auth route root!');
 });
 

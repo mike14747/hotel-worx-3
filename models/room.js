@@ -16,14 +16,6 @@ const Room = {
             cb(result);
         });
     },
-    getRoomsByCondition: (condition, cb) => {
-        const queryString = 'SELECT rm.room_id, rm.room_num, rm.description, rm.num_beds, rm.clean, rm.occupied, rm.active, rt.room_type_id, rt.type, rt.rate FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id WHERE ' + condition + ' ORDER BY rm.room_num ASC;';
-        const queryParams = [];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
-    },
     getAllRoomIdsNums: (cb) => {
         const queryString = 'SELECT rm.room_id, rm.room_num FROM rooms AS rm ORDER BY rm.room_id ASC;';
         connection.execute(queryString, (err, results) => {
@@ -71,9 +63,9 @@ const Room = {
         });
     },
     updateRoomCheckedOutById: (id, cb) => {
-        const queryString = 'UPDATE rooms SET occupied=0, clean=0 WHERE room_num=?;';
+        const queryString = 'UPDATE rooms SET occupied=0, clean=0 WHERE room_id=?;';
         const queryParams = [id];
-        connection.execute(queryString, [queryParams], (err, result) => {
+        connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);
         });
@@ -95,8 +87,8 @@ const Room = {
         });
     },
     getRoomsHousekeepingStatus: (paramsObj, cb) => {
-        const queryString = 'SELECT rm.room_num, rm.clean, rm.occupied, rm.active, rt.type, rr.checked_in, rr.checked_out, rr.room_id, CASE WHEN rr.check_out_date=CURDATE() THEN ("Due Out") END AS departure, CASE WHEN rr.check_in_date<CURDATE() && rr.check_out_date>CURDATE() THEN ("Stay Over") END AS stayover FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id LEFT JOIN res_rooms AS rr ON rm.room_id=rr.room_id && rr.active=1 WHERE (rm.active=1 || rm.active=?) && (rm.clean=? || rm.clean=?) && (rm.occupied=? || rm.occupied=?)' + paramsObj.extraConditions + ' GROUP BY rm.room_id ORDER BY rm.room_id ASC;';
-        const queryParams = [Number(paramsObj.active2), Number(paramsObj.clean), Number(paramsObj.clean2), Number(paramsObj.occupied), Number(paramsObj.occupied2)];
+        const queryString = 'SELECT rm.room_num, rm.clean, rm.occupied, rm.active, rt.type, rr.checked_in, rr.checked_out, rr.room_id, CASE WHEN rr.check_out_date=CURDATE() THEN ("Due Out") END AS departure, CASE WHEN rr.check_in_date<CURDATE() && rr.check_out_date>CURDATE() THEN ("Stay Over") END AS stayover FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id LEFT JOIN res_rooms AS rr ON rm.room_id=rr.room_id && rr.active=1 WHERE (rm.active=? || rm.active=?) && (rm.clean=? || rm.clean=?) && (rm.occupied=? || rm.occupied=?)' + paramsObj.extraConditions + ' GROUP BY rm.room_id ORDER BY rm.room_id ASC;';
+        const queryParams = [Number(paramsObj.active), Number(paramsObj.active2), Number(paramsObj.clean), Number(paramsObj.clean2), Number(paramsObj.occupied), Number(paramsObj.occupied2)];
         connection.execute(queryString, queryParams, (err, results) => {
             if (err) throw err;
             cb(results);

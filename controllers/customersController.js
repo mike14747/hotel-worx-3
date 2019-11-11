@@ -3,11 +3,11 @@ const Customer = require('../models/customer');
 
 // all these routes point to /api/customers as specified in server.js and controllers/index.js
 
-router.route('/').get((req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/customers route root!');
 });
 
-router.get('/all', (req, res) => {
+router.get('/id/all', (req, res) => {
     Customer.getAllCustomers((data) => {
         res.json(data);
     });
@@ -41,9 +41,9 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/id/:id', (req, res) => {
+router.put('/', (req, res) => {
     const paramsObj = {
-        customer_id: req.params.id,
+        customer_id: req.body.customer_id,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         address: req.body.address,
@@ -64,7 +64,7 @@ router.put('/id/:id', (req, res) => {
     });
 });
 
-router.delete('/id/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     Customer.deleteCustomerById(req.params.id, (data) => {
         if (data.affectedRows === 1) {
             res.status(201).send('Customer was successfully deleted!');

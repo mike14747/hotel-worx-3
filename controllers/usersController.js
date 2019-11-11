@@ -4,13 +4,13 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-// all these routes point to /api/user as specified in server.js and controllers/index.js
+// all these routes point to /api/users as specified in server.js and controllers/index.js
 
-router.route('/').get((req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/users route root!');
 });
 
-router.get('/all', (req, res) => {
+router.get('/id/all', (req, res) => {
     User.getAllUsers((data) => {
         res.json(data);
     });
@@ -52,13 +52,13 @@ router.post('/', (req, res) => {
     }
 });
 
-router.put('/id/:id', (req, res) => {
+router.put('/', (req, res) => {
     // input validation is needed here for the username and password
     if (req.body.username.length < 6 || req.body.password.length < 6) {
         res.status(406).send('Username and/or Password don\'t meet length standards!');
     } else {
         const paramsObj = {
-            user_id: req.params.id,
+            user_id: req.body.user_id,
             username: req.body.username,
         };
         User.checkUsernameForUpdate(paramsObj, (data) => {
@@ -83,7 +83,7 @@ router.put('/id/:id', (req, res) => {
     }
 });
 
-router.delete('/id/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     User.deleteUserById(req.params.id, (data) => {
         if (data.affectedRows === 1) {
             res.status(201).send('User was successfully deleted!');

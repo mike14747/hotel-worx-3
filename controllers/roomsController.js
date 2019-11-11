@@ -1,13 +1,13 @@
 const router = require('express').Router();
 const Room = require('../models/room');
 
-// all these routes point to /api/room as specified in server.js and controllers/index.js
+// all these routes point to /api/rooms as specified in server.js and controllers/index.js
 
-router.route('/').get((req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/rooms route root!');
 });
 
-router.get('/all', (req, res) => {
+router.get('/id/all', (req, res) => {
     Room.getAllRooms((data) => {
         res.json(data);
     });
@@ -32,7 +32,20 @@ router.get('/house-status', (req, res) => {
 });
 
 router.get('/housekeeping-status', (req, res) => {
-    const paramsObj = { ...req.query };
+    const baseObj = {
+        active: 1,
+        inactive: 0,
+        clean: 1,
+        dirty: 1,
+        occupied: 1,
+        vacant: 1,
+        arrived: 0,
+        departed: 0,
+        stayover: 0,
+        dueout: 0,
+        notreserved: 0,
+    };
+    const paramsObj = { ...baseObj, ...req.query };
     paramsObj.active2 = Number(paramsObj.inactive) === 1 ? 0 : 1;
     paramsObj.clean2 = Number(paramsObj.dirty) === 1 ? 0 : 1;
     paramsObj.occupied2 = Number(paramsObj.vacant) === 1 ? 0 : 1;
@@ -73,9 +86,9 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/id/:id', (req, res) => {
+router.put('/', (req, res) => {
     const paramsObj = {
-        room_id: req.params.id,
+        room_id: req.body.room_id,
         room_num: req.body.room_num,
         room_type_id: req.body.room_type_id,
         description: req.body.description,
@@ -89,7 +102,7 @@ router.put('/id/:id', (req, res) => {
     });
 });
 
-router.put('/clean', (req, res) => {
+router.put('/clean-status', (req, res) => {
     const paramsObj = {
         room_id: req.body.room_id,
         clean: req.body.clean,
@@ -99,17 +112,7 @@ router.put('/clean', (req, res) => {
     });
 });
 
-router.put('/clean', (req, res) => {
-    const paramsObj = {
-        room_id: req.body.room_id,
-        clean: req.body.clean,
-    };
-    Room.updateRoomCleanById(paramsObj, (data) => {
-        res.json(data);
-    });
-});
-
-router.put('/occupied', (req, res) => {
+router.put('/occupied-status', (req, res) => {
     const paramsObj = {
         room_id: req.body.room_id,
         occupied: req.body.occupied,
@@ -119,7 +122,13 @@ router.put('/occupied', (req, res) => {
     });
 });
 
-router.delete('/id/:id', (req, res) => {
+router.put('/check-out/:id', (req, res) => {
+    Room.updateRoomCheckedOutById(req.params.id, (data) => {
+        res.json(data);
+    });
+});
+
+router.delete('/:id', (req, res) => {
     Room.deleteRoomById(req.params.id, (data) => {
         res.json(data);
     });

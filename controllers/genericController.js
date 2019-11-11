@@ -5,7 +5,7 @@ const db = require('../models/index.js');
 
 // all these routes point to /api/generic as specified in server.js and controllers/index.js
 
-router.route('/').get((req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/generic route root!');
 });
 
