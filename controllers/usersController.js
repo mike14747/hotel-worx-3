@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/users route root!');
 });
 
-router.get('/id/all', (req, res) => {
+router.get('/all', (req, res) => {
     User.getAllUsers((data) => {
         res.json(data);
     });

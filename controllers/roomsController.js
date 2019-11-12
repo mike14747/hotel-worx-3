@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/rooms route root!');
 });
 
-router.get('/id/all', (req, res) => {
+router.get('/all', (req, res) => {
     Room.getAllRooms((data) => {
         res.json(data);
     });

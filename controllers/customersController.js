@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/customers route root!');
 });
 
-router.get('/id/all', (req, res) => {
+router.get('/all', (req, res) => {
     Customer.getAllCustomers((data) => {
         res.json(data);
     });

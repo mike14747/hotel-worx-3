@@ -35,7 +35,7 @@ const Room = {
         const queryParams = [date];
         connection.execute(queryString, queryParams, (err, results) => {
             if (err) throw err;
-            cb(results[1]);
+            cb(results);
         });
     },
     addNewRoom: (paramsObj, cb) => {
