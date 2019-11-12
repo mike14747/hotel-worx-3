@@ -27,7 +27,7 @@ const RoomType = {
         }
         connection.query(preQueryString + queryString, [date], (err, results) => {
             if (err) throw err;
-            cb(results);
+            cb(results[1]);
         });
     },
     addNewRoomType: (paramsObj, cb) => {
@@ -40,7 +40,7 @@ const RoomType = {
     },
     updateRoomTypeById: (paramsObj, cb) => {
         const queryString = 'UPDATE room_types SET type=?, rate=? WHERE room_type_id=?;';
-        const queryParams = [paramsObj.type, paramsObj.rate];
+        const queryParams = [paramsObj.type, paramsObj.rate, paramsObj.room_type_id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);

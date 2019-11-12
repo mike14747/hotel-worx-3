@@ -34,9 +34,9 @@ router.post('/', (req, res) => {
     };
     Customer.addNewCustomer(paramsObj, (data) => {
         if (data.insertId) {
-            res.status(201).send('New customer was successfully added!');
+            res.status(200).send('New customer was successfully added!');
         } else {
-            res.status(500).send('Could not add the new customer due to server error... please try again!');
+            res.status(400).send('Could not add the new customer... please check your request and try again!');
         }
     });
 });
@@ -57,9 +57,9 @@ router.put('/', (req, res) => {
     };
     Customer.updateCustomerById(paramsObj, (data) => {
         if (data.changedRows > 0) {
-            res.status(201).send('Customer info was successfully updated!');
+            res.status(200).send('Customer info was successfully updated!');
         } else {
-            res.status(400).send('Could not find customer... please try again!');
+            res.status(400).send('Could not update customer... please check your request and try again!');
         }
     });
 });
@@ -67,9 +67,9 @@ router.put('/', (req, res) => {
 router.delete('/:id', (req, res) => {
     Customer.deleteCustomerById(req.params.id, (data) => {
         if (data.affectedRows === 1) {
-            res.status(201).send('Customer was successfully deleted!');
+            res.status(200).send('Customer was successfully deleted!');
         } else {
-            res.status(202).send('Customer could not be deleted!');
+            res.status(400).send('Could not delete customer... please check your request and try again!');
         }
     });
 });

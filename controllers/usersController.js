@@ -39,7 +39,7 @@ router.post('/', (req, res) => {
                     };
                     User.addNewUser(paramsObj, (data) => {
                         if (data.insertId) {
-                            res.status(201).send('New user was successfully added!');
+                            res.status(200).send('New user was successfully added!');
                         } else {
                             res.status(400).send('Could not add the new user... please check your request and try again!');
                         }
@@ -70,9 +70,9 @@ router.put('/', (req, res) => {
                     paramsObj.active = req.body.active;
                     User.updateUserById(paramsObj, (data) => {
                         if (data.changedRows > 0) {
-                            res.status(201).send('User info was successfully updated!');
+                            res.status(200).send('User info was successfully updated!');
                         } else {
-                            res.status(400).send('Could not find user... please try again!');
+                            res.status(400).send('Could not update user... please check your request and try again!');
                         }
                     });
                 });
@@ -86,9 +86,9 @@ router.put('/', (req, res) => {
 router.delete('/:id', (req, res) => {
     User.deleteUserById(req.params.id, (data) => {
         if (data.affectedRows === 1) {
-            res.status(201).send('User was successfully deleted!');
+            res.status(200).send('User was successfully deleted!');
         } else {
-            res.status(202).send('User could not be deleted!');
+            res.status(400).send('Could not delete user... please check your request and try again!');
         }
     });
 });
