@@ -41,7 +41,7 @@ router.post('/', (req, res) => {
                         if (data.insertId) {
                             res.status(201).send('New user was successfully added!');
                         } else {
-                            res.status(500).send('Could not add the new user due to server error... please try again!');
+                            res.status(400).send('Could not add the new user... please check your request and try again!');
                         }
                     });
                 });

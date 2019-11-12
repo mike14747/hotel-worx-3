@@ -1,7 +1,7 @@
 # REST API Endpoint Docs for hotel-worx-3
 
 ## Note:
-* All of the /api routes are going to be protected routes when this app goes to production (you need to be logged in as a valid user)
+* All of the **/api** routes are going to be protected routes when this app goes to production (you need to be logged in as a valid user)
 * An access level of 1 (employee) is the default access level for these routes.
 * Some routes will have level 2 or level 3 requirements. They will be denoted as such.
 
@@ -10,9 +10,13 @@
 ## /api/rooms
 
 **GET methods:**
-* '/' --> Takes in no parameters. It outputs status code 200 and a message from the /api/rooms route root.
+> ## '/'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/rooms route root.
 
-* '/all' --> Takes in no parameters and returns all rooms and their details in an array of objects like this:
+> ## '/all'
+> * Takes in no parameters.
+> * Returns all rooms and their details in an array of objects like this:
 ```
 [
     {
@@ -33,9 +37,13 @@
 ]
 ```
 
-* '/id/:id' --> Takes in a room_id parameter in the url and returns the same as the '/all' route above, but the array will contain only a single room object.
+> ## '/id/:id'
+> * Takes in a room_id parameter in the url.
+> * Returns the same as the '/all' route above, but the array will contain only a single room object.
 
-* '/all-ids-nums' --> Takes in no parameters and returns all rooms in an array of objects with just each room's room_id and room_num like this:
+> ## '/all-ids-nums'
+> * Takes in no parameters.
+> * Returns all rooms in an array of objects with just each room's room_id and room_num like this:
 ```
 [
     {
@@ -48,7 +56,9 @@
 ]
 ```
 
-* '/house-status' --> Takes in no parameters and return detailed house status for the hotel like this:
+> ## '/house-status'
+> * Takes in no parameters.
+> * Return detailed house status for the hotel like this:
 ```
 [
     {
@@ -61,7 +71,10 @@
 ]
 ```
 
-* '/housekeeping-status' --> Takes in no parameters and returns an array of room objects. Each of the room objects show detailed room status for all rooms marked as active.
+> ## '/housekeeping-status'
+> * Takes in no parameters and returns an array of room objects.
+> * Each of the room objects show detailed room status for all rooms marked as active.
+> * Sample of the returned array:
 ```
 [
     {
@@ -82,44 +95,254 @@
 ]
 ```
 
-* '/available-list/:date' --> Takes in a date parameter in the url (in the 'YYYY-MM-DD' format) and returns
+> ## '/available-list/:date'
+> * Takes in a date parameter in the url (in the 'YYYY-MM-DD' format, eg: /api/rooms/available-list/2019-11-18).
+> * It returns an array of active room objects which are available on the date in the url parameter.
+> * It includes the date available ends for each room (or "n/a" if a room has unlimited availability).
+> * Sample of the returned array:
+```
+[
+    {
+        "room_id": 3,
+        "room_num": "103",
+        "room_type_id": 1,
+        "clean": 1,
+        "occupied": 1,
+        "availability_end": "2019-11-08"
+    },
+    {
+        "room_id": 94,
+        "room_num": "244",
+        "room_type_id": 2,
+        "clean": 0,
+        "occupied": 0,
+        "availability_end": "n/a"
+    },
+    {
+        ...
+    }
+]
+```
 
 **POST methods:**
-* '/'
+> ## '/'
+> * Takes in a list of parameters in the body object (shown below).
+> * It returns status code 200 and a 'New room was successfully added!' message if successful.
+> * It returns status code 400 and a 'Could not add the new room... please check your request and try again!' message if unsuccessful.
+> * Needed parameters in the body being sent:
+```
+{
+    "room_num": "301",
+    "room_type_id": 1,
+    "description": "This is a test description",
+    "num_beds": 2,
+    "clean": 1,
+    "occupied": 1,
+    "active": 1
+}
+```
 
 **PUT methods:**
-* '/'
-* '/clean-status'
-* '/occupied-status'
-* '/check-out/:id'
+> ## '/'
+> * Takes in a list of parameters in the body object (shown below).
+> * It returns status code 200 and a 'Room info was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update room info... please check your request and try again!' message if unsuccessful.
+> * Needed parameters in the body being sent:
+```
+{
+    "room_id": 1,
+    "room_num": "101",
+    "room_type_id": 1,
+    "description": "This is a test description",
+    "num_beds": 2,
+    "clean": 1,
+    "occupied": 1,
+    "active": 1
+}
+```
+> ## '/clean-status'
+> * Takes in a list of parameters in the body object (shown below).
+> * It returns status code 200 and a 'Room clean status was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update room clean status... please check your request and try again!' message if unsuccessful.
+> * Needed parameters in the body being sent:
+```
+{
+    "room_id": 17,
+    "clean": 0
+}
+```
+> ## '/occupied-status'
+> * Takes in a list of parameters in the body object (shown below).
+> * It returns status code 200 and a 'Room occupied status was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update room occupied status... please check your request and try again!' message if unsuccessful.
+> * Needed parameters in the body being sent:
+```
+{
+    "room_id": 35,
+    "occupied": 1
+}
+```
+> ## '/checked-out/:id'
+> * Takes in a room_id parameter in the url.
+> * It sets the room's status to '**clean=0 and occupied=0**'.
+> * It returns status code 200 and a 'Room checked-out status was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update room checked-out status... please check your request and try again!' message if unsuccessful.
 
 **DELETE methods:**
-* '/:id'
+> ## '/:id'
+> * Takes in a room_id parameter in the url.
+> * It returns status code 200 and a 'Room was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Room could not be deleted... please check your request and try again!' message if unsuccessful.
 
 ---
 
 ## /api/users
 
 **GET methods:**
-* '/' --> takes in no parameters; outputs status code 200 and a message from the /api/users route root
+> ## '/'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/users route root.
+
+> ## '/all'
+> * Takes in no parameters.
+> * Returns all users and their details in an array of objects like this (note: passwords are not included):
+```[
+    {
+        "user_id": 3,
+        "username": "jonathon123",
+        "type": "Employee",
+        "active": 1
+    },
+    {
+        ...
+    }
+]
+```
+
+> ## '/id/:id'
+> * Takes in a user_id parameter in the url.
+> * Returns the same as the '/all' route above, but the array will contain only a single user object (note: passwords are not included).
 
 **POST methods:**
+> ## '/'
+> * Takes in a list of parameters in the body object (shown below).
+> * It returns status code 200 and a 'New user was successfully added!' message if successful.
+> * It returns status code 400 and a 'Could not add the new user... please check your request and try again!' message if unsuccessful.
+> * Needed parameters in the body being sent:
+```
+{
+    "username": "Jan-Front-Desk",
+    "password": "new_password",
+    "access_id": 1,
+    "active": 1
+}
+```
 
 **PUT methods:**
+> ## '/'
+> * Takes in a list of parameters in the body object (shown below).
+> * It returns status code 200 and a 'User info was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update user info... please check your request and try again!' message if unsuccessful.
+> * Needed parameters in the body being sent:
+```
+{
+    "user_id": 6,
+    "username": "manager123",
+    "password": "updated_password",
+    "access_id": 2,
+    "active": 1
+}
+```
 
 **DELETE methods:**
+> ## '/:id'
+> * Takes in a user_id parameter in the url.
+> * It returns status code 200 and a 'User was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'User could not be deleted... please check your request and try again!' message if unsuccessful.
 
 ---
 
 ## /api/customers
 
 **GET methods:**
-* '/' --> takes in no parameters; outputs status code 200 and a message from the /api/customers route root
+> ## '/'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/customers route root.
+
+> ## '/all'
+> * Takes in no parameters.
+> * Returns all customers and their details in an array of objects like this:
+```[
+    {
+        "customer_id": 1,
+        "first_name": "Jamar",
+        "last_name": "Wilkerson",
+        "address": "7193 Valley St",
+        "city": "Lexington",
+        "state": "NC",
+        "zip": "27292",
+        "email": "rgiersig@yahoo.com",
+        "phone": "806-427-8083",
+        "creditCardLastFour": "0920",
+        "cc_expiration": "10 / 22"
+    },
+    {
+        ...
+    }
+]
+```
+
+> ## '/id/:id'
+> * Takes in a customer_id parameter in the url.
+> * Returns the same as the '/all' route above, but the array will contain only a single customer object.
 
 **POST methods:**
+> ## '/'
+> * Takes in a list of parameters in the body object (shown below).
+> * It returns status code 200 and a 'New customer was successfully added!' message if successful.
+> * It returns status code 400 and a 'Could not add the new customer... please check your request and try again!' message if unsuccessful.
+> * Needed parameters in the body being sent:
+```
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": "123 Main St,
+    "city": "Cleveland",
+    "state": "OH",
+    "zip": "44124",
+    "email": "temp@temp.com",
+    "phone": "800-555-1212",
+    "credit_card_num": "4444111122223333",
+    "cc_expiration": "05 / 23"
+}
+```
 
 **PUT methods:**
+> ## '/'
+> * Takes in a list of parameters in the body object (shown below).
+> * It returns status code 200 and a 'Customer info was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update customer info... please check your request and try again!' message if unsuccessful.
+> * Needed parameters in the body being sent:
+```
+{
+    "customer_id": 123,
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": "123 Main St,
+    "city": "Cleveland",
+    "state": "OH",
+    "zip": "44124",
+    "email": "temp@temp.com",
+    "phone": "800-555-1212",
+    "credit_card_num": "4444111122223333",
+    "cc_expiration": "05 / 23"
+}
+```
 
 **DELETE methods:**
+> ## '/:id'
+> * Takes in a customer_id parameter in the url.
+> * It returns status code 200 and a 'Customer was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Customer could not be deleted... please check your request and try again!' message if unsuccessful.
 
 ---

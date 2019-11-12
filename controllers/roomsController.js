@@ -82,7 +82,11 @@ router.post('/', (req, res) => {
         active: req.body.active,
     };
     Room.addNewRoom(paramsObj, (data) => {
-        res.json(data);
+        if (data.insertId) {
+            res.status(200).send('New room was successfully added!');
+        } else {
+            res.status(400).send('Could not add the new room... please check your request and try again!');
+        }
     });
 });
 
@@ -98,7 +102,11 @@ router.put('/', (req, res) => {
         active: req.body.active,
     };
     Room.updateRoomById(paramsObj, (data) => {
-        res.json(data);
+        if (data.changedRows > 0) {
+            res.status(200).send('Room info was successfully updated!');
+        } else {
+            res.status(400).send('Could not update room info... please check your request and try again!');
+        }
     });
 });
 
@@ -108,7 +116,11 @@ router.put('/clean-status', (req, res) => {
         clean: req.body.clean,
     };
     Room.updateRoomCleanById(paramsObj, (data) => {
-        res.json(data);
+        if (data.changedRows > 0) {
+            res.status(200).send('Room clean status was successfully updated!');
+        } else {
+            res.status(400).send('Could not update room clean status... please check your request and try again!');
+        }
     });
 });
 
@@ -118,19 +130,31 @@ router.put('/occupied-status', (req, res) => {
         occupied: req.body.occupied,
     };
     Room.updateRoomOccupiedById(paramsObj, (data) => {
-        res.json(data);
+        if (data.changedRows > 0) {
+            res.status(200).send('Room occupied status was successfully updated!');
+        } else {
+            res.status(400).send('Could not update room occupied status... please check your request and try again!');
+        }
     });
 });
 
-router.put('/check-out/:id', (req, res) => {
+router.put('/checked-out/:id', (req, res) => {
     Room.updateRoomCheckedOutById(req.params.id, (data) => {
-        res.json(data);
+        if (data.changedRows > 0) {
+            res.status(200).send('Room checked-out status was successfully updated!');
+        } else {
+            res.status(400).send('Could not update room checked-out status... please check your request and try again!');
+        }
     });
 });
 
 router.delete('/:id', (req, res) => {
     Room.deleteRoomById(req.params.id, (data) => {
-        res.json(data);
+        if (data.affectedRows === 1) {
+            res.status(200).send('Room was successfully deleted!');
+        } else {
+            res.status(400).send('Room could not be deleted... please check your request and try again!');
+        }
     });
 });
 
