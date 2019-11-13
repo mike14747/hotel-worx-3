@@ -16,12 +16,16 @@ const ResRoom = {
             cb(result);
         });
     },
-    addNewResRoom: (paramsObj, cb) => {
-        const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, checked_in, checked_out, adults, room_id, rate, confirmation_code, comments) VALUES (?,?,?,?,?,?,?,?,?,?,?);';
-        const queryParams = [paramsObj.reservation_id, paramsObj.room_type_id, paramsObj.check_in_date, paramsObj.check_out_date, paramsObj.checked_in, paramsObj.checked_out, paramsObj.adults, paramsObj.room_id, paramsObj.rate, paramsObj.confirmation_code, paramsObj.comments];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
+    addSomeResRooms: (paramsArr, cb) => {
+        const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments) VALUES (?,?,?,?,?,?,?,?);';
+        paramsArr.forEach((room, i) => {
+            const queryParams = [room.reservation_id, room.room_type_id, room.check_in_date, room.check_out_date, room.adults, room.rate, room.confirmation_code, room.comments];
+            connection.execute(queryString, queryParams, (err, result) => {
+                if (err) throw err;
+                if ((i + 1) === paramsArr.length) {
+                    cb(result);
+                }
+            });
         });
     },
     updateResRoomTypeById: (paramsObj, cb) => {
@@ -33,7 +37,7 @@ const ResRoom = {
         });
     },
     deleteResRoomById: (id, cb) => {
-        const queryString = 'DELETE FROM res_rooms WHERE res_room_id=?;';
+        const queryString = 'DELETE FROM res_rooms WHERE reservation_id=?;';
         const queryParams = [id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;

@@ -17,4 +17,7 @@ router.use('/rooms', roomsController);
 const roomTypesController = require('./roomTypesController');
 router.use('/room-types', roomTypesController);
 
+const reservationsController = require('./reservationsController');
+router.use('/reservations', reservationsController);
+
 module.exports = router;

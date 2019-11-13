@@ -346,3 +346,63 @@
 > * It returns status code 400 and a 'Customer could not be deleted... please check your request and try again!' message if unsuccessful.
 
 ---
+
+## /api/reservations
+
+**GET methods:**
+> ## '/'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/reservations route root.
+
+**POST methods:**
+> ## '/'
+>* Takes in a list of parameters in the body object (shown below).
+> * This route uses these 3 database models:
+>   * customer
+>   * reservation
+>   * res_room
+> * The **rooms** property of the body is an array that contains an object element for each room in the reservation.
+> * It returns an object with a **reservation_id** property for the newly created reservation.
+> * Needed parameters in the body being sent:
+```
+{
+    "cust": {
+        "first_name": "Peter",
+        "last_name": "Pan",
+        "address": "1111 FairyTale Lane",
+        "city": "Fantasyland",
+        "state": "Vermont",
+        "zip": "23456",
+        "email": "p.pan@yahoo.net",
+        "phone": "800-555-1212",
+        "credit_card_num": "1234567890123456",
+        "cc_expiration": "11 / 21"
+    },
+    "reserve": {
+        "user_id": 1,
+        "comments": "test reservation comment"
+    },
+    "rooms": [
+        {
+            "room_type_id": 2,
+            "check_in_date": "2019-08-12",
+            "check_out_date": "2019-08-15",
+            "adults": 2,
+            "rate": "119.99",
+            "comments": "need a good view"
+        },
+        {
+            "room_type_id": 1,
+            "check_in_date": "2019-08-12",
+            "check_out_date": "2019-08-17",
+            "adults": 2,
+            "rate": "109.99",
+            "comments": "want a late checkout"
+        }
+    ]
+}
+```
+
+**PUT methods:**
+
+**DELETE methods:**
