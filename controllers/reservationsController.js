@@ -10,42 +10,26 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const custParamsObj = {
-        first_name: req.body.cust.first_name,
-        last_name: req.body.cust.last_name,
-        address: req.body.cust.address,
-        city: req.body.cust.city,
-        state: req.body.cust.state,
-        zip: req.body.cust.zip,
-        email: req.body.cust.email,
-        phone: req.body.cust.phone,
-        credit_card_num: req.body.cust.credit_card_num,
-        cc_expiration: req.body.cust.cc_expiration,
-    };
-    Customer.addNewCustomer(custParamsObj, (data1) => {
+    const { customerObj, reservationObj, resRoomsArr } = req.body;
+    Customer.addNewCustomer(customerObj, (data1) => {
         if (data1.insertId) {
-            const resParamsObj = {
-                customer_id: data1.insertId,
-                user_id: req.body.reserve.user_id,
-                comments: req.body.reserve.comments,
-            };
-            Reservation.addNewReservation(resParamsObj, (data2) => {
+            reservationObj.customer_id = data1.insertId;
+            Reservation.addNewReservation(reservationObj, (data2) => {
                 if (data2.insertId) {
-                    const paramsArr = req.body.rooms.map((resRoom, i) => ({
-                        reservation_id: data2.insertId,
-                        room_type_id: resRoom.room_type_id,
-                        check_in_date: resRoom.check_in_date,
-                        check_out_date: resRoom.check_out_date,
-                        adults: resRoom.adults,
-                        rate: resRoom.rate,
-                        confirmation_code: new Date().getFullYear().toString().substr(2) + data2.insertId.toString().slice(-3) + ('00' + (i + 1)).slice(-3),
-                        comments: resRoom.comments,
-                    }));
-                    ResRoom.addSomeResRooms(paramsArr, () => {
-                        res.status(200).send({ reservation_id: data2.insertId });
+                    resRoomsArr.forEach((element, i) => {
+                        resRoomsArr[i].reservation_id = data2.insertId;
+                        const today = new Date();
+                        resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data2.insertId.toString().slice(-3) + ('00' + (i + 1)).slice(-3);
+                    });
+                    ResRoom.addSomeResRooms(resRoomsArr, (data3) => {
+                        if (data3.insertId) {
+                            res.status(200).send({ reservation_id: data2.insertId });
+                        } else {
+                            res.status(400).send('Could not add rooms associated with the reservation... please check your request and try again!');
+                        }
                     });
                 } else {
-                    res.status(400).send('Could not add reservation... please check your request and try again!');
+                    res.status(400).send('Could not add reservation (and thus, the rooms asscociated with the reservation)... please check your request and try again!');
                 }
             });
         } else {
@@ -59,7 +43,7 @@ module.exports = router;
 /*
 const obj =
 {
-    "cust": {
+    "customerObj": {
         "first_name": "Peter",
         "last_name": "Pan",
         "address": "1111 FairyTale Lane",
@@ -71,11 +55,11 @@ const obj =
         "credit_card_num": "1234567890123456",
         "cc_expiration": "11 / 21"
     },
-    "reserve": {
+    "reservationObj": {
         "user_id": 1,
         "comments": "test reservation comment"
     },
-    "rooms": [
+    "resRoomsArr": [
         {
             "room_type_id": 2,
             "check_in_date": "2019-08-12",

@@ -36,6 +36,9 @@ function isAuthenticated(req, res, next) {
     }
 }
 
+const authController = require('./controllers/authController');
+app.use('/api/auth', authController);
+
 const controllers = require('./controllers');
 // app.use('/api', controllers);
 app.use('/api', isAuthenticated, controllers);
