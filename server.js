@@ -27,8 +27,21 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static('client/build'));
 }
 
+function isAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        return next();
+        // res.status(401).end();
+    }
+}
+
+const authController = require('./controllers/authController');
+app.use('/api/auth', authController);
+
 const controllers = require('./controllers');
-app.use('/api', controllers);
+// app.use('/api', controllers);
+app.use('/api', isAuthenticated, controllers);
 
 app.listen(PORT, () => {
     // eslint-disable-next-line no-console

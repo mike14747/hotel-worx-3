@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 const db = require('../models/index.js');
+<<<<<<< HEAD
 
 // '/api/hw' route
 router.route('/').get((req, res) => {
@@ -200,6 +201,8 @@ router.post('/reservation', (req, res) => {
         });
     });
 });
+=======
+>>>>>>> 64995cd8340b9f062d772ee87f063049516f3b47
 
 router.put('/reservation', (req, res) => {
     db.Customer.updateOne(req.body.cust, () => {
@@ -377,13 +380,6 @@ router.get('/invoice/:id', (req, res) => {
 router.get('/invoice_id/:id', (req, res) => {
     db.Invoice.selectOneId(req.params.id, (data) => {
         res.json(data);
-    });
-});
-
-router.put('/updateCleanStatus/:status/:room_id', (req, res) => {
-    const cond = [req.params.status, req.params.room_id];
-    db.Room.updateClean(cond, (result) => {
-        res.json(result);
     });
 });
 
