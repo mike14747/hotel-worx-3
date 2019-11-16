@@ -6,6 +6,7 @@ import {
     Link,
 } from 'react-router-dom';
 import Generic from './pages/generic/generic';
+import Calendar from './components/calendar/index';
 
 export default function App() {
     return (
@@ -25,6 +26,9 @@ export default function App() {
                         <li>
                             <Link to="/generic">Generic</Link>
                         </li>
+                        <li>
+                            <Link to="/calendar">Calendar</Link>
+                        </li>
                     </ul>
                 </nav>
 
@@ -42,6 +46,9 @@ export default function App() {
                     </Route>
                     <Route exact path="/generic">
                         <Generic />
+                    </Route>
+                    <Route exact path="/calendar">
+                        <Calendar />
                     </Route>
                     <Route path="*">
                         <Home />
