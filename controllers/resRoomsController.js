@@ -8,13 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/all', (req, res) => {
-    ResRoom.getResRoomById((data) => {
-        res.json(data);
-    });
-});
-
-router.get('/id/:id', (req, res) => {
-    ResRoom.getResRoomById(req.params.id, (data) => {
+    ResRoom.getResRoomByResRoomId((data) => {
         res.json(data);
     });
 });
