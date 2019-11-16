@@ -2,21 +2,6 @@ const router = require('express').Router();
 
 const db = require('../models/index.js');
 
-// { "cust": ["first_name", "last_name", "address", "city", "state", "zip", "email", "phone", "credit_card_num", "cc_expiration"], "reserve": ["user_id", "comments"], "rooms": [["room_type_id", "check_in_date", "check_out_date", "adults", "rate", "comments"]] }
-// this route will need to be sent data like this:
-// { "cust": ["Peter", "Pan", "1111 FairyTale Lane", "Fantasyland", "Vermont", "23456", "p.pan@yahoo.net", "555-1212", "1234567890123456", "11 / 21"], "reserve": [1, ""], "rooms": [[2, "2019-08-12", "2019-08-15", 2, "119.99", "need a good view"], [1, "2019-08-12", "2019-08-17", 2, "109.99", "want a late checkout"]] }
-
-router.post('/reservation', (req, res) => {
-    db.Customer.insertOne(req.body.cust, (result) => {
-        db.Reservation.insertOne(result.insertId, req.body.reserve, (result) => {
-            const reservationId = result.insertId;
-            db.ResRoom.insertSome(result.insertId, req.body.rooms, () => {
-                res.status(200).send({ reservation_id: reservationId });
-            });
-        });
-    });
-});
-
 router.put('/reservation', (req, res) => {
     db.Customer.updateOne(req.body.cust, () => {
         db.Reservation.updateOne(req.body.reserve, () => {

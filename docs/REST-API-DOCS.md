@@ -362,6 +362,84 @@
 > * Takes in no parameters.
 > * It outputs status code 200 and a message from the /api/reservations route root.
 
+> ## '/api/reservations/all'
+> * Takes in no parameters.
+> * Returns all reservations and their details in an array of objects.
+```
+// sample response from the '/api/reservations/all' GET route
+[
+    {
+        "reservation_id": 1001,
+        "active": 1,
+        "first_name": "Jamar",
+        "last_name": "Wilkerson",
+        "type": "2 Queens",
+        "res_room_id": 1001,
+        "created_at": "Nov 15, 2019 (09:39 PM)",
+        "check_in_date": "Nov 12, 2019",
+        "check_out_date": "Nov 16, 2019"
+    },
+    {
+        ...
+    }
+]
+```
+
+> ## '/api/reservations/id/:id'
+> * Takes in a reservation_id parameter in the url.
+> * Returns a single reservation and detailed customer info in an array of a single object.
+> * This route should be used in conjunction with the **/api/reservations/res-rooms/id/:id** route to get all rooms associated with this reservation.
+```
+// sample response from the '/api/reservations/id/:id' GET route
+[
+    {
+        "reservation_id": 1056,
+        "customer_id": 56,
+        "user_id": 3,
+        "created_at": "Nov 15, 2019 (09:39 PM)",
+        "comments": "",
+        "active": 1,
+        "first_name": "Moshe",
+        "last_name": "Powers",
+        "address": "7763 W Strawberry Drive",
+        "city": "Eau Claire",
+        "state": "WI",
+        "zip": "54701",
+        "email": "gfody@aol.com",
+        "phone": "212-220-2744",
+        "ccLastFour": "4144",
+        "cc_expiration": "05 / 20"
+    }
+]
+```
+
+> ## '/api/reservations/res-rooms/id/:id'
+> * Takes in a reservation_id parameter in the url.
+> * Returns all rooms associated with a single reservation.
+> * This route should be used in conjunction with the **/api/reservations/id/:id** route
+```
+// sample response from the '/api/reservations/id/:id' GET route
+[
+    {
+        "res_room_id": 1056,
+        "reservation_id": 1056,
+        "room_type_id": 3,
+        "check_in_date": "Nov 15, 2019",
+        "check_out_date": "Nov 16, 2019",
+        "checked_in": 0,
+        "checked_out": 0,
+        "adults": 1,
+        "room_id": null,
+        "rate": "129.99",
+        "confirmation_code": "190609056001",
+        "comments": ""
+    },
+    {
+        ...
+    }
+]
+```
+
 **POST methods:**
 > ## '/api/reservations/'
 >* Takes in a list of parameters in the body object.

@@ -1,0 +1,12 @@
+What should happen when you delete a reservation?
+
+    Delete the customer, reservation and all res_rooms from those 3 db tables.
+    Delete the reservation and all res_rooms, but leave the customer record intact.
+    Keep everything intact, but mark the reservation as inactive. We'd also have to mark the res_rooms as inactive too.
+
+We should be able to access past customers from a list when making new reservations to limit duplicate customers.
+
+When updating a reservation, should the reservation_id and res_rooms confirmation codes be editable?
+
+Do we need the resRoomsController? Should all those routes be included on the api/reservations route?
+

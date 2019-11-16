@@ -9,6 +9,24 @@ router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/reservations route root!');
 });
 
+router.get('/all', (req, res) => {
+    Reservation.getAllReservations((data) => {
+        res.json(data);
+    });
+});
+
+router.get('/id/:id', (req, res) => {
+    Reservation.getReservationById(req.params.id, (data) => {
+        res.json(data);
+    });
+});
+
+router.get('/res-rooms/id/:id', (req, res) => {
+    ResRoom.getResRoomsByReservationId(req.params.id, (data) => {
+        res.json(data);
+    });
+});
+
 router.post('/', (req, res) => {
     const { customerObj, reservationObj, resRoomsArr } = req.body;
     Customer.addNewCustomer(customerObj, (data1) => {
@@ -39,43 +57,3 @@ router.post('/', (req, res) => {
 });
 
 module.exports = router;
-
-/*
-const obj =
-{
-    "customerObj": {
-        "first_name": "Peter",
-        "last_name": "Pan",
-        "address": "1111 FairyTale Lane",
-        "city": "Fantasyland",
-        "state": "Vermont",
-        "zip": "23456",
-        "email": "p.pan@yahoo.net",
-        "phone": "800-555-1212",
-        "credit_card_num": "1234567890123456",
-        "cc_expiration": "11 / 21"
-    },
-    "reservationObj": {
-        "user_id": 1,
-        "comments": "test reservation comment"
-    },
-    "resRoomsArr": [
-        {
-            "room_type_id": 2,
-            "check_in_date": "2019-08-12",
-            "check_out_date": "2019-08-15",
-            "adults": 2,
-            "rate": "119.99",
-            "comments": "need a good view"
-        },
-        {
-            "room_type_id": 1,
-            "check_in_date": "2019-08-12",
-            "check_out_date": "2019-08-17",
-            "adults": 2,
-            "rate": "109.99",
-            "comments": "want a late checkout"
-        }
-    ]
-};
-*/
