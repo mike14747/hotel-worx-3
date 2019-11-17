@@ -490,5 +490,11 @@
 ```
 
 **PUT methods:**
+> ## '/api/reservations/res-rooms'
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/reservations/res-rooms' PUT route
+
+```
 
 **DELETE methods:**

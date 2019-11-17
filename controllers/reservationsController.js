@@ -37,7 +37,8 @@ router.post('/', (req, res) => {
                     resRoomsArr.forEach((element, i) => {
                         resRoomsArr[i].reservation_id = data2.insertId;
                         const today = new Date();
-                        resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data2.insertId.toString().slice(-3) + ('00' + (i + 1)).slice(-3);
+                        // resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data2.insertId.toString().slice(-3) + ('00' + (i + 1)).slice(-3);
+                        resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data2.insertId.toString().slice(-3) + '001';
                     });
                     ResRoom.addSomeResRooms(resRoomsArr, (data3) => {
                         if (data3.insertId) {
@@ -52,6 +53,68 @@ router.post('/', (req, res) => {
             });
         } else {
             res.status(400).send('Could not add customer (and thus, the reservation)... please check your request and try again!');
+        }
+    });
+});
+
+router.put('/res-rooms/assign', (req, res) => {
+    const baseConfirmationCode = req.body.confirmation_code.slice(0, -3);
+    ResRoom.getMaxCCodeByReservationId(req.body.reservation_id, (data1) => {
+        let newConfirmationCode;
+        if (data1[0].totalRooms === 1 || data1[0].numAssignedRooms === 0) {
+            newConfirmationCode = req.body.confirmation_code;
+        } else {
+            newConfirmationCode = baseConfirmationCode + ('00' + (data1[0].currentMaxCCode + 1).toString()).slice(-3);
+        }
+        const paramsObj = {
+            res_room_id: req.body.res_room_id,
+            room_type_id: req.body.room_type_id,
+            room_id: req.body.room_id,
+            rate: req.body.rate,
+            confirmation_code: newConfirmationCode,
+        };
+        ResRoom.updateResRoomAssignById(paramsObj, (data2) => {
+            if (data2.changedRows > 0) {
+                res.status(200).send('Res room was successfully updated!');
+            } else {
+                res.status(400).send('Could not update res room... please check your request and try again!');
+            }
+        });
+    });
+});
+
+router.put('/res-rooms/info', (req, res) => {
+    const paramsObj = {
+        room_type_id: req.body.room_type_id,
+        check_in_date: req.body.check_in_date,
+        check_out_date: req.body.check_out_date,
+        adults: req.body.adults,
+        rate: req.body.rate,
+        comments: req.body.comments,
+    };
+    ResRoom.updateResRoomInfoById(paramsObj, (data) => {
+        if (data.changedRows > 0) {
+            res.status(200).send('Res room was successfully updated!');
+        } else {
+            res.status(400).send('Could not update res room... please check your request and try again!');
+        }
+    });
+});
+
+router.put('/res-rooms/check-in', (req, res) => {
+    const paramsObj = {
+        room_type_id: req.body.room_type_id,
+        check_in_date: req.body.check_in_date,
+        check_out_date: req.body.check_out_date,
+        adults: req.body.adults,
+        rate: req.body.rate,
+        comments: req.body.comments,
+    };
+    ResRoom.updateResRoomCheckinById(paramsObj, (data) => {
+        if (data.changedRows > 0) {
+            res.status(200).send('Res room was successfully updated!');
+        } else {
+            res.status(400).send('Could not update res room... please check your request and try again!');
         }
     });
 });
