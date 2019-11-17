@@ -45,8 +45,8 @@ const ResRoom = {
         });
     },
     updateResRoomInfoById: (paramsObj, cb) => {
-        const queryString = 'UPDATE res_rooms SET room_type_id=?, check_in_date=?, check_out_date=?, checked_in=?, checked_out=?, adults=?, room_id=?, rate=?, confirmation_code=?, comments=? WHERE res_room_id=?;';
-        const queryParams = [paramsObj.room_type_id, paramsObj.check_in_date, paramsObj.check_out_date, paramsObj.checked_in, paramsObj.checked_out, paramsObj.adults, paramsObj.room_id, paramsObj.rate, paramsObj.confirmation_code, paramsObj.comments, paramsObj.res_room_id];
+        const queryString = 'UPDATE res_rooms SET room_type_id=?, check_in_date=?, check_out_date=?, adults=?, rate=?, comments=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.room_type_id, paramsObj.check_in_date, paramsObj.check_out_date, paramsObj.adults, paramsObj.rate, paramsObj.comments, paramsObj.res_room_id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);

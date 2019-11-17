@@ -83,6 +83,22 @@ router.put('/res-rooms/assign', (req, res) => {
     });
 });
 
+router.put('/res-rooms/reassign', (req, res) => {
+    const paramsObj = {
+        res_room_id: req.body.res_room_id,
+        room_type_id: req.body.room_type_id,
+        room_id: req.body.room_id,
+        rate: req.body.rate,
+    };
+    ResRoom.updateResRoomReassignById(paramsObj, (data) => {
+        if (data.changedRows > 0) {
+            res.status(200).send('Res room was successfully updated!');
+        } else {
+            res.status(400).send('Could not update res room... please check your request and try again!');
+        }
+    });
+});
+
 router.put('/res-rooms/info', (req, res) => {
     const paramsObj = {
         room_type_id: req.body.room_type_id,
@@ -91,6 +107,7 @@ router.put('/res-rooms/info', (req, res) => {
         adults: req.body.adults,
         rate: req.body.rate,
         comments: req.body.comments,
+        res_room_id: req.body.res_room_id,
     };
     ResRoom.updateResRoomInfoById(paramsObj, (data) => {
         if (data.changedRows > 0) {

@@ -497,4 +497,52 @@
 
 ```
 
+> ## '/api/reservations/res-rooms/assign'
+> * Takes in a list of parameters in the body object.
+> * This route is used for assigning a room number and room type to a res room.
+> * It will have its confirmation code updated by the reservationsController as needed.
+```
+// sample request body for the '/api/reservations/res-rooms/assign' PUT route
+{
+	"res_room_id": 1202,
+    "room_type_id": 1,
+    "room_id": 98,
+    "rate": 109.99,
+    "reservation_id": 1201,
+    "confirmation_code": "191116201001"
+}
+```
+
+> ## '/api/reservations/res-rooms/reassign'
+> * Takes in a list of parameters in the body object.
+> * This route is used for re-assigning a room number and room type to a res room.
+> * It will not change the confirmation code associated with the room being reassigned.
+```
+// sample request body for the '/api/reservations/res-rooms/reassign' PUT route
+{
+	"res_room_id": 1202,
+    "room_type_id": 1,
+    "room_id": 98,
+    "rate": 109.99,
+    "reservation_id": 1201,
+    "confirmation_code": "191116201001"
+}
+```
+
+> ## '/api/reservations/res-rooms/info'
+> * Takes in a list of parameters in the body object.
+> * This route is used for changing information about a reservation's room.
+```
+// sample request body for the '/api/reservations/res-rooms/info' PUT route
+{
+	"res_room_id": 1200,
+    "room_type_id": 2,
+    "check_in_date": "2020-03-14",
+    "check_out_date": "2020-03-18",
+    "adults": 3,
+    "rate": 119.99,
+    "comments": "blah"
+}
+```
+
 **DELETE methods:**
