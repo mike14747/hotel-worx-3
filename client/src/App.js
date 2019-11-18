@@ -7,31 +7,13 @@ import {
 } from 'react-router-dom';
 import Generic from './pages/generic/generic';
 import Calendar from './components/calendar/index';
+import NavBar from './components/navbar/navbar';
 
 export default function App() {
     return (
         <Router>
             <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/about">About</Link>
-                        </li>
-                        <li>
-                            <Link to="/user">User</Link>
-                        </li>
-                        <li>
-                            <Link to="/generic">Generic</Link>
-                        </li>
-                        <li>
-                            <Link to="/calendar">Calendar</Link>
-                        </li>
-                    </ul>
-                </nav>
-
+                <NavBar />
                 {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
                 <Switch>
