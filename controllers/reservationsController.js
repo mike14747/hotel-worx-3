@@ -120,12 +120,8 @@ router.put('/res-rooms/info', (req, res) => {
 
 router.put('/res-rooms/check-in', (req, res) => {
     const paramsObj = {
-        room_type_id: req.body.room_type_id,
-        check_in_date: req.body.check_in_date,
-        check_out_date: req.body.check_out_date,
-        adults: req.body.adults,
-        rate: req.body.rate,
-        comments: req.body.comments,
+        res_room_id: req.body.res_room_id,
+        checked_in: req.body.checked_in,
     };
     ResRoom.updateResRoomCheckinById(paramsObj, (data) => {
         if (data.changedRows > 0) {

@@ -11,7 +11,7 @@
 ## /api/rooms
 
 **GET methods:**
-> ## '/api/rooms/'
+> ## '/api/rooms'
 > * Takes in no parameters.
 > * It outputs status code 200 and a message from the /api/rooms route root.
 
@@ -129,12 +129,12 @@
 ```
 
 **POST methods:**
-> ## '/api/rooms/'
+> ## '/api/rooms'
 > * Takes in a list of parameters in the body object.
 > * It returns status code 200 and a 'New room was successfully added!' message if successful.
 > * It returns status code 400 and a 'Could not add the new room... please check your request and try again!' message if unsuccessful.
 ```
-// sample request body for the '/api/rooms/' POST route
+// sample request body for the '/api/rooms' POST route
 {
     "room_num": "301",
     "room_type_id": 1,
@@ -147,12 +147,12 @@
 ```
 
 **PUT methods:**
-> ## '/api/rooms/'
+> ## '/api/rooms'
 > * Takes in a list of parameters in the body object.
 > * It returns status code 200 and a 'Room info was successfully updated!' message if successful.
 > * It returns status code 400 and a 'Could not update room info... please check your request and try again!' message if unsuccessful.
 ```
-// sample request body for the '/api/rooms/' PUT route
+// sample request body for the '/api/rooms' PUT route
 {
     "room_id": 1,
     "room_num": "101",
@@ -203,7 +203,7 @@
 ## /api/users
 
 **GET methods:**
-> ## '/api/users/'
+> ## '/api/users'
 > * Takes in no parameters.
 > * It outputs status code 200 and a message from the /api/users route root.
 
@@ -230,12 +230,12 @@
 > * Returns the same as the '/api/users/all' route above, but the array will contain only a single user object (note: passwords are not included).
 
 **POST methods:**
-> ## '/api/users/'
+> ## '/api/users'
 > * Takes in a list of parameters in the body object.
 > * It returns status code 200 and a 'New user was successfully added!' message if successful.
 > * It returns status code 400 and a 'Could not add the new user... please check your request and try again!' message if unsuccessful.
 ```
-// sample request body for the '/api/users/' POST route
+// sample request body for the '/api/users' POST route
 {
     "username": "Jan-Front-Desk",
     "password": "new_password",
@@ -245,12 +245,12 @@
 ```
 
 **PUT methods:**
-> ## '/api/users/'
+> ## '/api/users'
 > * Takes in a list of parameters in the body object.
 > * It returns status code 200 and a 'User info was successfully updated!' message if successful.
 > * It returns status code 400 and a 'Could not update user info... please check your request and try again!' message if unsuccessful.
 ```
-// sample request body for the '/api/users/' PUT route
+// sample request body for the '/api/users' PUT route
 {
     "user_id": 6,
     "username": "manager123",
@@ -271,7 +271,7 @@
 ## /api/customers
 
 **GET methods:**
-> ## '/api/customers/'
+> ## '/api/customers'
 > * Takes in no parameters.
 > * It outputs status code 200 and a message from the /api/customers route root.
 
@@ -305,12 +305,12 @@
 > * Returns the same as the '/api/customers/all' route above, but the array will contain only a single customer object.
 
 **POST methods:**
-> ## '/api/customers/'
+> ## '/api/customers'
 > * Takes in a list of parameters in the body object.
 > * It returns status code 200 and a 'New customer was successfully added!' message if successful.
 > * It returns status code 400 and a 'Could not add the new customer... please check your request and try again!' message if unsuccessful.
 ```
-// sample request body for the '/api/customers/' POST route
+// sample request body for the '/api/customers' POST route
 {
     "first_name": "John",
     "last_name": "Doe",
@@ -326,12 +326,12 @@
 ```
 
 **PUT methods:**
-> ## '/api/customers/'
+> ## '/api/customers'
 > * Takes in a list of parameters in the body object.
 > * It returns status code 200 and a 'Customer info was successfully updated!' message if successful.
 > * It returns status code 400 and a 'Could not update customer info... please check your request and try again!' message if unsuccessful.
 ```
-// sample request body for the '/api/customers/' PUT route
+// sample request body for the '/api/customers' PUT route
 {
     "customer_id": 123,
     "first_name": "John",
@@ -358,7 +358,7 @@
 ## /api/reservations
 
 **GET methods:**
-> ## '/api/reservations/'
+> ## '/api/reservations'
 > * Takes in no parameters.
 > * It outputs status code 200 and a message from the /api/reservations route root.
 
@@ -441,8 +441,8 @@
 ```
 
 **POST methods:**
-> ## '/api/reservations/'
->* Takes in a list of parameters in the body object.
+> ## '/api/reservations'
+> * Takes in a list of parameters in the body object.
 > * This route uses these 3 database models:
 >   * customer
 >   * reservation
@@ -450,7 +450,7 @@
 > * The **rooms** property of the body is an array that contains an object element for each room in the reservation.
 > * It returns an object with a **reservation_id** property for the newly created reservation.
 ```
-// sample request body for the '/api/reservations/' POST route
+// sample request body for the '/api/reservations' POST route
 {
     "customerObj": {
         "first_name": "Peter",
@@ -545,4 +545,185 @@
 }
 ```
 
+> ## '/api/reservations/res-rooms/check-in'
+> * Takes in a list of parameters in the body object.
+> * This route is used for marking a res room as checked_in.
+> * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as occupied).
+```
+// sample request body for the '/api/reservations/res-rooms/check-in' PUT route
+{
+	"res_room_id": 1200,
+    "checked_in": 1
+}
+```
+
 **DELETE methods:**
+
+---
+
+## /api/room-types
+
+**GET methods:**
+> ## '/api/room-types'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/room-types route root.
+
+> ## '/api/room-types/all'
+> * Takes in no parameters.
+> * Returns all room types and their rates in an array of objects.
+```
+// sample response from the '/api/room-types/all' GET route
+[
+    {
+        "room_type_id": 1,
+        "type": "2 Queens",
+        "rate": "109.99"
+    },
+    {
+        ...
+    }
+]
+```
+
+> ## '/api/room-types/id/:id'
+> * Takes in a room_type_id parameter in the url.
+> * Returns the same as the '/api/room-types/all' route above, but the array will contain only a single room type object.
+
+> ## '/api/room-types/availability/:date'
+> * Takes in a date parameter in the url (in the YYYY-MM-DD format).
+> * Returns an array of 14 days worth of availability objects... each of which shows detailed availabilty for that day.
+```
+// sample response from the '/api/room-types/availability/:date' GET route
+[
+    {
+        "date": "2019-11-13",
+        "AvailableType1": "45",
+        "AvailableType2": "19",
+        "AvailableType3": "29",
+        "TotalAvailable": "93",
+        "OccupiedType1": "4",
+        "OccupiedType2": "1",
+        "OccupiedType3": "0",
+        "TotalOccupied": "5"
+    },
+    {
+        ...
+    }
+]
+```
+
+**POST methods:**
+> ## '/api/room-types'
+> * It adds a new room type.
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/room-types' POST route
+{
+    "type": "King",
+    "rate": "119.99"
+}
+```
+
+**PUT methods:**
+> ## '/api/room-types'
+> * It is used to edit an existing room type by room_type_id.
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/room-types' POST route
+{
+    "room_type_id": 2,
+    "type": "King",
+    "rate": "119.99"
+}
+```
+
+**DELETE methods:**
+> ## '/api/room-types/:id'
+> * Takes in a room_type_id parameter in the url.
+> * This will permanently delete a room type.
+> * It returns status code 200 and a 'Room type was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Could not delete room type... please check your request and try again!' message if unsuccessful.
+
+---
+
+## /api/invoices
+
+**GET methods:**
+> ## '/api/invoices'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/invoices route root.
+
+**POST methods:**
+
+
+**PUT methods:**
+
+
+**DELETE methods:**
+
+---
+
+## /api/taxes
+
+**GET methods:**
+> ## '/api/taxes'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/taxes route root.
+
+> ## '/api/taxes/all'
+> * Takes in no parameters.
+> * Returns an array with an oject containing all taxes and their rates.
+```
+// sample response from the '/api/taxes/all' GET route
+[
+    {
+        "tax_name": "County Tax",
+        "tax_rate": "5.000"
+    },
+    {
+        "tax_name": "City Tax",
+        "tax_rate": "3.000"
+    },
+    {
+        "tax_name": "State Tax",
+        "tax_rate": "7.000"
+    }
+]
+```
+
+**POST methods:**
+> ## '/api/taxes'
+> * It adds a new tax.
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/taxes' POST route
+{
+    "tax_name": "Special Tax",
+    "tax_rate": "2.625"
+}
+```
+
+**PUT methods:**
+> ## '/api/taxes'
+> * It is used to edit an existing tax by tax_id.
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/taxes' PUT route
+[
+    {
+        "tax_id": 1,
+        "tax_name": "County Tax",
+        "tax_rate": "5.000"
+    }
+]
+```
+
+**DELETE methods:**
+> ## '/api/taxes/:id'
+> * Takes in a tax_id parameter in the url.
+> * This will permanently delete a tax.
+> * It returns status code 200 and a 'Tax was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Could not delete tax... please check your request and try again!' message if unsuccessful.
+
+---
+
