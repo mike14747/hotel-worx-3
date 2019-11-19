@@ -112,30 +112,65 @@ CREATE TABLE taxes (
 
 -- --------------------------------------------------------
 
+CREATE TABLE charges (
+    charge_id int(3) NOT NULL AUTO_INCREMENT,
+    charge_name varchar(30) NOT NULL,
+    PRIMARY KEY (charge_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE payments (
+    payment_id int(3) NOT NULL AUTO_INCREMENT,
+    payment_name varchar(30) NOT NULL,
+    PRIMARY KEY (payment_id)
+);
+
+-- --------------------------------------------------------
+
 CREATE TABLE invoices (
     invoice_id int(10) NOT NULL AUTO_INCREMENT,
     res_room_id int(10) NOT NULL,
     FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     num_days int(3) NOT NULL,
     rate decimal(5,2) NOT NULL,
-    phone_charges decimal(5,2) DEFAULT 0,
-    laundry_charges decimal(5,2) DEFAULT 0,
-    room_service_charges decimal(5,2) DEFAULT 0,
-    misc_charges decimal(5,2) DEFAULT 0,
-    payment_type varchar(50) NOT NULL,
+    total_due decimal(10,2) DEFAULT 0,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (invoice_id)
 );
 
 -- --------------------------------------------------------
 
-CREATE TABLE invoices_taxes (
+CREATE TABLE invoice_taxes (
     invoice_tax_id int(10) NOT NULL AUTO_INCREMENT,
     invoice_id int(10) NOT NULL,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     tax_name varchar(30) NOT NULL,
     tax_amount decimal(5,2) DEFAULT 0,
     PRIMARY KEY (invoice_tax_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE invoice_charges (
+    invoice_charge_id int(10) NOT NULL AUTO_INCREMENT,
+    invoice_id int(10) NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    charge_name varchar(30) NOT NULL,
+    charge_amount decimal(5,2) DEFAULT 0,
+    PRIMARY KEY (invoice_charge_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE invoice_payments (
+    invoice_payment_id int(10) NOT NULL AUTO_INCREMENT,
+    invoice_id int(10) NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    payment_name varchar(30) NOT NULL,
+    payment_amount decimal(5,2) DEFAULT 0,
+    payment_ref_num varchar(30) NULL,
+    PRIMARY KEY (invoice_payment_id)
 );
 
 -- --------------------------------------------------------
@@ -977,6 +1012,37 @@ INSERT INTO taxes (tax_name, tax_rate) VALUES
 ('County Tax', 5.000),
 ('City Tax', 3.000),
 ('State Tax', 7.000);
+
+-- --------------------------------------------------------
+
+--
+-- Seed data for charges
+--
+
+TRUNCATE TABLE charges;
+
+INSERT INTO charges (charge_name) VALUES
+('Phone'),
+('Laundry'),
+('Room Service'),
+('Restaurant'),
+('Wifi'),
+('Television'),
+('Misc');
+
+-- --------------------------------------------------------
+
+--
+-- Seed data for payments
+--
+
+TRUNCATE TABLE payments;
+
+INSERT INTO payments (payment_name) VALUES
+('Credit Card'),
+('Check'),
+('Cash')
+('Gift Card');
 
 -- --------------------------------------------------------
 
