@@ -1041,7 +1041,7 @@ TRUNCATE TABLE payments;
 INSERT INTO payments (payment_name) VALUES
 ('Credit Card'),
 ('Check'),
-('Cash')
+('Cash'),
 ('Gift Card');
 
 -- --------------------------------------------------------
