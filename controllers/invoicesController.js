@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Invoice = require('../models/invoice');
+const ResRoom = require('../models/res_room');
 
 // all these routes point to /api/invoices as specified in server.js and controllers/index.js
 
@@ -10,6 +11,15 @@ router.get('/', (req, res) => {
 router.get('/all', (req, res) => {
     Invoice.getAllInvoices(req.params.some_param, (data) => {
         res.json(data);
+    });
+});
+
+router.post('/invoice', (req, res) => {
+    ResRoom.selectForInvoice(req.body.res_room_id, (data1) => {
+        const paramsObj = [req.body.res_room_id, data1[0].reservation_id, data1[0].num_nights, data1[0].rate, data1[0].total_due];
+        Invoice.AddNewInvoice(paramsObj, (data2) => {
+            res.json(data2.insertId);
+        });
     });
 });
 
