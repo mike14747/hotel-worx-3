@@ -76,9 +76,16 @@
 ```
 
 > ## '/api/rooms/housekeeping-status'
-> * Takes in no parameters and returns an array of room objects.
-> * Each of the room objects show detailed room status for all rooms marked as active.
+> * Takes in a varying number of query parameters in the url... ranging from 0 to 10.
+> * It returns an array of room objects for all rooms meeting the criteria of the query parameters.
+> * Each of the room objects show detailed room status information.
 ```
+// sample request url for the '/api/rooms/housekeeping-status' GET route
+const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
+
+// possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved
+// possible options for all parameters are 0 and 1
+
 // sample response from the '/api/rooms/housekeeping-status' GET route
 [
     {
@@ -94,7 +101,7 @@
         "stayover": null
     },
     {
-        ...
+        ..
     }
 ]
 ```
