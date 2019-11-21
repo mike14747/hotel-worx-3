@@ -107,22 +107,25 @@ CREATE TABLE taxes (
     tax_id int(3) NOT NULL AUTO_INCREMENT,
     tax_name varchar(30) NOT NULL,
     tax_rate decimal(4,3) DEFAULT 0,
+    active boolean DEFAULT 1,
     PRIMARY KEY (tax_id)
 );
 
 -- --------------------------------------------------------
 
-CREATE TABLE charges (
-    charge_id int(3) NOT NULL AUTO_INCREMENT,
+CREATE TABLE charge_types (
+    charge_types int(3) NOT NULL AUTO_INCREMENT,
     charge_name varchar(30) NOT NULL,
+    active boolean DEFAULT 1,
     PRIMARY KEY (charge_id)
 );
 
 -- --------------------------------------------------------
 
-CREATE TABLE payments (
-    payment_id int(3) NOT NULL AUTO_INCREMENT,
+CREATE TABLE payment_types (
+    payment__type_id int(3) NOT NULL AUTO_INCREMENT,
     payment_name varchar(30) NOT NULL,
+    active boolean DEFAULT 1,
     PRIMARY KEY (payment_id)
 );
 
@@ -1035,12 +1038,12 @@ INSERT INTO charges (charge_name) VALUES
 -- --------------------------------------------------------
 
 --
--- Seed data for payments
+-- Seed data for payment_types
 --
 
-TRUNCATE TABLE payments;
+TRUNCATE TABLE payment_types;
 
-INSERT INTO payments (payment_name) VALUES
+INSERT INTO payment_types (payment_name) VALUES
 ('Credit Card'),
 ('Check'),
 ('Cash'),
