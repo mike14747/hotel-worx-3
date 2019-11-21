@@ -17,8 +17,7 @@ const TaxRate = {
         });
     },
     updateTaxById: (paramsObj, cb) => {
-        console.log(paramsObj);
-        const queryString = 'UPDATE taxes SET tax_name=?, tax_rate=? WHERE tax_id=?;';
+        const queryString = 'UPDATE taxes SET tax_name=?, tax_rate=?, active=? WHERE tax_id=?;';
         const queryParams = [paramsObj.tax_name, paramsObj.tax_rate, paramsObj.tax_id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;

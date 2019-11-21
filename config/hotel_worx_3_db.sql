@@ -114,7 +114,7 @@ CREATE TABLE taxes (
 -- --------------------------------------------------------
 
 CREATE TABLE charge_types (
-    charge_types int(3) NOT NULL AUTO_INCREMENT,
+    charge_type_id int(3) NOT NULL AUTO_INCREMENT,
     charge_name varchar(30) NOT NULL,
     active boolean DEFAULT 1,
     PRIMARY KEY (charge_id)
@@ -123,7 +123,7 @@ CREATE TABLE charge_types (
 -- --------------------------------------------------------
 
 CREATE TABLE payment_types (
-    payment__type_id int(3) NOT NULL AUTO_INCREMENT,
+    payment_type_id int(3) NOT NULL AUTO_INCREMENT,
     payment_name varchar(30) NOT NULL,
     active boolean DEFAULT 1,
     PRIMARY KEY (payment_id)

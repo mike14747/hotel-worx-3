@@ -17,6 +17,7 @@ router.post('/', (req, res) => {
     const paramsObj = {
         tax_name: req.body.tax_name,
         tax_rate: req.body.tax_rate,
+        active: req.body.active,
     };
     Tax.addNewTax(paramsObj, (data) => {
         console.log(data);
@@ -33,6 +34,7 @@ router.put('/', (req, res) => {
         tax_id: req.body.tax_id,
         tax_name: req.body.tax_name,
         tax_rate: req.body.tax_rate,
+        active: req.body.active,
     };
     Tax.updateTaxById(paramsObj, (data) => {
         if (data.changedRows > 0) {
