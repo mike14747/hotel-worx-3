@@ -133,8 +133,6 @@ CREATE TABLE payment_types (
 
 CREATE TABLE invoices (
     invoice_id int(10) NOT NULL AUTO_INCREMENT,
-    res_room_id int(10) NOT NULL,
-    FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     reservation_id int(10) NOT NULL,
     FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     num_nights int(3) NOT NULL,
@@ -142,6 +140,17 @@ CREATE TABLE invoices (
     total_due decimal(10,2) DEFAULT 0,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (invoice_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE invoice_res_rooms (
+    invoice_res_room_id int(10) NOT NULL AUTO_INCREMENT,
+    invoice_id int(10) NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    res_room_id int(10) NOT NULL,
+    FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    PRIMARY KEY (invoice_res_room_id)
 );
 
 -- --------------------------------------------------------
@@ -1024,9 +1033,9 @@ INSERT INTO taxes (tax_name, tax_rate) VALUES
 -- Seed data for charges
 --
 
-TRUNCATE TABLE charges;
+TRUNCATE TABLE charge_types;
 
-INSERT INTO charges (charge_name) VALUES
+INSERT INTO charge_types (charge_name) VALUES
 ('Phone'),
 ('Laundry'),
 ('Room Service'),

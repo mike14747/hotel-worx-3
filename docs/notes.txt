@@ -18,3 +18,23 @@ CSTN - the guest didn't choose a room type. So, they can get assigned any type. 
 
 Implement Passport JS auth into React... useContext?
 
+------------------------------------------------------
+
+invoices are tied to reservation_ids, not res_room_ids
+
+the object that gets passed to the invoicesController needs to have the res_rooms property be an array of res_rooms
+
+do we need to flag res_rooms as being paid or is the fact that they've been checked_out enough?
+
+what other charge_types should we have (currently, we have: Phone, Laundry, Room Service, Restaurant, Wifi, Television, Misc)?
+
+------------------------------------------------------
+
+each invoice_id can have multiple:
+ - charge_types
+ - taxes
+ - payment_types
+ - res_rooms
+
+------------------------------------------------------
+
