@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
         rate: req.body.rate,
     };
     RoomType.addNewRoomType(paramsObj, (data) => {
-        if (data.changedRows > 0) {
+        if (data.insertId) {
             res.status(200).send('Room type was successfully added!');
         } else {
             res.status(400).send('Could not add room type... please check your request and try again!');

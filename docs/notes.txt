@@ -1,12 +1,40 @@
 What should happen when you delete a reservation?
 
-    Delete the customer, reservation and all res_rooms from those 3 db tables.
-    Delete the reservation and all res_rooms, but leave the customer record intact.
-    Keep everything intact, but mark the reservation as inactive. We'd also have to mark the res_rooms as inactive too.
+    Keep everything intact, but mark the reservation as inactive. When querying for available rooms and such, we'll have to check to make sure the res_rooms as inactive too.
 
 We should be able to access past customers from a list when making new reservations to limit duplicate customers.
 
-When updating a reservation, should the reservation_id and res_rooms confirmation codes be editable?
+When updating a reservation, should the confirmation codes be editable? No.
 
 Do we need the resRoomsController? Should all those routes be included on the api/reservations route?
+
+All rooms associated with a reservation should have the same confirmation number as the first room on that reservation. When rooms are assigned, each room after the first will be assigned its own confirmation number.
+
+We need to get history working so the back button in the browser doesn't always just take you back to the dashboard. On hold for now.
+
+We should have a navbar so you don't always have to go back to the dashboard to go to other pages.
+
+CSTN - the guest didn't choose a room type. So, they can get assigned any type. Add another room type option to room_types and figure out how to implement.
+
+Implement Passport JS auth into React... useContext?
+
+------------------------------------------------------
+
+invoices are tied to reservation_ids, not res_room_ids
+
+the object that gets passed to the invoicesController needs to have the res_rooms property be an array of res_rooms
+
+do we need to flag res_rooms as being paid or is the fact that they've been checked_out enough?
+
+what other charge_types should we have (currently, we have: Phone, Laundry, Room Service, Restaurant, Wifi, Television, Misc)?
+
+------------------------------------------------------
+
+each invoice_id can have multiple:
+ - charge_types
+ - taxes
+ - payment_types
+ - res_rooms
+
+------------------------------------------------------
 

@@ -1,0 +1,56 @@
+const router = require('express').Router();
+const ChargeType = require('../models/charge_types');
+
+// all these routes point to /api/charge-types as specified in server.js and controllers/index.js
+
+router.get('/', (req, res) => {
+    res.status(200).send('Sending this from the /api/charge-types route root!');
+});
+
+router.get('/all', (req, res) => {
+    ChargeType.getAllChargeTypes((data) => {
+        res.json(data);
+    });
+});
+
+router.post('/', (req, res) => {
+    const paramsObj = {
+        charge_name: req.body.charge_name,
+        active: req.body.active,
+    };
+    ChargeType.addNewChargeType(paramsObj, (data) => {
+        console.log(data);
+        if (data.insertId) {
+            res.status(200).send('Charge type was successfully added!');
+        } else {
+            res.status(400).send('Could not add charge type... please check your request and try again!');
+        }
+    });
+});
+
+router.put('/', (req, res) => {
+    const paramsObj = {
+        charge_type_id: req.body.charge_type_id,
+        charge_name: req.body.charge_name,
+        active: req.body.active,
+    };
+    ChargeType.updateChargeTypeById(paramsObj, (data) => {
+        if (data.changedRows > 0) {
+            res.status(200).send('Charge type was successfully updated!');
+        } else {
+            res.status(400).send('Could not update charge type... please check your request and try again!');
+        }
+    });
+});
+
+router.delete('/:id', (req, res) => {
+    ChargeType.deleteChargeTypeById(req.params.id, (data) => {
+        if (data.affectedRows === 1) {
+            res.status(200).send('Charge type was successfully deleted!');
+        } else {
+            res.status(400).send('Could not delete charge type... please check your request and try again!');
+        }
+    });
+});
+
+module.exports = router;
