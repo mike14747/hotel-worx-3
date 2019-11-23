@@ -15,7 +15,7 @@ router.get('/all', (req, res) => {
 
 router.post('/', (req, res) => {
     const paramsObj = {
-        payment_name: req.body.payment_name,
+        payment_type: req.body.payment_type,
         active: req.body.active,
     };
     PaymentType.addNewPaymentType(paramsObj, (data) => {
@@ -30,7 +30,7 @@ router.post('/', (req, res) => {
 router.put('/', (req, res) => {
     const paramsObj = {
         payment_type_id: req.body.payment_type_id,
-        payment_name: req.body.payment_name,
+        payment_type: req.body.payment_type,
         active: req.body.active,
     };
     PaymentType.updatePaymentTypeById(paramsObj, (data) => {

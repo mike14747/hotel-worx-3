@@ -51,7 +51,9 @@ Before making an invoice, we need to do the following:
 
  ------------------------------------------------------
 
+invoice_payments.js, invoice_res_rooms.js and invoice_taxes.js post methods need to have loops so they can add multiple rows of data
 
+test payment_type model
 
  ------------------------------------------------------
 

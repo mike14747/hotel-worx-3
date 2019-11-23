@@ -866,3 +866,61 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It returns status code 400 and a 'Could not delete charge type... please check your request and try again!' message if unsuccessful.
 
 ---
+
+## /api/payment-types
+
+**GET methods:**
+
+
+**POST methods:**
+
+
+**PUT methods:**
+
+
+**DELETE methods:**
+
+---
+
+## /api/?
+
+**GET methods:**
+
+
+**POST methods:**
+
+
+**PUT methods:**
+
+
+**DELETE methods:**
+
+---
+
+## /api?
+
+**GET methods:**
+
+
+**POST methods:**
+
+
+**PUT methods:**
+
+
+**DELETE methods:**
+
+---
+
+## /api/charge-types
+
+**GET methods:**
+
+
+**POST methods:**
+
+
+**PUT methods:**
+
+
+**DELETE methods:**
