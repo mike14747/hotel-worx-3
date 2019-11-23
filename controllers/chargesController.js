@@ -50,17 +50,25 @@ router.put('/', (req, res) => {
     });
 });
 
-router.delete('/id/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     Charge.deleteChargeById(req.params.id, (data) => {
-        res.json(data);
+        if (data.affectedRows === 1) {
+            res.status(200).send('Charge was successfully deleted!');
+        } else {
+            res.status(400).send('Could not delete charge... please check your request and try again!');
+        }
     });
 });
 
 // updateChargeById
 
-router.delete('/res-room/id/:id', (req, res) => {
+router.delete('/res-room/:id', (req, res) => {
     Charge.deleteChargesByResRoomId(req.params.id, (data) => {
-        res.json(data);
+        if (data.affectedRows === 1) {
+            res.status(200).send('Charges were successfully deleted!');
+        } else {
+            res.status(400).send('Could not delete charges... please check your request and try again!');
+        }
     });
 });
 
