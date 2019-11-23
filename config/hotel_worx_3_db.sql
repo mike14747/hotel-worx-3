@@ -135,7 +135,7 @@ CREATE TABLE charges (
 
 CREATE TABLE payment_types (
     payment_type_id int(3) NOT NULL AUTO_INCREMENT,
-    payment_name varchar(30) NOT NULL,
+    payment_type varchar(30) NOT NULL,
     active boolean DEFAULT 1,
     PRIMARY KEY (payment_type_id)
 );
@@ -170,7 +170,7 @@ CREATE TABLE invoice_taxes (
     invoice_tax_id int(10) NOT NULL AUTO_INCREMENT,
     invoice_id int(10) NOT NULL,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    tax_name varchar(30) NOT NULL,
+    tax_id int(3) NOT NULL,
     tax_amount decimal(6,2) DEFAULT 0,
     PRIMARY KEY (invoice_tax_id)
 );
@@ -181,7 +181,7 @@ CREATE TABLE invoice_payments (
     invoice_payment_id int(10) NOT NULL AUTO_INCREMENT,
     invoice_id int(10) NOT NULL,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    payment_name varchar(30) NOT NULL,
+    payment_type_id int(3) NOT NULL,
     payment_amount decimal(6,2) DEFAULT 0,
     payment_ref_num varchar(30) NULL,
     PRIMARY KEY (invoice_payment_id)
@@ -1052,7 +1052,7 @@ INSERT INTO charge_types (charge_type) VALUES
 
 TRUNCATE TABLE payment_types;
 
-INSERT INTO payment_types (payment_name) VALUES
+INSERT INTO payment_types (payment_type) VALUES
 ('Credit Card'),
 ('Check'),
 ('Cash'),
