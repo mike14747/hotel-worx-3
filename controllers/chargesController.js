@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/id/:id', (req, res) => {
-    Charge.getChargesById(req.params.id, (data) => {
+    Charge.getChargeById(req.params.id, (data) => {
         res.json(data);
     });
 });
@@ -26,7 +26,6 @@ router.post('/', (req, res) => {
         charge_amount: req.body.charge_amount,
     };
     Charge.addNewCharge(paramsObj, (data) => {
-        console.log(data);
         if (data.insertId) {
             res.status(200).send('Charge was successfully added!');
         } else {

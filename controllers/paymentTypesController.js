@@ -19,7 +19,6 @@ router.post('/', (req, res) => {
         active: req.body.active,
     };
     PaymentType.addNewPaymentType(paramsObj, (data) => {
-        console.log(data);
         if (data.insertId) {
             res.status(200).send('Payment type was successfully added!');
         } else {

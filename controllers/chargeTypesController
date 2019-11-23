@@ -1,10 +1,16 @@
 const router = require('express').Router();
-const ChargeType = require('../models/charge_types');
+const ChargeType = require('../models/charge_type');
 
 // all these routes point to /api/charge-types as specified in server.js and controllers/index.js
 
 router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/charge-types route root!');
+});
+
+router.get('/id/:id', (req, res) => {
+    ChargeType.getChargeTypeById(req.params.id, (data) => {
+        res.json(data);
+    });
 });
 
 router.get('/all', (req, res) => {
@@ -15,11 +21,9 @@ router.get('/all', (req, res) => {
 
 router.post('/', (req, res) => {
     const paramsObj = {
-        charge_name: req.body.charge_name,
-        active: req.body.active,
+        charge_type: req.body.charge_type,
     };
     ChargeType.addNewChargeType(paramsObj, (data) => {
-        console.log(data);
         if (data.insertId) {
             res.status(200).send('Charge type was successfully added!');
         } else {
@@ -31,7 +35,7 @@ router.post('/', (req, res) => {
 router.put('/', (req, res) => {
     const paramsObj = {
         charge_type_id: req.body.charge_type_id,
-        charge_name: req.body.charge_name,
+        charge_type: req.body.charge_type,
         active: req.body.active,
     };
     ChargeType.updateChargeTypeById(paramsObj, (data) => {
