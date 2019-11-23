@@ -23,4 +23,7 @@ router.use('/taxes', taxesController);
 const invoicesController = require('./invoicesController');
 router.use('/invoices', invoicesController);
 
+const chargesController = require('./chargesController');
+router.use('/charges', chargesController);
+
 module.exports = router;

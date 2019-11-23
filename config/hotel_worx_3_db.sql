@@ -44,7 +44,7 @@ CREATE TABLE rooms (
 CREATE TABLE room_types (
     room_type_id int(3) NOT NULL AUTO_INCREMENT,
     type varchar(30) NOT NULL,
-    rate decimal(5,2) NOT NULL,
+    rate decimal(6,2) NOT NULL,
     PRIMARY KEY (room_type_id)
 );
 
@@ -94,7 +94,7 @@ CREATE TABLE res_rooms (
     adults int(3) NOT NULL,
     room_id int(6) NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    rate decimal(5,2) NULL,
+    rate decimal(6,2) NULL,
     confirmation_code varchar(20) NULL,
     comments varchar(255) NOT NULL,
     active boolean DEFAULT 1,
@@ -115,8 +115,19 @@ CREATE TABLE taxes (
 
 CREATE TABLE charge_types (
     charge_type_id int(3) NOT NULL AUTO_INCREMENT,
-    charge_name varchar(30) NOT NULL,
+    charge_type varchar(30) NOT NULL,
     active boolean DEFAULT 1,
+    PRIMARY KEY (charge_type_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE charges (
+    charge_id int(10) NOT NULL AUTO_INCREMENT,
+    res_room_id int(10) NOT NULL,
+    FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    charge_type_id varchar(30) NOT NULL,
+    charge_amount decimal(6,2) DEFAULT 0,
     PRIMARY KEY (charge_id)
 );
 
@@ -126,7 +137,7 @@ CREATE TABLE payment_types (
     payment_type_id int(3) NOT NULL AUTO_INCREMENT,
     payment_name varchar(30) NOT NULL,
     active boolean DEFAULT 1,
-    PRIMARY KEY (payment_id)
+    PRIMARY KEY (payment_type_id)
 );
 
 -- --------------------------------------------------------
@@ -136,7 +147,7 @@ CREATE TABLE invoices (
     reservation_id int(10) NOT NULL,
     FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     num_nights int(3) NOT NULL,
-    rate decimal(5,2) NOT NULL,
+    rate decimal(6,2) NOT NULL,
     total_due decimal(10,2) DEFAULT 0,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (invoice_id)
@@ -160,19 +171,8 @@ CREATE TABLE invoice_taxes (
     invoice_id int(10) NOT NULL,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     tax_name varchar(30) NOT NULL,
-    tax_amount decimal(5,2) DEFAULT 0,
+    tax_amount decimal(6,2) DEFAULT 0,
     PRIMARY KEY (invoice_tax_id)
-);
-
--- --------------------------------------------------------
-
-CREATE TABLE invoice_charges (
-    invoice_charge_id int(10) NOT NULL AUTO_INCREMENT,
-    invoice_id int(10) NOT NULL,
-    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    charge_name varchar(30) NOT NULL,
-    charge_amount decimal(5,2) DEFAULT 0,
-    PRIMARY KEY (invoice_charge_id)
 );
 
 -- --------------------------------------------------------
@@ -182,7 +182,7 @@ CREATE TABLE invoice_payments (
     invoice_id int(10) NOT NULL,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     payment_name varchar(30) NOT NULL,
-    payment_amount decimal(5,2) DEFAULT 0,
+    payment_amount decimal(6,2) DEFAULT 0,
     payment_ref_num varchar(30) NULL,
     PRIMARY KEY (invoice_payment_id)
 );
@@ -1035,7 +1035,7 @@ INSERT INTO taxes (tax_name, tax_rate) VALUES
 
 TRUNCATE TABLE charge_types;
 
-INSERT INTO charge_types (charge_name) VALUES
+INSERT INTO charge_types (charge_type) VALUES
 ('Phone'),
 ('Laundry'),
 ('Room Service'),
