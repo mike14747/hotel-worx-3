@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const db = require('../models/index.js');
+const Generic = require('../models/generic');
 // or
-// const Generic = require('../models/generic');
+// const db = require('../models/index.js');
 
 // all these routes point to /api/generic as specified in server.js and controllers/index.js
 
@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/some_sub_path', (req, res) => {
-    db.Generic.getSomeData(req.params.some_param, (data) => {
+    Generic.getSomeData(req.params.some_param, (data) => {
         res.json(data);
     });
 });

@@ -17,4 +17,16 @@ router.use('/room-types', roomTypesController);
 const reservationsController = require('./reservationsController');
 router.use('/reservations', reservationsController);
 
+const taxesController = require('./taxesController');
+router.use('/taxes', taxesController);
+
+const invoicesController = require('./invoicesController');
+router.use('/invoices', invoicesController);
+
+const chargesController = require('./chargesController');
+router.use('/charges', chargesController);
+
+const chargeTypesController = require('./chargeTypesController');
+router.use('/charge-types', chargeTypesController);
+
 module.exports = router;

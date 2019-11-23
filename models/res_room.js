@@ -24,6 +24,14 @@ const ResRoom = {
             cb(result);
         });
     },
+    getMaxCCodeByReservationId: (id, cb) => {
+        const queryString = 'SELECT COUNT(*) AS totalRooms, (SELECT COUNT(*) FROM res_rooms WHERE reservation_id=? && !isnull(room_id)) AS numAssignedRooms, MAX(CONVERT(RIGHT(rr.confirmation_code, 3), UNSIGNED INTEGER)) AS currentMaxCCode FROM res_rooms AS rr WHERE rr.reservation_id=?;';
+        const queryParams = [id, id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
     addSomeResRooms: (paramsArr, cb) => {
         const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments) VALUES (?,?,?,?,?,?,?,?);';
         paramsArr.forEach((room, i) => {
@@ -36,9 +44,49 @@ const ResRoom = {
             });
         });
     },
-    updateResRoomById: (paramsObj, cb) => {
-        const queryString = 'UPDATE res_rooms SET reservation_id=?, room_type_id=?, check_in_date=?, check_out_date=?, checked_in=?, checked_out=?, adults=?, room_id=?, rate=?, confirmation_code=?, comments=? WHERE res_room_id=?;';
-        const queryParams = [paramsObj.reservation_id, paramsObj.room_type_id, paramsObj.check_in_date, paramsObj.check_out_date, paramsObj.checked_in, paramsObj.checked_out, paramsObj.adults, paramsObj.room_id, paramsObj.rate, paramsObj.confirmation_code, paramsObj.comments, paramsObj.res_room_id];
+    updateResRoomInfoById: (paramsObj, cb) => {
+        const queryString = 'UPDATE res_rooms SET room_type_id=?, check_in_date=?, check_out_date=?, adults=?, rate=?, comments=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.room_type_id, paramsObj.check_in_date, paramsObj.check_out_date, paramsObj.adults, paramsObj.rate, paramsObj.comments, paramsObj.res_room_id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
+    updateResRoomAssignById: (paramsObj, cb) => {
+        const queryString = 'UPDATE res_rooms SET room_type_id=?, room_id=?, rate=?, confirmation_code=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.room_type_id, paramsObj.room_id, paramsObj.rate, paramsObj.confirmation_code, paramsObj.res_room_id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
+    updateResRoomReassignById: (paramsObj, cb) => {
+        const queryString = 'UPDATE res_rooms SET room_type_id=?, room_id=?, rate=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.room_type_id, paramsObj.room_id, paramsObj.rate, paramsObj.res_room_id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
+    updateResRoomCheckinById: (paramsObj, cb) => {
+        const queryString = 'UPDATE res_rooms SET checked_in=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.checked_in, paramsObj.res_room_id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
+    updateResRoomActiveByResRoomId: (paramsObj, cb) => {
+        const queryString = 'UPDATE res_rooms SET active=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.active, paramsObj.res_room_id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
+    updateResRoomActiveByReservationId: (paramsObj, cb) => {
+        const queryString = 'UPDATE res_rooms SET active=? WHERE reservation_id=?;';
+        const queryParams = [paramsObj.active, paramsObj.reservation_id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);

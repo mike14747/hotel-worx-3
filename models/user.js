@@ -66,7 +66,7 @@ const User = {
         });
     },
     deleteUserById: (id, cb) => {
-        const queryString = 'DELETE FROM users WHERE user_id=?';
+        const queryString = 'DELETE FROM users WHERE user_id=?;';
         const queryParams = [id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;

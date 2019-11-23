@@ -31,7 +31,7 @@ CREATE TABLE rooms (
     room_num varchar(20) NOT NULL UNIQUE,
     room_type_id int(3) NOT NULL,
     FOREIGN KEY (room_type_id) REFERENCES room_types(room_type_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    description varchar(255),
+    description varchar(255) NOT NULL,
     num_beds int(3) NOT NULL,
     clean boolean DEFAULT 0,
     occupied boolean DEFAULT 0,
@@ -44,7 +44,7 @@ CREATE TABLE rooms (
 CREATE TABLE room_types (
     room_type_id int(3) NOT NULL AUTO_INCREMENT,
     type varchar(30) NOT NULL,
-    rate decimal(5,2) NOT NULL,
+    rate decimal(6,2) NOT NULL,
     PRIMARY KEY (room_type_id)
 );
 
@@ -74,7 +74,7 @@ CREATE TABLE reservations (
     user_id int(6) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    comments varchar(255),
+    comments varchar(255) NOT NULL,
     active boolean DEFAULT 1,
     PRIMARY KEY (reservation_id)
 );
@@ -92,43 +92,99 @@ CREATE TABLE res_rooms (
     checked_in boolean DEFAULT 0,
     checked_out boolean DEFAULT 0,
     adults int(3) NOT NULL,
-    room_id int(6),
+    room_id int(6) NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    rate decimal(5,2) NOT NULL,
+    rate decimal(6,2) NULL,
     confirmation_code varchar(20) NULL,
-    comments varchar(255),
+    comments varchar(255) NOT NULL,
     active boolean DEFAULT 1,
     PRIMARY KEY (res_room_id)
 );
 
 -- --------------------------------------------------------
 
-CREATE TABLE tax_rates (
-    tax_rate_id int(3) NOT NULL AUTO_INCREMENT,
-    county_tax_rate decimal(4,3) DEFAULT 0,
-    city_tax_rate decimal(4,3) DEFAULT 0,
-    state_tax_rate decimal(4,3) DEFAULT 0,
-    PRIMARY KEY (tax_rate_id)
+CREATE TABLE taxes (
+    tax_id int(3) NOT NULL AUTO_INCREMENT,
+    tax_name varchar(30) NOT NULL,
+    tax_rate decimal(4,3) DEFAULT 0,
+    active boolean DEFAULT 1,
+    PRIMARY KEY (tax_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE charge_types (
+    charge_type_id int(3) NOT NULL AUTO_INCREMENT,
+    charge_type varchar(30) NOT NULL,
+    active boolean DEFAULT 1,
+    PRIMARY KEY (charge_type_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE charges (
+    charge_id int(10) NOT NULL AUTO_INCREMENT,
+    res_room_id int(10) NOT NULL,
+    FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    charge_type_id varchar(30) NOT NULL,
+    charge_amount decimal(6,2) DEFAULT 0,
+    PRIMARY KEY (charge_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE payment_types (
+    payment_type_id int(3) NOT NULL AUTO_INCREMENT,
+    payment_type varchar(30) NOT NULL,
+    active boolean DEFAULT 1,
+    PRIMARY KEY (payment_type_id)
 );
 
 -- --------------------------------------------------------
 
 CREATE TABLE invoices (
     invoice_id int(10) NOT NULL AUTO_INCREMENT,
-    res_room_id int(10) NOT NULL,
-    FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    num_days int(3) NOT NULL,
-    rate decimal(5,2) NOT NULL,
-    phone_charges decimal(5,2) DEFAULT 0,
-    laundry_charges decimal(5,2) DEFAULT 0,
-    room_service_charges decimal(5,2) DEFAULT 0,
-    misc_charges decimal(5,2) DEFAULT 0,
-    county_tax decimal(5,2) NOT NULL,
-    city_tax decimal(5,2) NOT NULL,
-    state_tax decimal(5,2) NOT NULL,
-    payment_type varchar(50) NOT NULL,
+    reservation_id int(10) NOT NULL,
+    FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    num_nights int(3) NOT NULL,
+    rate decimal(6,2) NOT NULL,
+    total_due decimal(10,2) DEFAULT 0,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (invoice_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE invoice_res_rooms (
+    invoice_res_room_id int(10) NOT NULL AUTO_INCREMENT,
+    invoice_id int(10) NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    res_room_id int(10) NOT NULL,
+    FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    PRIMARY KEY (invoice_res_room_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE invoice_taxes (
+    invoice_tax_id int(10) NOT NULL AUTO_INCREMENT,
+    invoice_id int(10) NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    tax_id int(3) NOT NULL,
+    tax_amount decimal(6,2) DEFAULT 0,
+    PRIMARY KEY (invoice_tax_id)
+);
+
+-- --------------------------------------------------------
+
+CREATE TABLE invoice_payments (
+    invoice_payment_id int(10) NOT NULL AUTO_INCREMENT,
+    invoice_id int(10) NOT NULL,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    payment_type_id int(3) NOT NULL,
+    payment_amount decimal(6,2) DEFAULT 0,
+    payment_ref_num varchar(30) NULL,
+    PRIMARY KEY (invoice_payment_id)
 );
 
 -- --------------------------------------------------------
@@ -160,7 +216,7 @@ CREATE TABLE sessions (
 
 CREATE TABLE room_issues (
     room_issue_id int(10) NOT NULL AUTO_INCREMENT,
-    room_id int(6),
+    room_id int(6) NOT NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     issue text NOT NULL,
     user_id int(6) NOT NULL,
@@ -533,7 +589,8 @@ TRUNCATE TABLE room_types;
 INSERT INTO room_types (room_type_id, type, rate) VALUES
 (1, '2 Queens', 109.99),
 (2, 'King', 119.99),
-(3, 'Suite', 129.99);
+(3, 'Suite', 129.99),
+(4, 'TBD', 0);
 
 -- --------------------------------------------------------
 
@@ -960,13 +1017,46 @@ INSERT INTO res_rooms (res_room_id, reservation_id, room_type_id, check_in_date,
 -- --------------------------------------------------------
 
 --
--- Seed data for tax_rates
+-- Seed data for taxes
 --
 
-TRUNCATE TABLE tax_rates;
+TRUNCATE TABLE taxes;
 
-INSERT INTO tax_rates (county_tax_rate, city_tax_rate, state_tax_rate) VALUES
-(5.000, 3.000, 7.000);
+INSERT INTO taxes (tax_name, tax_rate) VALUES
+('County Tax', 5.000),
+('City Tax', 3.000),
+('State Tax', 7.000);
+
+-- --------------------------------------------------------
+
+--
+-- Seed data for charges
+--
+
+TRUNCATE TABLE charge_types;
+
+INSERT INTO charge_types (charge_type) VALUES
+('Phone'),
+('Laundry'),
+('Room Service'),
+('Restaurant'),
+('Wifi'),
+('Television'),
+('Misc');
+
+-- --------------------------------------------------------
+
+--
+-- Seed data for payment_types
+--
+
+TRUNCATE TABLE payment_types;
+
+INSERT INTO payment_types (payment_type) VALUES
+('Credit Card'),
+('Check'),
+('Cash'),
+('Gift Card');
 
 -- --------------------------------------------------------
 

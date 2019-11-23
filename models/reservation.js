@@ -24,6 +24,14 @@ const Reservation = {
             cb(result);
         });
     },
+    updateReservationActiveById: (paramsObj, cb) => {
+        const queryString = 'UPDATE reservations SET active=? WHERE reservation_id=?;';
+        const queryParams = [paramsObj.active, paramsObj.reservation_id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
 };
 
 module.exports = Reservation;
