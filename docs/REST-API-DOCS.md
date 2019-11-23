@@ -679,7 +679,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 > ## '/api/taxes/all'
 > * Takes in no parameters.
-> * Returns an array with an oject containing all taxes and their rates.
+> * Returns all taxes and their info in an array of objects.
 ```
 // sample response from the '/api/taxes/all' GET route
 [
@@ -716,13 +716,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a list of parameters in the body object.
 ```
 // sample request body for the '/api/taxes' PUT route
-[
-    {
-        "tax_id": 1,
-        "tax_name": "County Tax",
-        "tax_rate": "5.000"
-    }
-]
+{
+    "tax_id": 1,
+    "tax_name": "County Tax",
+    "tax_rate": "5.000"
+}
 ```
 
 **DELETE methods:**
@@ -734,3 +732,137 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 ---
 
+## /api/charges
+
+**GET methods:**
+> ## '/api/charges'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/charges route root.
+
+> ## '/api/charges/id/:id'
+> * Takes in a charge_id parameter in the url.
+> * Returns an array containing a single charge object.
+```
+// sample response from the '/api/charges/id/:id' GET route
+[
+    {
+        "charge_id": 3,
+        "charge_type": "Room Service",
+        "charge_amount": "43.12"
+    }
+]
+```
+
+> ## '/api/charges/res-room/id/:id'
+> * Takes in a res_room_id parameter in the url.
+> * Returns all charges associated with a res_room and their info in an array of objects... each of which in its own object.
+
+**POST methods:**
+> ## '/api/charges'
+> * It adds a new charge.
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/charges' POST route
+{
+    "res_room_id": 1200,
+    "charge_type_id": 3,
+    "charge_amount": 43.12
+}
+```
+
+**PUT methods:**
+> ## '/api/charges'
+> * It is used to edit an existing charge by charge_id.
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/charges' PUT route
+{
+    "charge_id": 1,
+    "charge_type_id": 3,
+    "charge_amount": 43.12
+}
+```
+
+**DELETE methods:**
+> ## '/api/charges/:id'
+> * Takes in a charge_id parameter in the url.
+> * This will permanently delete a single charge.
+> * It returns status code 200 and a 'Charge was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Could not delete charge... please check your request and try again!' message if unsuccessful.
+
+> ## '/api/charges/res-room/:id'
+> * Takes in a res_room_id parameter in the url.
+> * This will permanently delete all charges associated with a res_room.
+> * It returns status code 200 and a 'Charges were successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Could not delete charges... please check your request and try again!' message if unsuccessful.
+
+---
+
+## /api/charge-types
+
+**GET methods:**
+> ## '/api/charge-types'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/charge-types route root.
+
+> ## '/api/charge-types/id/:id'
+> * Takes in a charge_type_id parameter in the url.
+> * Returns an array containing a single charge object.
+```
+// sample response from the '/api/charge-types/id/:id' GET route
+[
+    {
+        "charge_type_id": 3,
+        "charge_type": "Room Service",
+        "active": 1
+    }
+]
+```
+
+> ## '/api/charge_types/all'
+> * Takes in a res_room_id parameter in the url.
+> * Returns all charge_types in an array of objects... each of which in its own object.
+```
+[
+    {
+        "charge_type_id": 1,
+        "charge_type": "Phone",
+        "active": 1
+    },
+    {
+        ...
+    }
+]
+```
+
+**POST methods:**
+> ## '/api/charge_types'
+> * It adds a new charge_types.
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/charge_types' POST route
+{
+    "charge_type": "Gift Certificate"
+}
+```
+
+**PUT methods:**
+> ## '/api/charge_types'
+> * It is used to edit an existing charge type by charge_type_id.
+> * Takes in a list of parameters in the body object.
+```
+// sample request body for the '/api/charge_types' PUT route
+{
+    "charge_type_id": 1,
+    "charge_type": "Phone"
+}
+```
+
+**DELETE methods:**
+> ## '/api/charge-types/:id'
+> * Takes in a charge_type_id parameter in the url.
+> * This will permanently delete a single charge type.
+> * It returns status code 200 and a 'Charge type was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Could not delete charge type... please check your request and try again!' message if unsuccessful.
+
+---

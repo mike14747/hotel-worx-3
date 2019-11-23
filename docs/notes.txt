@@ -38,3 +38,21 @@ each invoice_id can have multiple:
 
 ------------------------------------------------------
 
+change all decimal(5,2) to decimal(6,2)
+
+in charge_types table, change charge_name to charge_type
+
+Before making an invoice, we need to do the following:
+
+ - know the reservation_id and the res_room_ids that are associated with the invoice
+ - get the number of nights and rates for each res_room
+ - get the charges associated with each res_room by reservation_id and res_room_id
+ - calculate the taxes for each res_room
+
+ ------------------------------------------------------
+
+
+
+ ------------------------------------------------------
+
+ 

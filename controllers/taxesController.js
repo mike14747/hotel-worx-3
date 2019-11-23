@@ -20,7 +20,6 @@ router.post('/', (req, res) => {
         active: req.body.active,
     };
     Tax.addNewTax(paramsObj, (data) => {
-        console.log(data);
         if (data.insertId) {
             res.status(200).send('Tax was successfully added!');
         } else {
