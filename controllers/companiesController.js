@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/all', (req, res) => {
-    Company.getAllCompany((data) => {
+    Company.getAllCompanies((data) => {
         res.json(data);
     });
 });
@@ -44,8 +44,7 @@ router.post('/', (req, res) => {
 router.put('/', (req, res) => {
     const paramsObj = {
         company_id: req.body.company_id,
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
+        company_name: req.body.company_name,
         address: req.body.address,
         city: req.body.city,
         state: req.body.state,

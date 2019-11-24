@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Invoice = require('../models/invoice');
-const ResRoom = require('../models/res_room');
+const InvoiceTaxes = require('../models/invoice_taxes');
+const InvoicePayments = require('../models/invoice_payments');
 
 // all these routes point to /api/invoices as specified in server.js and controllers/index.js
 
@@ -14,12 +15,12 @@ router.get('/all', (req, res) => {
     });
 });
 
-router.post('/invoice', (req, res) => {
-    ResRoom.selectForInvoice(req.body.res_room_id, (data1) => {
-        const paramsObj = [req.body.res_room_id, data1[0].num_nights, data1[0].rate, data1[0].total_due];
-        Invoice.AddNewInvoice(paramsObj, (data2) => {
-            res.json(data2.insertId);
-        });
+router.post('/', (req, res) => {
+    const paramsObj = [req.body.res_room_id, req.body.num_nights, req.body.rate, req.body.total_due];
+    Invoice.AddNewInvoice(paramsObj, (data1) => {
+        if (data1.insertId) {
+            // maybe use an async/await here to post the new invoice-taxes and invoice-payments, then proceed when both are done... both are waiting to get the new invoice_id before being run (await Promise.all)
+        }
     });
 });
 

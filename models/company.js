@@ -26,7 +26,7 @@ const Company = {
     },
     updateCompanyById: (paramsObj, cb) => {
         const queryString = 'UPDATE companies SET company_name=?, address=?, city=?, state=?, zip=?, country=?, email=?, phone=?, credit_card_num=?, cc_expiration=? WHERE company_id=?;';
-        const queryParams = [paramsObj.company_name, paramsObj.address, paramsObj.city, paramsObj.state, paramsObj.zip, paramsObj.country, paramsObj.email, paramsObj.phone, paramsObj.credit_card_num, paramsObj.cc_expiration, paramsObj.customer_id];
+        const queryParams = [paramsObj.company_name, paramsObj.address, paramsObj.city, paramsObj.state, paramsObj.zip, paramsObj.country, paramsObj.email, paramsObj.phone, paramsObj.credit_card_num, paramsObj.cc_expiration, paramsObj.company_id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);

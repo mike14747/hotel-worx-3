@@ -24,7 +24,7 @@ the object that gets passed to the invoicesController needs to have the res_room
 
 do we need to flag res_rooms as being paid or is the fact that they've been checked_out enough?
 
-what other charge_types should we have (currently, we have: Phone, Laundry, Room Service, Restaurant, Wifi, Television, Misc)?
+what other charge_types should we have (currently, we have: Phone, Laundry, Parking, Room Service, Restaurant, Wifi, Television, Misc)?
 
 ------------------------------------------------------
 
@@ -50,13 +50,13 @@ test payment_type model
 
 each res_room gets an invoice... not each reservation and some total of res_rooms
 
-add a cash field to res_rooms so they can't put any charges on the room
+add a cash field to res_rooms so they can't put any charges on the room (it's been added and called allow_charges)
 
 have a way to have special room rates (for groups/companies... which are lower, certain days of the week... which are higher)
 
 we need to have companies table for rate discounts
 
-add a company_id field (nullable) to the customer table
+add a company_id field (nullable) to the customer table (it's been added to the reservations table)
 
  ------------------------------------------------------
 

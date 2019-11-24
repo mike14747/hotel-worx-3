@@ -442,7 +442,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "room_id": null,
         "rate": "129.99",
         "confirmation_code": "190609056001",
-        "comments": ""
+        "comments": "",
+        "allow_charges": 1,
+        "active": 1
     },
     {
         ...
@@ -486,7 +488,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
             "check_out_date": "2019-12-15",
             "adults": 2,
             "rate": "119.99",
-            "comments": "need a good view"
+            "comments": "need a good view",
+            "allow_charges": 1
         },
         {
             "room_type_id": 1,
@@ -494,7 +497,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
             "check_out_date": "2019-12-17",
             "adults": 2,
             "rate": "109.99",
-            "comments": "want a late checkout"
+            "comments": "want a late checkout",
+            "allow_charges": 0
         }
     ]
 }
@@ -512,15 +516,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "company_id": null,
     "user_id": 1,
     "comments": "test reservation comment",
+    "allow_charges": 1,
     "active": 1
 }
-```
-
-> ## '/api/reservations/res-rooms'
-> * Takes in a list of parameters in the body object.
-```
-// sample request body for the '/api/reservations/res-rooms' PUT route
-
 ```
 
 > ## '/api/reservations/res-rooms/assign'
