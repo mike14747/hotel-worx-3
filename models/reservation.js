@@ -17,16 +17,16 @@ const Reservation = {
         });
     },
     addNewReservation: (paramsObj, cb) => {
-        const queryString = 'INSERT INTO reservations (customer_id, user_id, comments) VALUES (?,?,?);';
-        const queryParams = [paramsObj.customer_id, paramsObj.user_id, paramsObj.comments];
+        const queryString = 'INSERT INTO reservations (customer_id, company_id, user_id, comments) VALUES (?, ?, ?, ?);';
+        const queryParams = [paramsObj.customer_id, paramsObj.company_id, paramsObj.user_id, paramsObj.comments];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);
         });
     },
-    updateReservationActiveById: (paramsObj, cb) => {
-        const queryString = 'UPDATE reservations SET active=? WHERE reservation_id=?;';
-        const queryParams = [paramsObj.active, paramsObj.reservation_id];
+    updateReservationById: (paramsObj, cb) => {
+        const queryString = 'UPDATE reservations SET customer_id=?, company_id=?, user_id=?, comments=?, active=? WHERE reservation_id=?;';
+        const queryParams = [paramsObj.customer_id, paramsObj.company_id, paramsObj.user_id, paramsObj.comments, paramsObj.active, paramsObj.reservation_id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);

@@ -18,7 +18,7 @@ const Charge = {
         });
     },
     addNewCharge: (paramsObj, cb) => {
-        const queryString = 'INSERT INTO charges (res_room_id, charge_type_id, charge_amount) VALUES(?,?,?);';
+        const queryString = 'INSERT INTO charges (res_room_id, charge_type_id, charge_amount) VALUES(?, ?, ?);';
         const queryParams = [paramsObj.res_room_id, paramsObj.charge_type_id, paramsObj.charge_amount];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;

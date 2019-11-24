@@ -9,7 +9,7 @@ const TaxRate = {
         });
     },
     addNewTax: (paramsObj, cb) => {
-        const queryString = 'INSERT INTO taxes (tax_name, tax_rate) VALUES (?,?);';
+        const queryString = 'INSERT INTO taxes (tax_name, tax_rate) VALUES (?, ?);';
         const queryParams = [paramsObj.tax_name, paramsObj.tax_rate];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;

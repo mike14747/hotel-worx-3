@@ -20,8 +20,6 @@ Implement Passport JS auth into React... useContext?
 
 ------------------------------------------------------
 
-invoices are tied to reservation_ids, not res_room_ids
-
 the object that gets passed to the invoicesController needs to have the res_rooms property be an array of res_rooms
 
 do we need to flag res_rooms as being paid or is the fact that they've been checked_out enough?
@@ -34,13 +32,8 @@ each invoice_id can have multiple:
  - charge_types
  - taxes
  - payment_types
- - res_rooms
 
 ------------------------------------------------------
-
-change all decimal(5,2) to decimal(6,2)
-
-in charge_types table, change charge_name to charge_type
 
 Before making an invoice, we need to do the following:
 
@@ -54,6 +47,16 @@ Before making an invoice, we need to do the following:
 invoice_payments.js, invoice_res_rooms.js and invoice_taxes.js post methods need to have loops so they can add multiple rows of data
 
 test payment_type model
+
+each res_room gets an invoice... not each reservation and some total of res_rooms
+
+add a cash field to res_rooms so they can't put any charges on the room
+
+have a way to have special room rates (for groups/companies... which are lower, certain days of the week... which are higher)
+
+we need to have companies table for rate discounts
+
+add a company_id field (nullable) to the customer table
 
  ------------------------------------------------------
 

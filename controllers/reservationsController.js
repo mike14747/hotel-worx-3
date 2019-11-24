@@ -57,6 +57,23 @@ router.post('/', (req, res) => {
     });
 });
 
+router.put('/', (req, res) => {
+    const paramsObj = {
+        reservation_id: req.body.reservation_id,
+        customer_id: req.body.customer_id,
+        company_id: req.body.company_id,
+        comments: req.body.comments,
+        active: req.body.active,
+    };
+    Reservation.updateReservationById(paramsObj, (data) => {
+        if (data.changedRows > 0) {
+            res.status(200).send('Reservation was successfully updated!');
+        } else {
+            res.status(400).send('Could not update reservation... please check your request and try again!');
+        }
+    });
+});
+
 router.put('/res-rooms/assign', (req, res) => {
     const baseConfirmationCode = req.body.confirmation_code.slice(0, -3);
     ResRoom.getMaxCCodeByReservationId(req.body.reservation_id, (data1) => {

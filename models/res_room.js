@@ -33,7 +33,7 @@ const ResRoom = {
         });
     },
     addSomeResRooms: (paramsArr, cb) => {
-        const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments) VALUES (?,?,?,?,?,?,?,?);';
+        const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments) VALUES (?, ?, ?, ?, ?, ?, ?, ?);';
         paramsArr.forEach((room, i) => {
             const queryParams = [room.reservation_id, room.room_type_id, room.check_in_date, room.check_out_date, room.adults, room.rate, room.confirmation_code, room.comments];
             connection.execute(queryString, queryParams, (err, result) => {

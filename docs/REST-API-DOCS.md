@@ -296,6 +296,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "city": "Lexington",
         "state": "NC",
         "zip": "27292",
+        "country": "USA",
         "email": "rgiersig@yahoo.com",
         "phone": "806-427-8083",
         "creditCardLastFour": "0920",
@@ -325,6 +326,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "city": "Cleveland",
     "state": "OH",
     "zip": "44124",
+    "country": "USA",
     "email": "temp@temp.com",
     "phone": "800-555-1212",
     "credit_card_num": "4444111122223333",
@@ -347,6 +349,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "city": "Cleveland",
     "state": "OH",
     "zip": "44124",
+    "country": "USA",
     "email": "temp@temp.com",
     "phone": "800-555-1212",
     "credit_card_num": "4444111122223333",
@@ -472,6 +475,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "cc_expiration": "11 / 21"
     },
     "reservationObj": {
+        "company_id": null,
         "user_id": 1,
         "comments": "test reservation comment"
     },
@@ -497,6 +501,21 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ```
 
 **PUT methods:**
+> ## '/api/reservations'
+> * Takes in a list of parameters in the body object.
+> * This route is used to update information about a reservation, but not the rooms associated with the reservation.
+```
+// sample request body for the '/api/reservations' PUT route
+{
+	"reservation_id": 1201,
+	"customer_id": 201,
+    "company_id": null,
+    "user_id": 1,
+    "comments": "test reservation comment",
+    "active": 1
+}
+```
+
 > ## '/api/reservations/res-rooms'
 > * Takes in a list of parameters in the body object.
 ```
@@ -882,18 +901,90 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 ---
 
-## /api/?
+## /api/companies
 
 **GET methods:**
+> ## '/api/companies'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/companies route root.
 
+> ## '/api/companies/all'
+> * Takes in no parameters.
+> * Returns all companies and their details in an array of objects.
+```
+// sample response from the '/api/companies/all' GET route
+[
+    {
+        "company_id": 1,
+        "company_name": "Union Sand",
+        "address": "234 Bank St",
+        "city": "Painesville",
+        "state": "Ohio",
+        "zip": "44077",
+        "country": "USA",
+        "email": "u.sand@yahoo.net",
+        "phone": "800-555-1212",
+        "credit_card_num": "1234567890123456",
+        "cc_expiration": "11 / 24"
+    },
+    {
+        ...
+    }
+]
+```
+
+> ## '/api/companies/id/:id'
+> * Takes in a company_id parameter in the url.
+> * Returns the same as the '/api/companies/all' route above, but the array will contain only a single company object.
 
 **POST methods:**
-
+> ## '/api/companies'
+> * Takes in a list of parameters in the body object.
+> * It returns status code 200 and a 'New company was successfully added!' message if successful.
+> * It returns status code 400 and a 'Could not add the new company... please check your request and try again!' message if unsuccessful.
+```
+// sample request body for the '/api/companies' POST route
+{
+    "company_name": "Union Sand",
+    "address": "234 Bank St",
+    "city": "Painesville",
+    "state": "Ohio",
+    "zip": "44077",
+    "country": "USA",
+    "email": "u.sand@yahoo.net",
+    "phone": "800-555-1212",
+    "credit_card_num": "1234567890123456",
+    "cc_expiration": "11 / 24"
+}
+```
 
 **PUT methods:**
-
+> ## '/api/companies'
+> * Takes in a list of parameters in the body object.
+> * It returns status code 200 and a 'Company info was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update company info... please check your request and try again!' message if unsuccessful.
+```
+// sample request body for the '/api/companies' PUT route
+{
+    "company_id": 1,
+    "company_name": "Union Sand",
+    "address": "234 Bank St",
+    "city": "Painesville",
+    "state": "Ohio",
+    "zip": "44077",
+    "country": "USA",
+    "email": "u.sand@yahoo.net",
+    "phone": "800-555-1212",
+    "credit_card_num": "1234567890123456",
+    "cc_expiration": "11 / 24"
+}
+```
 
 **DELETE methods:**
+> ## '/api/companies/:id'
+> * Takes in a company_id parameter in the url.
+> * It returns status code 200 and a 'Company was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Company could not be deleted... please check your request and try again!' message if unsuccessful.
 
 ---
 

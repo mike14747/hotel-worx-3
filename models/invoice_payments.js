@@ -10,7 +10,7 @@ const InvoicePayment = {
         });
     },
     addNewInvoicePayments: (paramsObj, cb) => {
-        const queryString = 'INSERT INTO invoice_payments (invoice_id, payment_type_id, payment_amount, payment_ref_num) VALUES (?,?,?,?);';
+        const queryString = 'INSERT INTO invoice_payments (invoice_id, payment_type_id, payment_amount, payment_ref_num) VALUES (?, ?, ?, ?);';
         const queryParams = [paramsObj.invoice_id, paramsObj.payment_type_id, paramsObj.payment_amount, paramsObj.payment_ref_num];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;

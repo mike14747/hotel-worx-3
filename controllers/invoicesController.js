@@ -9,14 +9,14 @@ router.get('/', (req, res) => {
 });
 
 router.get('/all', (req, res) => {
-    Invoice.getAllInvoices(req.params.some_param, (data) => {
+    Invoice.getAllInvoices((data) => {
         res.json(data);
     });
 });
 
 router.post('/invoice', (req, res) => {
     ResRoom.selectForInvoice(req.body.res_room_id, (data1) => {
-        const paramsObj = [req.body.res_room_id, data1[0].reservation_id, data1[0].num_nights, data1[0].rate, data1[0].total_due];
+        const paramsObj = [req.body.res_room_id, data1[0].num_nights, data1[0].rate, data1[0].total_due];
         Invoice.AddNewInvoice(paramsObj, (data2) => {
             res.json(data2.insertId);
         });

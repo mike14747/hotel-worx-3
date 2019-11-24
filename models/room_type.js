@@ -31,7 +31,7 @@ const RoomType = {
         });
     },
     addNewRoomType: (paramsObj, cb) => {
-        const queryString = 'INSERT INTO room_types (type, rate) VALUES (?,?);';
+        const queryString = 'INSERT INTO room_types (type, rate) VALUES (?, ?);';
         const queryParams = [paramsObj.type, paramsObj.rate];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
