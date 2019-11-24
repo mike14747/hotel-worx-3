@@ -569,15 +569,27 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 }
 ```
 
-> ## '/api/reservations/res-rooms/check-in'
-> * Takes in a list of parameters in the body object.
-> * This route is used for marking a res room as checked_in.
+> ## '/api/reservations/res-rooms/check-in/:id'
+> * Takes in a res_room_id parameter in the url.
+> * This route is used for marking a res_room as checked_in.
 > * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as occupied).
 ```
 // sample request body for the '/api/reservations/res-rooms/check-in' PUT route
 {
 	"res_room_id": 1200,
     "checked_in": 1
+}
+```
+
+> ## '/api/reservations/res-rooms/check-out/:id'
+> * Takes in a res_room_id parameter in the url.
+> * This route is used for marking a res_room as checked_out.
+> * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as not occupied).
+```
+// sample request body for the '/api/reservations/res-rooms/check-out' PUT route
+{
+	"res_room_id": 1200,
+    "checked_out": 1
 }
 ```
 

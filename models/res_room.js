@@ -76,6 +76,14 @@ const ResRoom = {
             cb(result);
         });
     },
+    updateResRoomCheckoutById: (paramsObj, cb) => {
+        const queryString = 'UPDATE res_rooms SET checked_out=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.checked_out, paramsObj.res_room_id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
     updateResRoomActiveByResRoomId: (paramsObj, cb) => {
         const queryString = 'UPDATE res_rooms SET active=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.active, paramsObj.res_room_id];

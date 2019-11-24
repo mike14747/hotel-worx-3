@@ -50,3 +50,26 @@ axios.get('/user', {
     .then(function () {
         // always executed
     });
+
+// ------------------------------------------------------
+
+axios.all([
+    axios.put('/api/reservations/res-rooms/check-out/' + this.state.res_room_id),
+    axios.put('/api/rooms/checked-out/' + this.state.room_id),
+    axios.post('/api/invoices', {
+        res_room_id: this.state.res_room_id,
+        num_nights: this.state.num_nights,
+        rate: this.state.rate,
+        total_due: this.state.total_due,
+        // this.state.taxes will be an array of tax objects
+        taxes: this.state.taxes,
+        // this.state.payments will be an array of payment objects
+        payments: this.state.payments,
+    }),
+])
+    .then(axios.spread((resRoom, room, invoice) => {
+        // do something to make sure all completed successfully
+    }))
+    .catch(function (error) {
+        console.log(error);
+    });
