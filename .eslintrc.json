@@ -39,6 +39,7 @@
             "error",
             "single"
         ],
+        "camelcase": ["error", { "properties": "never" }],
         "comma-dangle": [
             "error",
             {

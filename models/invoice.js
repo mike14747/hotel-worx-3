@@ -1,12 +1,13 @@
 const connection = require('../config/connection');
 
 const Invoice = {
-    addNewInvoice: (paramsObj, cb) => {
+    addNewInvoice: (paramsObj) => {
         const queryString = 'INSERT INTO invoices (res_room_id, num_nights, rate, total_due) VALUES (?, ?, ?, ?);';
         const queryParams = [paramsObj.res_room_id, paramsObj.num_nights, paramsObj.rate, paramsObj.total_due];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
-            cb(result);
+            console.log(result);
+            return result;
         });
     },
     deleteInvoiceById: (id, cb) => {

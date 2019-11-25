@@ -16,12 +16,32 @@ router.get('/all', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const paramsObj = [req.body.res_room_id, req.body.num_nights, req.body.rate, req.body.total_due];
-    Invoice.AddNewInvoice(paramsObj, (data1) => {
-        if (data1.insertId) {
-            // maybe use an async/await here to post the new invoice-taxes and invoice-payments, then proceed when both are done... both are waiting to get the new invoice_id before being run (await Promise.all)
-        }
-    });
+    const paramsObj1 = {
+        res_room_id: req.body.res_room_id,
+        num_nights: req.body.num_nights,
+        rate: req.body.rate,
+        total_due: req.body.total_due,
+    };
+    async function handleInvoiceSteps() {
+        const newInvoice = await Invoice.addNewInvoice(paramsObj1);
+        console.log(newInvoice);
+        const paramsObj2 = {
+            invoice_id: 10,
+            tax_id: req.body.tax_id,
+            tax_amount: req.body.tax_amount,
+        };
+        const paramsObj3 = {
+            invoice_id: 10,
+            payment_type_id: req.body.payment_type_id,
+            payment_amount: req.body.payment_amount,
+            payment_ref_num: req.body.payment_ref_num,
+        };
+        const newInvoiceTaxes = InvoiceTax.addNewInvoiceTaxes(paramsObj2);
+        const newInvoicePayments = InvoicePayment.addNewInvoicePayments(paramsObj3);
+        await Promise.all([newInvoiceTaxes, newInvoicePayments]);
+        res.json({ invoice_id: 10 });
+    }
+    handleInvoiceSteps();
 });
 
 router.delete('/:id', (req, res) => {
