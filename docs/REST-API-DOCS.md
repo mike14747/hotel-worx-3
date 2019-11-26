@@ -690,7 +690,46 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It outputs status code 200 and a message from the /api/invoices route root.
 
 **POST methods:**
-
+> * It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).
+> * Takes in a list of parameters in the body object.
+> * It returns an object with the newly created invoice_id.
+```
+// sample request body for the '/api/invoices' POST route
+{
+    "invoiceObj": {
+        "res_room_id": 1001,
+        "num_nights": 4,
+        "rate": 109.99,
+        "total_due": 470.76
+    },
+    "invoiceTaxesArr": [
+        {
+            "tax_id": 1,
+            "tax_amount": 22.00
+        },
+        {
+            "tax_id": 2,
+            "tax_amount": 13.20
+        },
+        {
+            "tax_id": 3,
+            "tax_amount": 30.80
+        }
+    ],
+    "invoicePaymentsArr": [
+        {
+            "payment_type_id": 1,
+            "payment_amount": 350.96,
+            "payment_ref_num": "1234"
+        },
+        {
+            "payment_type_id": 3,
+            "payment_amount": 120.00,
+            "payment_ref_num": ""
+        }
+    ]
+}
+```
 
 **PUT methods:**
 

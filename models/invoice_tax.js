@@ -9,12 +9,14 @@ const InvoiceTax = {
             cb(result);
         });
     },
-    addNewInvoiceTaxes: (paramsObj) => {
-        const queryString = 'INSERT INTO invoice_taxes (invoice_id, tax_id, tax_amount) VALUES (?, ?, ?);';
-        const queryParams = [paramsObj.invoice_id, paramsObj.tax_id, paramsObj.tax_amount];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            return result;
+    addNewInvoiceTaxes: (paramsArr) => {
+        const queryString = 'INSERT INTO invoice_taxes (invoice_id, tax_id, tax_amount) VALUES ?;';
+        const queryParams = [paramsArr];
+        return new Promise((resolve, reject) => {
+            connection.query(queryString, queryParams, (err, result) => {
+                if (err) return reject(err);
+                resolve(result);
+            });
         });
     },
 };

@@ -16,32 +16,21 @@ router.get('/all', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const paramsObj1 = {
-        res_room_id: req.body.res_room_id,
-        num_nights: req.body.num_nights,
-        rate: req.body.rate,
-        total_due: req.body.total_due,
-    };
-    async function handleInvoiceSteps() {
-        const newInvoice = await Invoice.addNewInvoice(paramsObj1);
-        console.log(newInvoice);
-        const paramsObj2 = {
-            invoice_id: 10,
-            tax_id: req.body.tax_id,
-            tax_amount: req.body.tax_amount,
-        };
-        const paramsObj3 = {
-            invoice_id: 10,
-            payment_type_id: req.body.payment_type_id,
-            payment_amount: req.body.payment_amount,
-            payment_ref_num: req.body.payment_ref_num,
-        };
-        const newInvoiceTaxes = InvoiceTax.addNewInvoiceTaxes(paramsObj2);
-        const newInvoicePayments = InvoicePayment.addNewInvoicePayments(paramsObj3);
-        await Promise.all([newInvoiceTaxes, newInvoicePayments]);
-        res.json({ invoice_id: 10 });
-    }
-    handleInvoiceSteps();
+    const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...req.body };
+    (async () => {
+        const newInvoice = await Invoice.addNewInvoice(invoiceObj);
+        const invoiceTaxesArr2 = invoiceTaxesArr.map((tax) => {
+            return [newInvoice.insertId, tax.tax_id, tax.tax_amount];
+        });
+        const invoicePaymentsArr2 = invoicePaymentsArr.map((payment) => {
+            return [newInvoice.insertId, payment.payment_type_id, payment.payment_amount, payment.payment_ref_num];
+        });
+        await Promise.all([
+            InvoiceTax.addNewInvoiceTaxes(invoiceTaxesArr2),
+            InvoicePayment.addNewInvoicePayments(invoicePaymentsArr2),
+        ]);
+        res.json({ invoice_id: newInvoice.insertId });
+    })();
 });
 
 router.delete('/:id', (req, res) => {

@@ -4,10 +4,11 @@ const Invoice = {
     addNewInvoice: (paramsObj) => {
         const queryString = 'INSERT INTO invoices (res_room_id, num_nights, rate, total_due) VALUES (?, ?, ?, ?);';
         const queryParams = [paramsObj.res_room_id, paramsObj.num_nights, paramsObj.rate, paramsObj.total_due];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            console.log(result);
-            return result;
+        return new Promise((resolve, reject) => {
+            connection.execute(queryString, queryParams, (err, result) => {
+                if (err) return reject(err);
+                resolve(result);
+            });
         });
     },
     deleteInvoiceById: (id, cb) => {
