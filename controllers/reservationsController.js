@@ -135,8 +135,12 @@ router.put('/res-rooms/info', (req, res) => {
     });
 });
 
-router.put('/res-rooms/check-in/:id', (req, res) => {
-    ResRoom.updateResRoomCheckinById(req.params.id, (data) => {
+router.put('/res-rooms/check-in', (req, res) => {
+    const paramsObj = {
+        res_room_id: req.body.res_room_id,
+        checked_in: req.body.checked_in,
+    };
+    ResRoom.updateResRoomCheckinById(paramsObj, (data) => {
         if (data.changedRows > 0) {
             res.status(200).send('Res_room was successfully updated!');
         } else {
@@ -145,8 +149,12 @@ router.put('/res-rooms/check-in/:id', (req, res) => {
     });
 });
 
-router.put('/res-rooms/check-out/:id', (req, res) => {
-    ResRoom.updateResRoomCheckoutById(req.params.id, (data) => {
+router.put('/res-rooms/check-out', (req, res) => {
+    const paramsObj = {
+        res_room_id: req.body.res_room_id,
+        checked_out: req.body.checked_out,
+    };
+    ResRoom.updateResRoomCheckoutById(paramsObj, (data) => {
         if (data.changedRows > 0) {
             res.status(200).send('Res_room was successfully updated!');
         } else {

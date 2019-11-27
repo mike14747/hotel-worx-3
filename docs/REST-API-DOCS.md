@@ -569,8 +569,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 }
 ```
 
-> ## '/api/reservations/res-rooms/check-in/:id'
-> * Takes in a res_room_id parameter in the url.
+> ## '/api/reservations/res-rooms/check-in'
+> * Takes in a list of parameters in the body object.
 > * This route is used for marking a res_room as checked_in.
 > * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as occupied).
 ```
@@ -581,8 +581,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 }
 ```
 
-> ## '/api/reservations/res-rooms/check-out/:id'
-> * Takes in a res_room_id parameter in the url.
+> ## '/api/reservations/res-rooms/check-out'
+> * Takes in a list of parameters in the body object.
 > * This route is used for marking a res_room as checked_out.
 > * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as not occupied).
 ```
@@ -698,8 +698,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 {
     "invoiceObj": {
         "res_room_id": 1001,
-        "num_nights": 4,
-        "rate": 109.99,
         "total_due": 470.76
     },
     "invoiceTaxesArr": [

@@ -167,9 +167,7 @@ CREATE TABLE invoices (
     invoice_id int(10) NOT NULL AUTO_INCREMENT,
     res_room_id int(10) NOT NULL,
     FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    num_nights int(3) NOT NULL,
-    rate decimal(6,2) NOT NULL,
-    total_due decimal(10,2) DEFAULT 0,
+    total_due decimal(10,2) NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (invoice_id)
 );

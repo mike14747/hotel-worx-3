@@ -73,3 +73,26 @@ axios.all([
     .catch(function (error) {
         console.log(error);
     });
+
+// ------------------------------------------------------
+
+// to get an invoice and everything associated with it
+state: {
+    invoice: { },
+    charges: [],
+        taxes: [],
+            payments[],
+    }
+
+axios.all([
+    axios.get('/api/invoice/id/' + this.state.invoice_id),
+    axios.get('/api/charges/res-room/id/' + this.state.res_room_id),
+    axios.get('/api/invoice/invoice-taxes/id/' + this.state.invoice_id),
+    axios.get('/api/invoice/invoice-payments/id/' + this.state.invoice_id),
+])
+    .then(axios.spread((invoice, charges, taxes, payments) => {
+        this.setState({ invoice: invoice[0], charges: charges, taxes: taxes, payments: payments })
+    }))
+    .catch((error) => {
+        console.log(error);
+    });
