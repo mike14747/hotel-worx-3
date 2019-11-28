@@ -8,6 +8,7 @@ import {
 import Generic from './pages/generic/generic';
 import Calendar from './components/calendar/index';
 import NavBar from './components/navbar/navbar';
+import AxiosTest from './pages/axiosTest';
 
 export default function App() {
     return (
@@ -31,6 +32,9 @@ export default function App() {
                     </Route>
                     <Route exact path="/calendar">
                         <Calendar />
+                    </Route>
+                    <Route exact path="/axiostest">
+                        <AxiosTest />
                     </Route>
                     <Route path="*">
                         <Home />

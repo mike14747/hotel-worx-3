@@ -15,6 +15,24 @@ router.get('/all', (req, res) => {
     });
 });
 
+router.get('/id/:id', (req, res) => {
+    Invoice.getInvoiceById(req.params.id, (data) => {
+        res.json(data);
+    });
+});
+
+router.get('/invoice-taxes/id/:id', (req, res) => {
+    InvoiceTax.getTaxesByInvoiceId(req.params.id,(data) => {
+        res.json(data);
+    });
+});
+
+router.get('/invoice-payments/id/:id', (req, res) => {
+    InvoicePayment.getPaymentsByInvoiceId(req.params.id,(data) => {
+        res.json(data);
+    });
+});
+
 router.post('/', (req, res) => {
     const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...req.body };
     (async () => {

@@ -689,6 +689,21 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in no parameters.
 > * It outputs status code 200 and a message from the /api/invoices route root.
 
+> ## '/api/invoices/all'
+> * Takes in no parameters.
+> * Returns all invoices in an array of objects.
+```
+// sample response from the '/api/invoices/all' GET route
+
+```
+
+> ## '/api/invoices/id/:id'
+> * Takes in a room_id parameter in the url.
+> * 
+```
+
+```
+
 **POST methods:**
 > * It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).
 > * Takes in a list of parameters in the body object.
@@ -733,6 +748,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 
 **DELETE methods:**
+> ## '/api/room-types/:id'
+> * Takes in an invoice_id parameter in the url.
+> * This will permanently delete an invoice.
+> * It returns status code 200 and a 'Invoice was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Could not delete invoice... please check your request and try again!' message if unsuccessful.
 
 ---
 
@@ -814,7 +834,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     {
         "charge_id": 3,
         "charge_type": "Room Service",
-        "charge_amount": "43.12"
+        "charge_amount": "43.12",
+        "taxable": 1
     }
 ]
 ```
@@ -832,7 +853,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 {
     "res_room_id": 1200,
     "charge_type_id": 3,
-    "charge_amount": 43.12
+    "charge_amount": 43.12,
+    "taxable": 1
 }
 ```
 
@@ -845,7 +867,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 {
     "charge_id": 1,
     "charge_type_id": 3,
-    "charge_amount": 43.12
+    "charge_amount": 43.12,
+    "taxable": 1
 }
 ```
 

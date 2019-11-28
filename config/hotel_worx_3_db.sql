@@ -149,6 +149,7 @@ CREATE TABLE charges (
     FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE CASCADE ON UPDATE CASCADE,
     charge_type_id varchar(30) NOT NULL,
     charge_amount decimal(6,2) DEFAULT 0,
+    taxable boolean DEFAULT 1,
     PRIMARY KEY (charge_id)
 );
 

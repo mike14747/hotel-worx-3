@@ -24,6 +24,7 @@ router.post('/', (req, res) => {
         res_room_id: req.body.res_room_id,
         charge_type_id: req.body.charge_type_id,
         charge_amount: req.body.charge_amount,
+        taxable: req.body.taxable,
     };
     Charge.addNewCharge(paramsObj, (data) => {
         if (data.insertId) {
@@ -39,6 +40,7 @@ router.put('/', (req, res) => {
         charge_id: req.body.charge_id,
         charge_type_id: req.body.charge_type_id,
         charge_amount: req.body.charge_amount,
+        taxable: req.body.taxable,
     };
     Charge.updateChargeById(paramsObj, (data) => {
         if (data.changedRows > 0) {
