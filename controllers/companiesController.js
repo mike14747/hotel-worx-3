@@ -31,6 +31,7 @@ router.post('/', (req, res) => {
         phone: req.body.phone,
         credit_card_num: req.body.credit_card_num,
         cc_expiration: req.body.cc_expiration,
+        tax_exempt: req.body.tax_exempt,
     };
     Company.addNewCompany(paramsObj, (data) => {
         if (data.insertId) {
@@ -54,6 +55,7 @@ router.put('/', (req, res) => {
         phone: req.body.phone,
         credit_card_num: req.body.credit_card_num,
         cc_expiration: req.body.cc_expiration,
+        tax_exempt: req.body.tax_exempt,
     };
     Company.updateCompanyById(paramsObj, (data) => {
         if (data.changedRows > 0) {

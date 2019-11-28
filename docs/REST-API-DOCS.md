@@ -995,7 +995,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "email": "u.sand@yahoo.net",
         "phone": "800-555-1212",
         "credit_card_num": "1234567890123456",
-        "cc_expiration": "11 / 24"
+        "cc_expiration": "11 / 24",
+        "tax_exempt": 0
     },
     {
         ...
@@ -1024,7 +1025,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "email": "u.sand@yahoo.net",
     "phone": "800-555-1212",
     "credit_card_num": "1234567890123456",
-    "cc_expiration": "11 / 24"
+    "cc_expiration": "11 / 24",
+    "tax_exempt": 0
 }
 ```
 
@@ -1046,7 +1048,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "email": "u.sand@yahoo.net",
     "phone": "800-555-1212",
     "credit_card_num": "1234567890123456",
-    "cc_expiration": "11 / 24"
+    "cc_expiration": "11 / 24",
+    "tax_exempt": 0
 }
 ```
 

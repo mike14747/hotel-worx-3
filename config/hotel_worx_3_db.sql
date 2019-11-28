@@ -80,6 +80,7 @@ CREATE TABLE companies (
     phone varchar(20) NOT NULL,
     credit_card_num varchar(30) NOT NULL,
     cc_expiration varchar(10) NOT NULL,
+    tax_exempt boolean DEFAULT 0,
     PRIMARY KEY (company_id)
 );
 
@@ -476,6 +477,17 @@ INSERT INTO customers (customer_id, first_name, last_name, address, city, state,
 (198, 'Danielle', 'Gould', '653 Anderson Drive', 'Elizabeth City', 'NC', '27909', 'USA', 'dgriffith@hotmail.com', '410-903-7957', '5384265839975525', '11 / 23'),
 (199, 'Jamarion', 'Le', '278 S Saxon Court', 'Tullahoma', 'TN', '37388', 'USA', 'hillct@comcast.net', '639-312-9329', '4916118471617469', '08 / 22'),
 (200, 'Chance', 'Mcdowell', '78 Virginia Rd', 'Saint Joseph', 'MI', '49085', 'USA', 'chinthaka@sbcglobal.net', '698-379-0629', '4916164093404811', '05 / 23');
+
+-- --------------------------------------------------------
+
+--
+-- Seed data for companies
+--
+
+TRUNCATE TABLE companies;
+
+INSERT INTO companies (company_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration, tax_exempt) VALUES
+('Union Sand', '234 Bank St', 'Painesville', 'Ohio', '44077', 'USA', 'u.sand@yahoo.net', '800-555-1212', '1234567890123456', '11 / 24', 0);
 
 -- --------------------------------------------------------
 
@@ -1088,8 +1100,8 @@ INSERT INTO hotel_info (hotel_name, address, city, state, zip, email, phone, ima
 TRUNCATE TABLE room_issues;
 
 INSERT INTO room_issues (room_id, issue, user_id, start_date, end_date, fixed) VALUES
-(89, "Needs a new toilet, plus there's a bad stain on the carpet near the window.", 1, "2019-07-16", "2019-07-20", 0),
-(96, "The tub drain is clogged and the shower curtain needs to be replaced.", 1, "2019-07-17", "2019-07-19", 0);
+(89, 'Needs a new toilet, plus there\'s a bad stain on the carpet near the window.', 1, '2019-07-16', '2019-07-20', 0),
+(96, 'The tub drain is clogged and the shower curtain needs to be replaced.', 1, '2019-07-17', '2019-07-19', 0);
 
 -- --------------------------------------------------------
 
