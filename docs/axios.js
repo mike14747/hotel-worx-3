@@ -77,22 +77,26 @@ axios.all([
 // ------------------------------------------------------
 
 // to get an invoice and everything associated with it
-state: {
-    invoice: { },
+state = {
+    invoice: {},
     charges: [],
-        taxes: [],
-            payments[],
-    }
+    taxes: [],
+    payments: [],
+    res_room_id: 1001,
+    invoice_id: 1,
+}
 
-axios.all([
-    axios.get('/api/invoice/id/' + this.state.invoice_id),
-    axios.get('/api/charges/res-room/id/' + this.state.res_room_id),
-    axios.get('/api/invoice/invoice-taxes/id/' + this.state.invoice_id),
-    axios.get('/api/invoice/invoice-payments/id/' + this.state.invoice_id),
-])
-    .then(axios.spread((invoice, charges, taxes, payments) => {
-        this.setState({ invoice: invoice[0], charges: charges, taxes: taxes, payments: payments })
-    }))
-    .catch((error) => {
-        console.log(error);
-    });
+componentDidMount() {
+    axios.all([
+        axios.get('/api/invoices/id/' + this.state.invoice_id),
+        axios.get('/api/charges/res-room/id/' + this.state.res_room_id),
+        axios.get('/api/invoices/invoice-taxes/id/' + this.state.invoice_id),
+        axios.get('/api/invoices/invoice-payments/id/' + this.state.invoice_id),
+    ])
+        .then(axios.spread((invoice, charges, taxes, payments) => {
+            this.setState({ invoice: invoice.data[0], charges: charges.data, taxes: taxes.data, payments: payments.data });
+        }))
+        .catch((error) => {
+            console.log(error);
+        });
+}

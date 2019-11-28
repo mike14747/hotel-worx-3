@@ -3,9 +3,7 @@ import axios from 'axios';
 
 class axiosTest extends Component {
     state = {
-        invoice: {
-            invoice_id: 1,
-        },
+        invoice: {},
         charges: [],
         taxes: [],
         payments: [],
