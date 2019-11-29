@@ -193,7 +193,7 @@ CREATE TABLE invoice_payments (
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     payment_type_id int(3) NOT NULL,
     payment_amount decimal(6,2) DEFAULT 0,
-    payment_ref_num varchar(30) NULL,
+    payment_ref_num varchar(30) NOT NULL,
     PRIMARY KEY (invoice_payment_id)
 );
 
@@ -1051,7 +1051,7 @@ INSERT INTO taxes (tax_name, tax_rate) VALUES
 -- --------------------------------------------------------
 
 --
--- Seed data for charges
+-- Seed data for charge_types
 --
 
 TRUNCATE TABLE charge_types;
@@ -1069,6 +1069,19 @@ INSERT INTO charge_types (charge_type) VALUES
 -- --------------------------------------------------------
 
 --
+-- Seed data for charges
+--
+
+TRUNCATE TABLE charges;
+
+INSERT INTO charges (res_room_id, charge_type_id, charge_amount, taxable) VALUES
+(1001, 5, 43.12, 0),
+(1001, 2, 19.97, 1),
+(1001, 4, 28.00, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Seed data for payment_types
 --
 
@@ -1079,6 +1092,42 @@ INSERT INTO payment_types (payment_type) VALUES
 ('Check'),
 ('Cash'),
 ('Gift Card');
+
+-- --------------------------------------------------------
+
+--
+-- Seed data for invoices
+--
+
+TRUNCATE TABLE invoices;
+
+INSERT INTO invoices (res_room_id, total_due) VALUES
+(1001, 604.25);
+
+-- --------------------------------------------------------
+
+--
+-- Seed data for invoice_taxes
+--
+
+TRUNCATE TABLE invoice_taxes;
+
+INSERT INTO invoice_taxes (invoice_id, tax_id, tax_amount) VALUES
+(1, 1, 24.40),
+(1, 2, 14.64),
+(1, 3, 34.16);
+
+-- --------------------------------------------------------
+
+--
+-- Seed data for invoice_payments
+--
+
+TRUNCATE TABLE invoice_payments;
+
+INSERT INTO invoice_payments (invoice_id, payment_type_id, payment_amount, payment_ref_num) VALUES
+(1, 1, 484.25, '1234'),
+(1, 3, 120.00, '');
 
 -- --------------------------------------------------------
 
@@ -1100,16 +1149,8 @@ INSERT INTO hotel_info (hotel_name, address, city, state, zip, email, phone, ima
 TRUNCATE TABLE room_issues;
 
 INSERT INTO room_issues (room_id, issue, user_id, start_date, end_date, fixed) VALUES
-(89, 'Needs a new toilet, plus there\'s a bad stain on the carpet near the window.', 1, '2019-07-16', '2019-07-20', 0),
+(89, 'Needs a new toilet, plus there is a bad stain on the carpet near the window.', 1, '2019-07-16', '2019-07-20', 0),
 (96, 'The tub drain is clogged and the shower curtain needs to be replaced.', 1, '2019-07-17', '2019-07-19', 0);
-
--- --------------------------------------------------------
-
---
--- Seeds data for invoices
---
-
-TRUNCATE TABLE invoices;
 
 -- --------------------------------------------------------
 
