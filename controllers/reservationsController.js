@@ -57,6 +57,23 @@ router.post('/', (req, res) => {
     });
 });
 
+router.put('/', (req, res) => {
+    const paramsObj = {
+        reservation_id: req.body.reservation_id,
+        customer_id: req.body.customer_id,
+        company_id: req.body.company_id,
+        comments: req.body.comments,
+        active: req.body.active,
+    };
+    Reservation.updateReservationById(paramsObj, (data) => {
+        if (data.changedRows > 0) {
+            res.status(200).send('Reservation was successfully updated!');
+        } else {
+            res.status(400).send('Could not update reservation... please check your request and try again!');
+        }
+    });
+});
+
 router.put('/res-rooms/assign', (req, res) => {
     const baseConfirmationCode = req.body.confirmation_code.slice(0, -3);
     ResRoom.getMaxCCodeByReservationId(req.body.reservation_id, (data1) => {
@@ -75,9 +92,9 @@ router.put('/res-rooms/assign', (req, res) => {
         };
         ResRoom.updateResRoomAssignById(paramsObj, (data2) => {
             if (data2.changedRows > 0) {
-                res.status(200).send('Res room was successfully updated!');
+                res.status(200).send('Res_room was successfully updated!');
             } else {
-                res.status(400).send('Could not update res room... please check your request and try again!');
+                res.status(400).send('Could not update res_room... please check your request and try again!');
             }
         });
     });
@@ -92,9 +109,9 @@ router.put('/res-rooms/reassign', (req, res) => {
     };
     ResRoom.updateResRoomReassignById(paramsObj, (data) => {
         if (data.changedRows > 0) {
-            res.status(200).send('Res room was successfully updated!');
+            res.status(200).send('Res_room was successfully updated!');
         } else {
-            res.status(400).send('Could not update res room... please check your request and try again!');
+            res.status(400).send('Could not update res_room... please check your request and try again!');
         }
     });
 });
@@ -111,9 +128,9 @@ router.put('/res-rooms/info', (req, res) => {
     };
     ResRoom.updateResRoomInfoById(paramsObj, (data) => {
         if (data.changedRows > 0) {
-            res.status(200).send('Res room was successfully updated!');
+            res.status(200).send('Res_room was successfully updated!');
         } else {
-            res.status(400).send('Could not update res room... please check your request and try again!');
+            res.status(400).send('Could not update res_room... please check your request and try again!');
         }
     });
 });
@@ -125,9 +142,23 @@ router.put('/res-rooms/check-in', (req, res) => {
     };
     ResRoom.updateResRoomCheckinById(paramsObj, (data) => {
         if (data.changedRows > 0) {
-            res.status(200).send('Res room was successfully updated!');
+            res.status(200).send('Res_room was successfully updated!');
         } else {
-            res.status(400).send('Could not update res room... please check your request and try again!');
+            res.status(400).send('Could not update res_room... please check your request and try again!');
+        }
+    });
+});
+
+router.put('/res-rooms/check-out', (req, res) => {
+    const paramsObj = {
+        res_room_id: req.body.res_room_id,
+        checked_out: req.body.checked_out,
+    };
+    ResRoom.updateResRoomCheckoutById(paramsObj, (data) => {
+        if (data.changedRows > 0) {
+            res.status(200).send('Res_room was successfully updated!');
+        } else {
+            res.status(400).send('Could not update res_room... please check your request and try again!');
         }
     });
 });

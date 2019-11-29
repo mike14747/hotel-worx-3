@@ -29,4 +29,7 @@ router.use('/charges', chargesController);
 const chargeTypesController = require('./chargeTypesController');
 router.use('/charge-types', chargeTypesController);
 
+const companiesController = require('./companiesController');
+router.use('/companies', companiesController);
+
 module.exports = router;

@@ -1,28 +1,27 @@
 const router = require('express').Router();
-const Customer = require('../models/customer');
+const Company = require('../models/company');
 
-// all these routes point to /api/customers as specified in server.js and controllers/index.js
+// all these routes point to /api/companies as specified in server.js and controllers/index.js
 
 router.get('/', (req, res) => {
-    res.status(200).send('Sending this from the /api/customers route root!');
+    res.status(200).send('Sending this from the /api/companies route root!');
 });
 
 router.get('/all', (req, res) => {
-    Customer.getAllCustomers((data) => {
+    Company.getAllCompanies((data) => {
         res.json(data);
     });
 });
 
 router.get('/id/:id', (req, res) => {
-    Customer.getCustomerById(req.params.id, (data) => {
+    Company.getCompanyById(req.params.id, (data) => {
         res.json(data);
     });
 });
 
 router.post('/', (req, res) => {
     const paramsObj = {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
+        company_name: req.body.company_name,
         address: req.body.address,
         city: req.body.city,
         state: req.body.state,
@@ -32,21 +31,21 @@ router.post('/', (req, res) => {
         phone: req.body.phone,
         credit_card_num: req.body.credit_card_num,
         cc_expiration: req.body.cc_expiration,
+        tax_exempt: req.body.tax_exempt,
     };
-    Customer.addNewCustomer(paramsObj, (data) => {
+    Company.addNewCompany(paramsObj, (data) => {
         if (data.insertId) {
-            res.status(200).send('New customer was successfully added!');
+            res.status(200).send('New company was successfully added!');
         } else {
-            res.status(400).send('Could not add the new customer... please check your request and try again!');
+            res.status(400).send('Could not add the new company... please check your request and try again!');
         }
     });
 });
 
 router.put('/', (req, res) => {
     const paramsObj = {
-        customer_id: req.body.customer_id,
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
+        company_id: req.body.company_id,
+        company_name: req.body.company_name,
         address: req.body.address,
         city: req.body.city,
         state: req.body.state,
@@ -56,22 +55,23 @@ router.put('/', (req, res) => {
         phone: req.body.phone,
         credit_card_num: req.body.credit_card_num,
         cc_expiration: req.body.cc_expiration,
+        tax_exempt: req.body.tax_exempt,
     };
-    Customer.updateCustomerById(paramsObj, (data) => {
+    Company.updateCompanyById(paramsObj, (data) => {
         if (data.changedRows > 0) {
-            res.status(200).send('Customer info was successfully updated!');
+            res.status(200).send('Company info was successfully updated!');
         } else {
-            res.status(400).send('Could not update customer... please check your request and try again!');
+            res.status(400).send('Could not update company... please check your request and try again!');
         }
     });
 });
 
 router.delete('/:id', (req, res) => {
-    Customer.deleteCustomerById(req.params.id, (data) => {
+    Company.deleteCompanyById(req.params.id, (data) => {
         if (data.affectedRows === 1) {
-            res.status(200).send('Customer was successfully deleted!');
+            res.status(200).send('Company was successfully deleted!');
         } else {
-            res.status(400).send('Could not delete customer... please check your request and try again!');
+            res.status(400).send('Could not delete company... please check your request and try again!');
         }
     });
 });

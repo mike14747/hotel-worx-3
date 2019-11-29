@@ -2,14 +2,14 @@ const connection = require('../config/connection');
 
 const ResRoom = {
     getAllResRooms: (cb) => {
-        const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments FROM res_rooms AS rr ORDER BY rr.res_room_id ASC;';
+        const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments, rr.allow_charges, rr.active FROM res_rooms AS rr ORDER BY rr.res_room_id ASC;';
         connection.execute(queryString, (err, result) => {
             if (err) throw err;
             cb(result);
         });
     },
     getResRoomByResRoomId: (id, cb) => {
-        const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments FROM res_rooms AS rr WHERE rr.res_room_id=?;';
+        const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments, rr.allow_charges, rr.active FROM res_rooms AS rr WHERE rr.res_room_id=?;';
         const queryParams = [id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
@@ -17,7 +17,7 @@ const ResRoom = {
         });
     },
     getResRoomsByReservationId: (id, cb) => {
-        const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments FROM res_rooms AS rr WHERE rr.reservation_id=?;';
+        const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments, rr.allow_charges, rr.active FROM res_rooms AS rr WHERE rr.reservation_id=?;';
         const queryParams = [id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
@@ -33,9 +33,9 @@ const ResRoom = {
         });
     },
     addSomeResRooms: (paramsArr, cb) => {
-        const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments) VALUES (?,?,?,?,?,?,?,?);';
+        const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments, allow_charges) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);';
         paramsArr.forEach((room, i) => {
-            const queryParams = [room.reservation_id, room.room_type_id, room.check_in_date, room.check_out_date, room.adults, room.rate, room.confirmation_code, room.comments];
+            const queryParams = [room.reservation_id, room.room_type_id, room.check_in_date, room.check_out_date, room.adults, room.rate, room.confirmation_code, room.comments, room.allow_charges];
             connection.execute(queryString, queryParams, (err, result) => {
                 if (err) throw err;
                 if ((i + 1) === paramsArr.length) {
@@ -45,8 +45,8 @@ const ResRoom = {
         });
     },
     updateResRoomInfoById: (paramsObj, cb) => {
-        const queryString = 'UPDATE res_rooms SET room_type_id=?, check_in_date=?, check_out_date=?, adults=?, rate=?, comments=? WHERE res_room_id=?;';
-        const queryParams = [paramsObj.room_type_id, paramsObj.check_in_date, paramsObj.check_out_date, paramsObj.adults, paramsObj.rate, paramsObj.comments, paramsObj.res_room_id];
+        const queryString = 'UPDATE res_rooms SET room_type_id=?, check_in_date=?, check_out_date=?, adults=?, rate=?, comments=?, allow_charges=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.room_type_id, paramsObj.check_in_date, paramsObj.check_out_date, paramsObj.adults, paramsObj.rate, paramsObj.comments, paramsObj.allow_charges, paramsObj.res_room_id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);
@@ -71,6 +71,14 @@ const ResRoom = {
     updateResRoomCheckinById: (paramsObj, cb) => {
         const queryString = 'UPDATE res_rooms SET checked_in=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.checked_in, paramsObj.res_room_id];
+        connection.execute(queryString, queryParams, (err, result) => {
+            if (err) throw err;
+            cb(result);
+        });
+    },
+    updateResRoomCheckoutById: (paramsObj, cb) => {
+        const queryString = 'UPDATE res_rooms SET checked_out=? WHERE res_room_id=?;';
+        const queryParams = [paramsObj.checked_out, paramsObj.res_room_id];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;
             cb(result);

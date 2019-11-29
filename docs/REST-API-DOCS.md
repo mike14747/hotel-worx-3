@@ -296,6 +296,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "city": "Lexington",
         "state": "NC",
         "zip": "27292",
+        "country": "USA",
         "email": "rgiersig@yahoo.com",
         "phone": "806-427-8083",
         "creditCardLastFour": "0920",
@@ -325,6 +326,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "city": "Cleveland",
     "state": "OH",
     "zip": "44124",
+    "country": "USA",
     "email": "temp@temp.com",
     "phone": "800-555-1212",
     "credit_card_num": "4444111122223333",
@@ -347,6 +349,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "city": "Cleveland",
     "state": "OH",
     "zip": "44124",
+    "country": "USA",
     "email": "temp@temp.com",
     "phone": "800-555-1212",
     "credit_card_num": "4444111122223333",
@@ -439,7 +442,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "room_id": null,
         "rate": "129.99",
         "confirmation_code": "190609056001",
-        "comments": ""
+        "comments": "",
+        "allow_charges": 1,
+        "active": 1
     },
     {
         ...
@@ -472,6 +477,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "cc_expiration": "11 / 21"
     },
     "reservationObj": {
+        "company_id": null,
         "user_id": 1,
         "comments": "test reservation comment"
     },
@@ -482,7 +488,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
             "check_out_date": "2019-12-15",
             "adults": 2,
             "rate": "119.99",
-            "comments": "need a good view"
+            "comments": "need a good view",
+            "allow_charges": 1
         },
         {
             "room_type_id": 1,
@@ -490,18 +497,28 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
             "check_out_date": "2019-12-17",
             "adults": 2,
             "rate": "109.99",
-            "comments": "want a late checkout"
+            "comments": "want a late checkout",
+            "allow_charges": 0
         }
     ]
 }
 ```
 
 **PUT methods:**
-> ## '/api/reservations/res-rooms'
+> ## '/api/reservations'
 > * Takes in a list of parameters in the body object.
+> * This route is used to update information about a reservation, but not the rooms associated with the reservation.
 ```
-// sample request body for the '/api/reservations/res-rooms' PUT route
-
+// sample request body for the '/api/reservations' PUT route
+{
+	"reservation_id": 1201,
+	"customer_id": 201,
+    "company_id": null,
+    "user_id": 1,
+    "comments": "test reservation comment",
+    "allow_charges": 1,
+    "active": 1
+}
 ```
 
 > ## '/api/reservations/res-rooms/assign'
@@ -554,13 +571,25 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 > ## '/api/reservations/res-rooms/check-in'
 > * Takes in a list of parameters in the body object.
-> * This route is used for marking a res room as checked_in.
+> * This route is used for marking a res_room as checked_in.
 > * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as occupied).
 ```
 // sample request body for the '/api/reservations/res-rooms/check-in' PUT route
 {
 	"res_room_id": 1200,
     "checked_in": 1
+}
+```
+
+> ## '/api/reservations/res-rooms/check-out'
+> * Takes in a list of parameters in the body object.
+> * This route is used for marking a res_room as checked_out.
+> * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as not occupied).
+```
+// sample request body for the '/api/reservations/res-rooms/check-out' PUT route
+{
+	"res_room_id": 1200,
+    "checked_out": 1
 }
 ```
 
@@ -660,13 +689,114 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in no parameters.
 > * It outputs status code 200 and a message from the /api/invoices route root.
 
-**POST methods:**
+> ## '/api/invoices/all'
+> * Takes in no parameters.
+> * Returns all invoices in an array of objects.
+```
+// sample response from the '/api/invoices/all' GET route
+[
+    {
+        "invoice_id": 1,
+        "res_room_id": 1001,
+        "total_due": "604.25",
+        "created_at": "2019-11-29T00:30:48.000Z"
+    },
+    {
+        ...
+    }
+]
+```
 
+> ## '/api/invoices/id/:id'
+> * Takes in an invoice_id parameter in the url.
+> * Returns all the details associated with the invoice (customer, company, reservation, res_room, room, room_type, payments, taxes, charges).
+```
+// sample response from the '/api/invoices/id/:id' GET route
+[
+    {
+        "invoice_id": 1,
+        "res_room_id": 1001,
+        "total_due": "604.25",
+        "num_nights": 4,
+        "reservation_id": 1001,
+        "room_type_id": 1,
+        "check_in_date": "Nov 25, 2019",
+        "check_out_date": "Nov 29, 2019",
+        "adults": 1,
+        "room_id": 9,
+        "rate": "109.99",
+        "confirmation_code": "190501001001",
+        "res_room_comments": "needs a late checkout time",
+        "room_num": "109",
+        "type": "2 Queens",
+        "customer_id": 1,
+        "company_id": null,
+        "reservation_comments": "",
+        "first_name": "Jamar",
+        "last_name": "Wilkerson",
+        "address": "7193 Valley St",
+        "city": "Lexington",
+        "state": "NC",
+        "zip": "27292",
+        "country": "USA",
+        "email": "rgiersig@yahoo.com",
+        "phone": "806-427-8083",
+        "creditCardLastFour": "0920",
+        "cc_expiration": "10 / 22",
+        "company_name": null
+    }
+]
+```
+
+**POST methods:**
+> * It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).
+> * Takes in a list of parameters in the body object.
+> * It returns an object with the newly created invoice_id.
+```
+// sample request body for the '/api/invoices' POST route
+{
+    "invoiceObj": {
+        "res_room_id": 1001,
+        "total_due": 470.76
+    },
+    "invoiceTaxesArr": [
+        {
+            "tax_id": 1,
+            "tax_amount": 22.00
+        },
+        {
+            "tax_id": 2,
+            "tax_amount": 13.20
+        },
+        {
+            "tax_id": 3,
+            "tax_amount": 30.80
+        }
+    ],
+    "invoicePaymentsArr": [
+        {
+            "payment_type_id": 1,
+            "payment_amount": 350.96,
+            "payment_ref_num": "1234"
+        },
+        {
+            "payment_type_id": 3,
+            "payment_amount": 120.00,
+            "payment_ref_num": ""
+        }
+    ]
+}
+```
 
 **PUT methods:**
 
 
 **DELETE methods:**
+> ## '/api/room-types/:id'
+> * Takes in an invoice_id parameter in the url.
+> * This will permanently delete an invoice.
+> * It returns status code 200 and a 'Invoice was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Could not delete invoice... please check your request and try again!' message if unsuccessful.
 
 ---
 
@@ -748,7 +878,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     {
         "charge_id": 3,
         "charge_type": "Room Service",
-        "charge_amount": "43.12"
+        "charge_amount": "43.12",
+        "taxable": 1
     }
 ]
 ```
@@ -766,7 +897,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 {
     "res_room_id": 1200,
     "charge_type_id": 3,
-    "charge_amount": 43.12
+    "charge_amount": 43.12,
+    "taxable": 1
 }
 ```
 
@@ -779,7 +911,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 {
     "charge_id": 1,
     "charge_type_id": 3,
-    "charge_amount": 43.12
+    "charge_amount": 43.12,
+    "taxable": 1
 }
 ```
 
@@ -882,18 +1015,156 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 ---
 
-## /api/?
+## /api/companies
 
 **GET methods:**
+> ## '/api/companies'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/companies route root.
 
+> ## '/api/companies/all'
+> * Takes in no parameters.
+> * Returns all companies and their details in an array of objects.
+```
+// sample response from the '/api/companies/all' GET route
+[
+    {
+        "company_id": 1,
+        "company_name": "Union Sand",
+        "address": "234 Bank St",
+        "city": "Painesville",
+        "state": "Ohio",
+        "zip": "44077",
+        "country": "USA",
+        "email": "u.sand@yahoo.net",
+        "phone": "800-555-1212",
+        "credit_card_num": "1234567890123456",
+        "cc_expiration": "11 / 24",
+        "tax_exempt": 0
+    },
+    {
+        ...
+    }
+]
+```
+
+> ## '/api/companies/id/:id'
+> * Takes in a company_id parameter in the url.
+> * Returns the same as the '/api/companies/all' route above, but the array will contain only a single company object.
 
 **POST methods:**
-
+> ## '/api/companies'
+> * Takes in a list of parameters in the body object.
+> * It returns status code 200 and a 'New company was successfully added!' message if successful.
+> * It returns status code 400 and a 'Could not add the new company... please check your request and try again!' message if unsuccessful.
+```
+// sample request body for the '/api/companies' POST route
+{
+    "company_name": "Union Sand",
+    "address": "234 Bank St",
+    "city": "Painesville",
+    "state": "Ohio",
+    "zip": "44077",
+    "country": "USA",
+    "email": "u.sand@yahoo.net",
+    "phone": "800-555-1212",
+    "credit_card_num": "1234567890123456",
+    "cc_expiration": "11 / 24",
+    "tax_exempt": 0
+}
+```
 
 **PUT methods:**
-
+> ## '/api/companies'
+> * Takes in a list of parameters in the body object.
+> * It returns status code 200 and a 'Company info was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update company info... please check your request and try again!' message if unsuccessful.
+```
+// sample request body for the '/api/companies' PUT route
+{
+    "company_id": 1,
+    "company_name": "Union Sand",
+    "address": "234 Bank St",
+    "city": "Painesville",
+    "state": "Ohio",
+    "zip": "44077",
+    "country": "USA",
+    "email": "u.sand@yahoo.net",
+    "phone": "800-555-1212",
+    "credit_card_num": "1234567890123456",
+    "cc_expiration": "11 / 24",
+    "tax_exempt": 0
+}
+```
 
 **DELETE methods:**
+> ## '/api/companies/:id'
+> * Takes in a company_id parameter in the url.
+> * It returns status code 200 and a 'Company was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Company could not be deleted... please check your request and try again!' message if unsuccessful.
+
+---
+
+## /api/charge-types
+
+**GET methods:**
+> ## '/api/charge-types'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/charge-types route root.
+
+> ## '/api/charge-types/all'
+> * Takes in no parameters.
+> * Returns all charge-types and their details in an array of objects.
+```
+// sample response from the '/api/charge-types/all' GET route
+[
+    {
+        "charge_type_id": 1,
+        "charge_type": "Phone",
+        "active": 1
+    },
+    {
+        ...
+    }
+]
+```
+
+> ## '/api/charge-types/id/:id'
+> * Takes in a charge_type_id parameter in the url.
+> * Returns the same as the '/api/charge-types/all' route above, but the array will contain only a single room object.
+
+**POST methods:**
+> ## '/api/charge-types'
+> * Takes in a list of parameters in the body object.
+> * It returns status code 200 and a 'New charge type was successfully added!' message if successful.
+> * It returns status code 400 and a 'Could not add the new charge type... please check your request and try again!' message if unsuccessful.
+```
+// sample request body for the '/api/charge-types' POST route
+{
+    "charge_type": "Phone",
+    "active": 1
+}
+```
+
+**PUT methods:**
+> ## '/api/charge-types'
+> * Takes in a list of parameters in the body object.
+> * It returns status code 200 and a 'Charge type was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update charge type info... please check your request and try again!' message if unsuccessful.
+```
+// sample request body for the '/api/charge-types' PUT route
+{
+    "charge_type_id": 1,
+    "charge_type": "Phone",
+    "active": 1
+}
+```
+
+**DELETE methods:**
+> ## '/api/charge-types/:id'
+> * Takes in a charge_type_id parameter in the url.
+> * It returns status code 200 and a 'Charge type was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Charge type could not be deleted... please check your request and try again!' message if unsuccessful.
 
 ---
 
@@ -912,15 +1183,3 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 ---
 
-## /api/charge-types
-
-**GET methods:**
-
-
-**POST methods:**
-
-
-**PUT methods:**
-
-
-**DELETE methods:**

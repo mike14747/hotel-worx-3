@@ -39,7 +39,7 @@ const Room = {
         });
     },
     addNewRoom: (paramsObj, cb) => {
-        const queryString = 'INSERT INTO rooms (room_num, room_type_id, description, num_beds, clean, occupied, active) VALUES (?,?,?,?,?,?,?);';
+        const queryString = 'INSERT INTO rooms (room_num, room_type_id, description, num_beds, clean, occupied, active) VALUES (?, ?, ?, ?, ?, ?, ?);';
         const queryParams = [paramsObj.room_num, paramsObj.room_type_id, paramsObj.description, paramsObj.num_beds, paramsObj.clean, paramsObj.occupied, paramsObj.active];
         connection.execute(queryString, queryParams, (err, result) => {
             if (err) throw err;

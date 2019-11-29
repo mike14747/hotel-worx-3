@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Invoice = require('../models/invoice');
-const ResRoom = require('../models/res_room');
+const InvoiceTax = require('../models/invoice_tax');
+const InvoicePayment = require('../models/invoice_payment');
 
 // all these routes point to /api/invoices as specified in server.js and controllers/index.js
 
@@ -9,18 +10,45 @@ router.get('/', (req, res) => {
 });
 
 router.get('/all', (req, res) => {
-    Invoice.getAllInvoices(req.params.some_param, (data) => {
+    Invoice.getAllInvoices((data) => {
         res.json(data);
     });
 });
 
-router.post('/invoice', (req, res) => {
-    ResRoom.selectForInvoice(req.body.res_room_id, (data1) => {
-        const paramsObj = [req.body.res_room_id, data1[0].reservation_id, data1[0].num_nights, data1[0].rate, data1[0].total_due];
-        Invoice.AddNewInvoice(paramsObj, (data2) => {
-            res.json(data2.insertId);
-        });
+router.get('/id/:id', (req, res) => {
+    Invoice.getInvoiceById(req.params.id, (data) => {
+        res.json(data);
     });
+});
+
+router.get('/invoice-taxes/id/:id', (req, res) => {
+    InvoiceTax.getTaxesByInvoiceId(req.params.id,(data) => {
+        res.json(data);
+    });
+});
+
+router.get('/invoice-payments/id/:id', (req, res) => {
+    InvoicePayment.getPaymentsByInvoiceId(req.params.id,(data) => {
+        res.json(data);
+    });
+});
+
+router.post('/', (req, res) => {
+    const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...req.body };
+    (async () => {
+        const newInvoice = await Invoice.addNewInvoice(invoiceObj);
+        const invoiceTaxesArr2 = invoiceTaxesArr.map((tax) => {
+            return [newInvoice.insertId, tax.tax_id, tax.tax_amount];
+        });
+        const invoicePaymentsArr2 = invoicePaymentsArr.map((payment) => {
+            return [newInvoice.insertId, payment.payment_type_id, payment.payment_amount, payment.payment_ref_num];
+        });
+        await Promise.all([
+            InvoiceTax.addNewInvoiceTaxes(invoiceTaxesArr2),
+            InvoicePayment.addNewInvoicePayments(invoicePaymentsArr2),
+        ]);
+        res.json({ invoice_id: newInvoice.insertId });
+    })();
 });
 
 router.delete('/:id', (req, res) => {
