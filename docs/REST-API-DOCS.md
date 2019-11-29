@@ -694,14 +694,58 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Returns all invoices in an array of objects.
 ```
 // sample response from the '/api/invoices/all' GET route
-
+[
+    {
+        "invoice_id": 1,
+        "res_room_id": 1001,
+        "total_due": "604.25",
+        "created_at": "2019-11-29T00:30:48.000Z"
+    },
+    {
+        ...
+    }
+]
 ```
 
 > ## '/api/invoices/id/:id'
-> * Takes in a room_id parameter in the url.
-> * 
+> * Takes in an invoice_id parameter in the url.
+> * Returns all the details associated with the invoice (customer, company, reservation, res_room, room, room_type, payments, taxes, charges).
 ```
-
+// sample response from the '/api/invoices/id/:id' GET route
+[
+    {
+        "invoice_id": 1,
+        "res_room_id": 1001,
+        "total_due": "604.25",
+        "num_nights": 4,
+        "reservation_id": 1001,
+        "room_type_id": 1,
+        "check_in_date": "Nov 25, 2019",
+        "check_out_date": "Nov 29, 2019",
+        "adults": 1,
+        "room_id": 9,
+        "rate": "109.99",
+        "confirmation_code": "190501001001",
+        "res_room_comments": "needs a late checkout time",
+        "room_num": "109",
+        "type": "2 Queens",
+        "customer_id": 1,
+        "company_id": null,
+        "reservation_comments": "",
+        "first_name": "Jamar",
+        "last_name": "Wilkerson",
+        "address": "7193 Valley St",
+        "city": "Lexington",
+        "state": "NC",
+        "zip": "27292",
+        "country": "USA",
+        "email": "rgiersig@yahoo.com",
+        "phone": "806-427-8083",
+        "creditCardLastFour": "0920",
+        "cc_expiration": "10 / 22",
+        "company_name": null
+    }
+]
 ```
 
 **POST methods:**
@@ -1061,6 +1105,69 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 ---
 
+## /api/charge-types
+
+**GET methods:**
+> ## '/api/charge-types'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/charge-types route root.
+
+> ## '/api/charge-types/all'
+> * Takes in no parameters.
+> * Returns all charge-types and their details in an array of objects.
+```
+// sample response from the '/api/charge-types/all' GET route
+[
+    {
+        "charge_type_id": 1,
+        "charge_type": "Phone",
+        "active": 1
+    },
+    {
+        ...
+    }
+]
+```
+
+> ## '/api/charge-types/id/:id'
+> * Takes in a charge_type_id parameter in the url.
+> * Returns the same as the '/api/charge-types/all' route above, but the array will contain only a single room object.
+
+**POST methods:**
+> ## '/api/charge-types'
+> * Takes in a list of parameters in the body object.
+> * It returns status code 200 and a 'New charge type was successfully added!' message if successful.
+> * It returns status code 400 and a 'Could not add the new charge type... please check your request and try again!' message if unsuccessful.
+```
+// sample request body for the '/api/charge-types' POST route
+{
+    "charge_type": "Phone",
+    "active": 1
+}
+```
+
+**PUT methods:**
+> ## '/api/charge-types'
+> * Takes in a list of parameters in the body object.
+> * It returns status code 200 and a 'Charge type was successfully updated!' message if successful.
+> * It returns status code 400 and a 'Could not update charge type info... please check your request and try again!' message if unsuccessful.
+```
+// sample request body for the '/api/charge-types' PUT route
+{
+    "charge_type_id": 1,
+    "charge_type": "Phone",
+    "active": 1
+}
+```
+
+**DELETE methods:**
+> ## '/api/charge-types/:id'
+> * Takes in a charge_type_id parameter in the url.
+> * It returns status code 200 and a 'Charge type was successfully deleted!' message if successful.
+> * It returns status code 400 and a 'Charge type could not be deleted... please check your request and try again!' message if unsuccessful.
+
+---
+
 ## /api?
 
 **GET methods:**
@@ -1076,15 +1183,3 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 ---
 
-## /api/charge-types
-
-**GET methods:**
-
-
-**POST methods:**
-
-
-**PUT methods:**
-
-
-**DELETE methods:**
