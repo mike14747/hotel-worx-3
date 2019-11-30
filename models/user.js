@@ -27,7 +27,6 @@ const User = {
         return queryPromise(queryString, queryParams);
     },
     updateUserById: (paramsObj) => {
-        console.log(paramsObj.user_id);
         const queryString = 'UPDATE users SET username=?, password=?, access_id=?, active=? WHERE user_id=?;';
         const queryParams = [paramsObj.username, paramsObj.password, paramsObj.access_id, paramsObj.active, paramsObj.user_id];
         return queryPromise(queryString, queryParams);
