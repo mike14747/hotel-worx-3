@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../models/user');
+const Auth = require('../models/auth');
 
 const bcrypt = require('bcrypt');
 
@@ -10,7 +10,7 @@ passport.serializeUser((user, done) => {
     done(null, user);
 });
 passport.deserializeUser((id, done) => {
-    User.getUserByIdForPassport(id, (err, returnedUserInfo) => {
+    Auth.getUserByIdForPassport(id, (err, returnedUserInfo) => {
         const user = { id: returnedUserInfo[0].user_id, username: returnedUserInfo[0].username, access_level: returnedUserInfo[0].access_level };
         done(err, user);
     });
@@ -21,7 +21,7 @@ passport.use(new LocalStrategy({
     passReqToCallback: true,
 }, (req, username, password, done) => {
     if (!req.user) {
-        User.getUserByUsernameForPassport(username, (err, returnedUserCredentials) => {
+        Auth.getUserByUsernameForPassport(username, (err, returnedUserCredentials) => {
             if (err) return done(err);
             if (returnedUserCredentials.length === 0) return done(null, false);
             bcrypt.compare(password, returnedUserCredentials[0].password)
