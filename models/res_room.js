@@ -1,120 +1,77 @@
-const connection = require('../config/connection');
+const queryPromise = require('../config/queryPromise');
+const queryPromiseNoParams = require('../config/queryPromiseNoParams');
 
 const ResRoom = {
-    getAllResRooms: (cb) => {
+    getAllResRooms: () => {
         const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments, rr.allow_charges, rr.active FROM res_rooms AS rr ORDER BY rr.res_room_id ASC;';
-        connection.execute(queryString, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromiseNoParams(queryString);
     },
-    getResRoomByResRoomId: (id, cb) => {
+    getResRoomByResRoomId: (id) => {
         const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments, rr.allow_charges, rr.active FROM res_rooms AS rr WHERE rr.res_room_id=?;';
         const queryParams = [id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    getResRoomsByReservationId: (id, cb) => {
+    getResRoomsByReservationId: (id) => {
         const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments, rr.allow_charges, rr.active FROM res_rooms AS rr WHERE rr.reservation_id=?;';
         const queryParams = [id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    getMaxCCodeByReservationId: (id, cb) => {
+    getMaxCCodeByReservationId: (id) => {
         const queryString = 'SELECT COUNT(*) AS totalRooms, (SELECT COUNT(*) FROM res_rooms WHERE reservation_id=? && !isnull(room_id)) AS numAssignedRooms, MAX(CONVERT(RIGHT(rr.confirmation_code, 3), UNSIGNED INTEGER)) AS currentMaxCCode FROM res_rooms AS rr WHERE rr.reservation_id=?;';
         const queryParams = [id, id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    addSomeResRooms: (paramsArr, cb) => {
-        const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments, allow_charges) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);';
-        paramsArr.forEach((room, i) => {
-            const queryParams = [room.reservation_id, room.room_type_id, room.check_in_date, room.check_out_date, room.adults, room.rate, room.confirmation_code, room.comments, room.allow_charges];
-            connection.execute(queryString, queryParams, (err, result) => {
-                if (err) throw err;
-                if ((i + 1) === paramsArr.length) {
-                    cb(result);
-                }
-            });
+    addSomeResRooms: (paramsArr) => {
+        const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments, allow_charges) VALUES ?;';
+        const queryParams = paramsArr.map((resRoom) => {
+            return [resRoom.reservation_id, resRoom.room_type_id, resRoom.check_in_date, resRoom.check_out_date, resRoom.adults, resRoom.rate, resRoom.confirmation_code, resRoom.comments, resRoom.allow_charges];
         });
+        return queryPromise(queryString, queryParams);
     },
-    updateResRoomInfoById: (paramsObj, cb) => {
+    updateResRoomInfoById: (paramsObj) => {
         const queryString = 'UPDATE res_rooms SET room_type_id=?, check_in_date=?, check_out_date=?, adults=?, rate=?, comments=?, allow_charges=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.room_type_id, paramsObj.check_in_date, paramsObj.check_out_date, paramsObj.adults, paramsObj.rate, paramsObj.comments, paramsObj.allow_charges, paramsObj.res_room_id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    updateResRoomAssignById: (paramsObj, cb) => {
+    updateResRoomAssignById: (paramsObj) => {
         const queryString = 'UPDATE res_rooms SET room_type_id=?, room_id=?, rate=?, confirmation_code=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.room_type_id, paramsObj.room_id, paramsObj.rate, paramsObj.confirmation_code, paramsObj.res_room_id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    updateResRoomReassignById: (paramsObj, cb) => {
+    updateResRoomReassignById: (paramsObj) => {
         const queryString = 'UPDATE res_rooms SET room_type_id=?, room_id=?, rate=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.room_type_id, paramsObj.room_id, paramsObj.rate, paramsObj.res_room_id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    updateResRoomCheckinById: (paramsObj, cb) => {
+    updateResRoomCheckinById: (paramsObj) => {
         const queryString = 'UPDATE res_rooms SET checked_in=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.checked_in, paramsObj.res_room_id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    updateResRoomCheckoutById: (paramsObj, cb) => {
+    updateResRoomCheckoutById: (paramsObj) => {
         const queryString = 'UPDATE res_rooms SET checked_out=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.checked_out, paramsObj.res_room_id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    updateResRoomActiveByResRoomId: (paramsObj, cb) => {
+    updateResRoomActiveByResRoomId: (paramsObj) => {
         const queryString = 'UPDATE res_rooms SET active=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.active, paramsObj.res_room_id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    updateResRoomActiveByReservationId: (paramsObj, cb) => {
+    updateResRoomActiveByReservationId: (paramsObj) => {
         const queryString = 'UPDATE res_rooms SET active=? WHERE reservation_id=?;';
         const queryParams = [paramsObj.active, paramsObj.reservation_id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    deleteResRoomByResRoomId: (id, cb) => {
+    deleteResRoomByResRoomId: (id) => {
         const queryString = 'DELETE FROM res_rooms WHERE res_room_id=?;';
         const queryParams = [id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    deleteResRoomsByReservationId: (id, cb) => {
+    deleteResRoomsByReservationId: (id) => {
         const queryString = 'DELETE FROM res_rooms WHERE reservation_id=?;';
         const queryParams = [id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
 };
 

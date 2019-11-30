@@ -471,6 +471,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "city": "Fantasyland",
         "state": "Vermont",
         "zip": "23456",
+        "country": "USA",
         "email": "p.pan@yahoo.net",
         "phone": "800-555-1212",
         "credit_card_num": "1234567890123456",
