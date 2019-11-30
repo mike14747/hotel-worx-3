@@ -37,7 +37,6 @@ router.post('/', (req, res) => {
                     resRoomsArr.forEach((element, i) => {
                         resRoomsArr[i].reservation_id = data2.insertId;
                         const today = new Date();
-                        // resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data2.insertId.toString().slice(-3) + ('00' + (i + 1)).slice(-3);
                         resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data2.insertId.toString().slice(-3) + '001';
                     });
                     ResRoom.addSomeResRooms(resRoomsArr, (data3) => {
