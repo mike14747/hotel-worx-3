@@ -10,26 +10,35 @@ router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/users route root!');
 });
 
-router.get('/all', (req, res) => {
-    User.getAllUsers((data) => {
+router.get('/all', async (req, res) => {
+    try {
+        const data = await User.getAllUsers();
         res.json(data);
-    });
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.get('/id/:id', (req, res) => {
-    User.getUserById(req.params.id, (data) => {
+router.get('/id/:id', async (req, res) => {
+    try {
+        const data = await User.getUserById(req.params.id);
         res.json(data);
-    });
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     // input validation is needed here for the username and password
     if (req.body.username.length < 6 || req.body.password.length < 6) {
         res.status(406).send('Username and/or Password don\'t meet length standards!');
     } else {
-        User.checkExistingUsername(req.body.username, (data) => {
-            if (data.length === 0) {
-                bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+        try {
+            const existingUser = await User.checkExistingUsername(req.body.username);
+            if (existingUser.length === 0) {
+                bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
                     if (err) throw err;
                     const paramsObj = {
                         username: req.body.username,
@@ -37,22 +46,20 @@ router.post('/', (req, res) => {
                         access_id: req.body.access_id,
                         active: req.body.active,
                     };
-                    User.addNewUser(paramsObj, (data) => {
-                        if (data.insertId) {
-                            res.status(200).send('New user was successfully added!');
-                        } else {
-                            res.status(400).send('Could not add the new user... please check your request and try again!');
-                        }
-                    });
+                    const data = await User.addNewUser(paramsObj);
+                    res.json(data);
                 });
             } else {
                 res.status(202).send('Username is already in use!');
             }
-        });
+        } catch (err) {
+            console.log('An error has occurred! ' + err);
+            res.status(500).send('Request failed... please check your request and try again!');
+        }
     }
 });
 
-router.put('/', (req, res) => {
+router.put('/', async (req, res) => {
     // input validation is needed here for the username and password
     if (req.body.username.length < 6 || req.body.password.length < 6) {
         res.status(406).send('Username and/or Password don\'t meet length standards!');
@@ -61,36 +68,35 @@ router.put('/', (req, res) => {
             user_id: req.body.user_id,
             username: req.body.username,
         };
-        User.checkUsernameForUpdate(paramsObj, (data) => {
-            if (data.length === 0) {
-                bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+        try {
+            const confirmUser = await User.checkUsernameForUpdate(paramsObj);
+            if (confirmUser.length === 0) {
+                bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
                     if (err) throw err;
                     paramsObj.password = hash;
                     paramsObj.access_id = req.body.access_id;
                     paramsObj.active = req.body.active;
-                    User.updateUserById(paramsObj, (data) => {
-                        if (data.changedRows > 0) {
-                            res.status(200).send('User info was successfully updated!');
-                        } else {
-                            res.status(400).send('Could not update user... please check your request and try again!');
-                        }
-                    });
+                    const data = await User.updateUserById(paramsObj);
+                    res.json(data);
                 });
             } else {
                 res.status(202).send('Username is already in use!');
             }
-        });
+        } catch (err) {
+            console.log('An error has occurred! ' + err);
+            res.status(500).send('Request failed... please check your request and try again!');
+        }
     }
 });
 
-router.delete('/:id', (req, res) => {
-    User.deleteUserById(req.params.id, (data) => {
-        if (data.affectedRows === 1) {
-            res.status(200).send('User was successfully deleted!');
-        } else {
-            res.status(400).send('Could not delete user... please check your request and try again!');
-        }
-    });
+router.delete('/:id', async (req, res) => {
+    try {
+        const data = await User.deleteUserById(req.params.id);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
 module.exports = router;

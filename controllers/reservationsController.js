@@ -9,55 +9,67 @@ router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/reservations route root!');
 });
 
-router.get('/all', (req, res) => {
-    Reservation.getAllReservations((data) => {
+router.get('/all', async (req, res) => {
+    try {
+        const data = await Reservation.getAllReservations();
         res.json(data);
-    });
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.get('/id/:id', (req, res) => {
-    Reservation.getReservationById(req.params.id, (data) => {
+router.get('/id/:id', async (req, res) => {
+    try {
+        const data = await Reservation.getReservationById(req.params.id);
         res.json(data);
-    });
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.get('/res-rooms/id/:id', (req, res) => {
-    ResRoom.getResRoomsByReservationId(req.params.id, (data) => {
+router.get('/res-rooms/id/:id', async (req, res) => {
+    try {
+        const data = await ResRoom.getResRoomsByReservationId(req.params.id);
         res.json(data);
-    });
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.post('/', (req, res) => {
+router.post('/test', async (req, res) => {
+    const { resRoomsArr } = req.body;
+    try {
+        const data = await ResRoom.addSomeResRooms(resRoomsArr);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
+});
+
+router.post('/', async (req, res) => {
     const { customerObj, reservationObj, resRoomsArr } = req.body;
-    Customer.addNewCustomer(customerObj, (data1) => {
-        if (data1.insertId) {
-            reservationObj.customer_id = data1.insertId;
-            Reservation.addNewReservation(reservationObj, (data2) => {
-                if (data2.insertId) {
-                    resRoomsArr.forEach((element, i) => {
-                        resRoomsArr[i].reservation_id = data2.insertId;
-                        const today = new Date();
-                        // resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data2.insertId.toString().slice(-3) + ('00' + (i + 1)).slice(-3);
-                        resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data2.insertId.toString().slice(-3) + '001';
-                    });
-                    ResRoom.addSomeResRooms(resRoomsArr, (data3) => {
-                        if (data3.insertId) {
-                            res.status(200).send({ reservation_id: data2.insertId });
-                        } else {
-                            res.status(400).send('Could not add rooms associated with the reservation... please check your request and try again!');
-                        }
-                    });
-                } else {
-                    res.status(400).send('Could not add reservation (and thus, the rooms asscociated with the reservation)... please check your request and try again!');
-                }
-            });
-        } else {
-            res.status(400).send('Could not add customer (and thus, the reservation)... please check your request and try again!');
-        }
-    });
+    try {
+        const newCustomer = await Customer.addNewCustomer(customerObj);
+        reservationObj.customer_id = newCustomer.insertId;
+        const data = await Reservation.addNewReservation(reservationObj);
+        resRoomsArr.forEach((element, i) => {
+            resRoomsArr[i].reservation_id = data.insertId;
+            const today = new Date();
+            resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data.insertId.toString().slice(-3) + '001';
+        });
+        await ResRoom.addSomeResRooms(resRoomsArr);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.put('/', (req, res) => {
+router.put('/', async (req, res) => {
     const paramsObj = {
         reservation_id: req.body.reservation_id,
         customer_id: req.body.customer_id,
@@ -65,23 +77,24 @@ router.put('/', (req, res) => {
         comments: req.body.comments,
         active: req.body.active,
     };
-    Reservation.updateReservationById(paramsObj, (data) => {
-        if (data.changedRows > 0) {
-            res.status(200).send('Reservation was successfully updated!');
-        } else {
-            res.status(400).send('Could not update reservation... please check your request and try again!');
-        }
-    });
+    try {
+        const data = await Reservation.updateReservationById(paramsObj);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.put('/res-rooms/assign', (req, res) => {
+router.put('/res-rooms/assign', async (req, res) => {
     const baseConfirmationCode = req.body.confirmation_code.slice(0, -3);
-    ResRoom.getMaxCCodeByReservationId(req.body.reservation_id, (data1) => {
+    try {
+        const maxCode = await ResRoom.getMaxCCodeByReservationId(req.body.reservation_id);
         let newConfirmationCode;
-        if (data1[0].totalRooms === 1 || data1[0].numAssignedRooms === 0) {
+        if (maxCode[0].totalRooms === 1 || maxCode[0].numAssignedRooms === 0) {
             newConfirmationCode = req.body.confirmation_code;
         } else {
-            newConfirmationCode = baseConfirmationCode + ('00' + (data1[0].currentMaxCCode + 1).toString()).slice(-3);
+            newConfirmationCode = baseConfirmationCode + ('00' + (maxCode[0].currentMaxCCode + 1).toString()).slice(-3);
         }
         const paramsObj = {
             res_room_id: req.body.res_room_id,
@@ -90,33 +103,31 @@ router.put('/res-rooms/assign', (req, res) => {
             rate: req.body.rate,
             confirmation_code: newConfirmationCode,
         };
-        ResRoom.updateResRoomAssignById(paramsObj, (data2) => {
-            if (data2.changedRows > 0) {
-                res.status(200).send('Res_room was successfully updated!');
-            } else {
-                res.status(400).send('Could not update res_room... please check your request and try again!');
-            }
-        });
-    });
+        const assignedRoom = await ResRoom.updateResRoomAssignById(paramsObj);
+        res.json(assignedRoom);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.put('/res-rooms/reassign', (req, res) => {
+router.put('/res-rooms/reassign', async (req, res) => {
     const paramsObj = {
         res_room_id: req.body.res_room_id,
         room_type_id: req.body.room_type_id,
         room_id: req.body.room_id,
         rate: req.body.rate,
     };
-    ResRoom.updateResRoomReassignById(paramsObj, (data) => {
-        if (data.changedRows > 0) {
-            res.status(200).send('Res_room was successfully updated!');
-        } else {
-            res.status(400).send('Could not update res_room... please check your request and try again!');
-        }
-    });
+    try {
+        const data = await ResRoom.updateResRoomReassignById(paramsObj);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.put('/res-rooms/info', (req, res) => {
+router.put('/res-rooms/info', async (req, res) => {
     const paramsObj = {
         room_type_id: req.body.room_type_id,
         check_in_date: req.body.check_in_date,
@@ -126,41 +137,41 @@ router.put('/res-rooms/info', (req, res) => {
         comments: req.body.comments,
         res_room_id: req.body.res_room_id,
     };
-    ResRoom.updateResRoomInfoById(paramsObj, (data) => {
-        if (data.changedRows > 0) {
-            res.status(200).send('Res_room was successfully updated!');
-        } else {
-            res.status(400).send('Could not update res_room... please check your request and try again!');
-        }
-    });
+    try {
+        const data = await ResRoom.updateResRoomInfoById(paramsObj);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.put('/res-rooms/check-in', (req, res) => {
+router.put('/res-rooms/check-in', async (req, res) => {
     const paramsObj = {
         res_room_id: req.body.res_room_id,
         checked_in: req.body.checked_in,
     };
-    ResRoom.updateResRoomCheckinById(paramsObj, (data) => {
-        if (data.changedRows > 0) {
-            res.status(200).send('Res_room was successfully updated!');
-        } else {
-            res.status(400).send('Could not update res_room... please check your request and try again!');
-        }
-    });
+    try {
+        const data = await ResRoom.updateResRoomCheckinById(paramsObj);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.put('/res-rooms/check-out', (req, res) => {
+router.put('/res-rooms/check-out', async (req, res) => {
     const paramsObj = {
         res_room_id: req.body.res_room_id,
         checked_out: req.body.checked_out,
     };
-    ResRoom.updateResRoomCheckoutById(paramsObj, (data) => {
-        if (data.changedRows > 0) {
-            res.status(200).send('Res_room was successfully updated!');
-        } else {
-            res.status(400).send('Could not update res_room... please check your request and try again!');
-        }
-    });
+    try {
+        const data = await ResRoom.updateResRoomCheckoutById(paramsObj);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
 module.exports = router;

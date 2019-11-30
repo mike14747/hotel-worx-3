@@ -7,19 +7,27 @@ router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api/companies route root!');
 });
 
-router.get('/all', (req, res) => {
-    Company.getAllCompanies((data) => {
+router.get('/all', async (req, res) => {
+    try {
+        const data = await Company.getAllCompanies();
         res.json(data);
-    });
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.get('/id/:id', (req, res) => {
-    Company.getCompanyById(req.params.id, (data) => {
+router.get('/id/:id', async (req, res) => {
+    try {
+        const data = await Company.getCompanyById(req.params.id);
         res.json(data);
-    });
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const paramsObj = {
         company_name: req.body.company_name,
         address: req.body.address,
@@ -33,16 +41,16 @@ router.post('/', (req, res) => {
         cc_expiration: req.body.cc_expiration,
         tax_exempt: req.body.tax_exempt,
     };
-    Company.addNewCompany(paramsObj, (data) => {
-        if (data.insertId) {
-            res.status(200).send('New company was successfully added!');
-        } else {
-            res.status(400).send('Could not add the new company... please check your request and try again!');
-        }
-    });
+    try {
+        const data = await Company.addNewCompany(paramsObj);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.put('/', (req, res) => {
+router.put('/', async (req, res) => {
     const paramsObj = {
         company_id: req.body.company_id,
         company_name: req.body.company_name,
@@ -57,23 +65,23 @@ router.put('/', (req, res) => {
         cc_expiration: req.body.cc_expiration,
         tax_exempt: req.body.tax_exempt,
     };
-    Company.updateCompanyById(paramsObj, (data) => {
-        if (data.changedRows > 0) {
-            res.status(200).send('Company info was successfully updated!');
-        } else {
-            res.status(400).send('Could not update company... please check your request and try again!');
-        }
-    });
+    try {
+        const data = await Company.updateCompanyById(paramsObj);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.delete('/:id', (req, res) => {
-    Company.deleteCompanyById(req.params.id, (data) => {
-        if (data.affectedRows === 1) {
-            res.status(200).send('Company was successfully deleted!');
-        } else {
-            res.status(400).send('Could not delete company... please check your request and try again!');
-        }
-    });
+router.delete('/:id', async (req, res) => {
+    try {
+        const data = await Company.deleteCompanyById(req.params.id);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
 module.exports = router;
