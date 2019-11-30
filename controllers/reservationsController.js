@@ -14,7 +14,8 @@ router.get('/all', async (req, res) => {
         const data = await Reservation.getAllReservations();
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -23,7 +24,8 @@ router.get('/id/:id', async (req, res) => {
         const data = await Reservation.getReservationById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -32,7 +34,8 @@ router.get('/res-rooms/id/:id', async (req, res) => {
         const data = await ResRoom.getResRoomsByReservationId(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -42,7 +45,8 @@ router.post('/test', async (req, res) => {
         const data = await ResRoom.addSomeResRooms(resRoomsArr);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -52,16 +56,19 @@ router.post('/', async (req, res) => {
         const newCustomer = await Customer.addNewCustomer(customerObj);
         reservationObj.customer_id = newCustomer.insertId;
         const data = await Reservation.addNewReservation(reservationObj);
-        console.log(data);
         resRoomsArr.forEach((element, i) => {
             resRoomsArr[i].reservation_id = data.insertId;
             const today = new Date();
             resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data.insertId.toString().slice(-3) + '001';
         });
+        // console.log(resRoomsArr);
+        // resRoomsArr.reservation_id = 1200;
+        // resRoomsArr.confirmation_code = 'test code';
         await ResRoom.addSomeResRooms(resRoomsArr);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -77,7 +84,8 @@ router.put('/', async (req, res) => {
         const data = await Reservation.updateReservationById(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -118,7 +126,8 @@ router.put('/res-rooms/reassign', async (req, res) => {
         const data = await ResRoom.updateResRoomReassignById(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -136,7 +145,8 @@ router.put('/res-rooms/info', async (req, res) => {
         const data = await ResRoom.updateResRoomInfoById(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -149,7 +159,8 @@ router.put('/res-rooms/check-in', async (req, res) => {
         const data = await ResRoom.updateResRoomCheckinById(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -162,7 +173,8 @@ router.put('/res-rooms/check-out', async (req, res) => {
         const data = await ResRoom.updateResRoomCheckoutById(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 

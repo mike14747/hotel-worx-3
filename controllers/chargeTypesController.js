@@ -12,7 +12,8 @@ router.get('/id/:id', async (req, res) => {
         const data = await ChargeType.getChargeTypeById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -21,7 +22,8 @@ router.get('/all', async (req, res) => {
         const data = await ChargeType.getAllChargeTypes();
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -33,7 +35,8 @@ router.post('/', async (req, res) => {
         const data = await ChargeType.addNewChargeType(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -47,7 +50,8 @@ router.put('/', async (req, res) => {
         const data = await ChargeType.updateChargeTypeById(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -56,7 +60,8 @@ router.delete('/:id', async (req, res) => {
         const data = await ChargeType.deleteChargeTypeById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 

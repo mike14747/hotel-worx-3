@@ -28,7 +28,8 @@ router.get('/all', async (req, res) => {
         res.json(data);
     } catch (err) {
         console.log(err);
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -37,7 +38,8 @@ router.get('/id/:id', async (req, res) => {
         const data = await Generic.getTestGenericById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 

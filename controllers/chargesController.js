@@ -12,7 +12,8 @@ router.get('/id/:id', async (req, res) => {
         const data = await Charge.getChargeById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -21,7 +22,8 @@ router.get('/res-room/id/:id', async (req, res) => {
         const data = await Charge.getChargesByResRoomId(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -36,7 +38,8 @@ router.post('/', async (req, res) => {
         const data = await Charge.addNewCharge(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -51,7 +54,8 @@ router.put('/', async (req, res) => {
         const data = await Charge.updateChargeById(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -60,7 +64,8 @@ router.delete('/:id', async (req, res) => {
         const data = await Charge.deleteChargeById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -69,7 +74,8 @@ router.delete('/res-room/:id', async (req, res) => {
         const data = await Charge.deleteChargesByResRoomId(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 

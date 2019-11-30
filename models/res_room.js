@@ -23,9 +23,9 @@ const ResRoom = {
     },
     addSomeResRooms: (paramsArr) => {
         const queryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments, allow_charges) VALUES ?;';
-        const queryParams = paramsArr.map((resRoom) => {
+        const queryParams = [paramsArr.map((resRoom) => {
             return [resRoom.reservation_id, resRoom.room_type_id, resRoom.check_in_date, resRoom.check_out_date, resRoom.adults, resRoom.rate, resRoom.confirmation_code, resRoom.comments, resRoom.allow_charges];
-        });
+        })];
         return queryPromise(queryString, queryParams);
     },
     updateResRoomInfoById: (paramsObj) => {

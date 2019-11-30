@@ -10,9 +10,13 @@ router.get('/', (req, res) => {
 });
 
 router.get('/all', async (req, res) => {
-    Invoice.getAllInvoices((data) => {
+    try {
+        const data = await Invoice.getAllInvoices();
         res.json(data);
-    });
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
 router.get('/id/:id', async (req, res) => {
@@ -20,7 +24,8 @@ router.get('/id/:id', async (req, res) => {
         const data = await Invoice.getInvoiceById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -29,7 +34,8 @@ router.get('/invoice-taxes/id/:id', async (req, res) => {
         const data = await Invoice.getTaxesByInvoiceId(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -38,7 +44,8 @@ router.get('/invoice-payments/id/:id', async (req, res) => {
         const data = await Invoice.getPaymentsByInvoiceId(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -53,12 +60,13 @@ router.post('/', async (req, res) => {
             return [data.insertId, payment.payment_type_id, payment.payment_amount, payment.payment_ref_num];
         });
         await Promise.all([
-            InvoiceTax.adddataTaxes(invoiceTaxesArr2),
-            InvoicePayment.adddataPayments(invoicePaymentsArr2),
+            InvoiceTax.addNewInvoiceTaxes(invoiceTaxesArr2),
+            InvoicePayment.addNewInvoicePayments(invoicePaymentsArr2),
         ]);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -67,7 +75,8 @@ router.delete('/:id', async (req, res) => {
         const data = await Invoice.deleteInvoiceById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 

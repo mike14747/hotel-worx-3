@@ -12,7 +12,8 @@ router.get('/all', async (req, res) => {
         const data = await Customer.getAllCustomers();
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -21,7 +22,8 @@ router.get('/id/:id', async (req, res) => {
         const data = await Customer.getCustomerById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -43,7 +45,8 @@ router.post('/', async (req, res) => {
         const data = await Customer.addNewCustomer(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -66,7 +69,8 @@ router.put('/', async (req, res) => {
         const data = await Customer.updateCustomerById(paramsObj);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 
@@ -75,7 +79,8 @@ router.delete('/:id', async (req, res) => {
         const data = await Customer.deleteCustomerById(req.params.id);
         res.json(data);
     } catch (err) {
-        res.status(400).send('Request failed... please check your request and try again!');
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
     }
 });
 

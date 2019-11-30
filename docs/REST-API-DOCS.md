@@ -114,24 +114,26 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 // sample response from the '/api/rooms/available-list/:date' GET route
 [
     {
-        "room_id": 3,
-        "room_num": "103",
-        "room_type_id": 1,
-        "clean": 1,
-        "occupied": 1,
-        "availability_end": "2019-11-08"
+        "fieldCount": 0,
+        "affectedRows": 0,
+        "insertId": 0,
+        "info": "",
+        "serverStatus": 10,
+        "warningStatus": 0
     },
-    {
-        "room_id": 94,
-        "room_num": "244",
-        "room_type_id": 2,
-        "clean": 0,
-        "occupied": 0,
-        "availability_end": "n/a"
-    },
-    {
-        ...
-    }
+    [
+        {
+            "room_id": 3,
+            "room_num": "103",
+            "room_type_id": 1,
+            "clean": 1,
+            "occupied": 1,
+            "availability_ends": "2019-11-08"
+        },
+        {
+            ...
+        }
+    ]
 ]
 ```
 
@@ -488,7 +490,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
             "check_in_date": "2019-12-12",
             "check_out_date": "2019-12-15",
             "adults": 2,
-            "rate": "119.99",
+            "rate": 119.99,
             "comments": "need a good view",
             "allow_charges": 1
         },
@@ -497,7 +499,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
             "check_in_date": "2019-12-12",
             "check_out_date": "2019-12-17",
             "adults": 2,
-            "rate": "109.99",
+            "rate": 109.99,
             "comments": "want a late checkout",
             "allow_charges": 0
         }
