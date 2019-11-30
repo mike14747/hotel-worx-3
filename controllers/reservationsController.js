@@ -61,9 +61,6 @@ router.post('/', async (req, res) => {
             const today = new Date();
             resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data.insertId.toString().slice(-3) + '001';
         });
-        // console.log(resRoomsArr);
-        // resRoomsArr.reservation_id = 1200;
-        // resRoomsArr.confirmation_code = 'test code';
         await ResRoom.addSomeResRooms(resRoomsArr);
         res.json(data);
     } catch (err) {
@@ -91,12 +88,13 @@ router.put('/', async (req, res) => {
 
 router.put('/res-rooms/assign', async (req, res) => {
     const baseConfirmationCode = req.body.confirmation_code.slice(0, -3);
-    ResRoom.getMaxCCodeByReservationId(req.body.reservation_id, (data1) => {
+    try {
+        const maxCode = await ResRoom.getMaxCCodeByReservationId(req.body.reservation_id);
         let newConfirmationCode;
-        if (data1[0].totalRooms === 1 || data1[0].numAssignedRooms === 0) {
+        if (maxCode[0].totalRooms === 1 || maxCode[0].numAssignedRooms === 0) {
             newConfirmationCode = req.body.confirmation_code;
         } else {
-            newConfirmationCode = baseConfirmationCode + ('00' + (data1[0].currentMaxCCode + 1).toString()).slice(-3);
+            newConfirmationCode = baseConfirmationCode + ('00' + (maxCode[0].currentMaxCCode + 1).toString()).slice(-3);
         }
         const paramsObj = {
             res_room_id: req.body.res_room_id,
@@ -105,14 +103,12 @@ router.put('/res-rooms/assign', async (req, res) => {
             rate: req.body.rate,
             confirmation_code: newConfirmationCode,
         };
-        ResRoom.updateResRoomAssignById(paramsObj, (data2) => {
-            if (data2.changedRows > 0) {
-                res.status(200).send('Res_room was successfully updated!');
-            } else {
-                res.status(400).send('Could not update res_room... please check your request and try again!');
-            }
-        });
-    });
+        const assignedRoom = await ResRoom.updateResRoomAssignById(paramsObj);
+        res.json(assignedRoom);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
 router.put('/res-rooms/reassign', async (req, res) => {
