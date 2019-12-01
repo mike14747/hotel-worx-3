@@ -54,7 +54,7 @@ have a way to have special room rates (for groups/companies... which are lower, 
 
 we need to have companies table for rate discounts
 
-add a company_id field (nullable) to the customer table (it's been added to the reservations table)
+add a company_id field (nullable) to the customer, reservation or res_romm (not sure which) table (it's been added to the reservations table)
 
  ------------------------------------------------------
 
@@ -67,4 +67,8 @@ add a company_id field (nullable) to the customer table (it's been added to the 
   - InvoicePayment.addNewInvoicePayments (needs the newly created invoice_id)
 
  ------------------------------------------------------
+
+maybe try to switch over models/auth.js and controllers/authController to async/await... but maybe not
+
+------------------------------------------------------
 

@@ -31,7 +31,7 @@ router.get('/id/:id', async (req, res) => {
 
 router.get('/invoice-taxes/id/:id', async (req, res) => {
     try {
-        const data = await Invoice.getTaxesByInvoiceId(req.params.id);
+        const data = await InvoiceTax.getTaxesByInvoiceId(req.params.id);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -41,7 +41,7 @@ router.get('/invoice-taxes/id/:id', async (req, res) => {
 
 router.get('/invoice-payments/id/:id', async (req, res) => {
     try {
-        const data = await Invoice.getPaymentsByInvoiceId(req.params.id);
+        const data = await InvoicePayment.getPaymentsByInvoiceId(req.params.id);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
