@@ -39,17 +39,6 @@ router.get('/res-rooms/id/:id', async (req, res) => {
     }
 });
 
-router.post('/test', async (req, res) => {
-    const { resRoomsArr } = req.body;
-    try {
-        const data = await ResRoom.addSomeResRooms(resRoomsArr);
-        res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
-    }
-});
-
 router.post('/', async (req, res) => {
     const { customerObj, reservationObj, resRoomsArr } = req.body;
     try {
@@ -73,6 +62,7 @@ router.put('/', async (req, res) => {
     const paramsObj = {
         reservation_id: req.body.reservation_id,
         customer_id: req.body.customer_id,
+        user_id: req.body.user_id,
         company_id: req.body.company_id,
         comments: req.body.comments,
         active: req.body.active,
@@ -135,6 +125,7 @@ router.put('/res-rooms/info', async (req, res) => {
         adults: req.body.adults,
         rate: req.body.rate,
         comments: req.body.comments,
+        allow_charges: req.body.allow_charges,
         res_room_id: req.body.res_room_id,
     };
     try {

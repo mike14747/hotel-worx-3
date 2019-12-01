@@ -70,5 +70,9 @@ add a company_id field (nullable) to the customer, reservation or res_romm (not 
 
 maybe try to switch over models/auth.js and controllers/authController to async/await... but maybe not
 
+try to get the '/api/room-types/availability/:date', '/api/invoices/invoice-taxes/id/:id' and '/api/invoices/invoice-payments/id/:id' endpoints to return numbers instead of strings
+
+the '/api/invoices/:id' route in the controller should also delete all taxes and payments associated with this invoice_id
+
 ------------------------------------------------------
 
