@@ -908,7 +908,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **DELETE methods:**
 > ## '/api/invoices/:id'
 > * Takes in an invoice_id parameter in the url.
-> * This will permanently delete an invoice.
+> * This will permanently delete an invoice, plus any taxes and payments that were associated with that invoice through foreign key cascade on delete.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
@@ -1082,7 +1082,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/charge_types/all'
+> ## '/api/charge-types/all'
 > * Takes in a res_room_id parameter in the url.
 > * Returns all charge_types in an array of objects... each of which in its own object.
 ```
@@ -1099,7 +1099,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ```
 
 **POST methods:**
-> ## '/api/charge_types'
+> ## '/api/charge-types'
 > * It adds a new charge_types.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
@@ -1112,7 +1112,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ```
 
 **PUT methods:**
-> ## '/api/charge_types'
+> ## '/api/charge-types'
 > * It is used to edit an existing charge type by charge_type_id.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
@@ -1138,15 +1138,57 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ## /api/payment-types
 
 **GET methods:**
+> ## '/api/payment-types'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/payment-types route root.
 
+> ## '/api/payment-types/all'
+> * Takes in no parameters.
+> * Returns all payment types and their details in an array of objects.
+```
+// sample response from the '/api/payment-types/all' GET route
+[
+    {
+        "payment_type_id": 1,
+        "payment_type": "Credit Card",
+        "active": 1
+    },
+    {
+        ...
+    }
+]
+```
 
 **POST methods:**
-
+```
+// sample request for the '/api/payment-types' POST route
+{
+    "payment_type": "Travelers Check",
+    "active": 1
+}
+```
 
 **PUT methods:**
-
+> ## '/api/payment-types'
+> * It is used to edit an existing payment type by payment_type_id.
+> * Takes in a list of parameters in the body object.
+> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
+```
+// sample request for the '/api/payment-types' PUT route
+{
+    "payment_type_id": 5,
+    "payment_type": "Travelers Check2",
+    "active": 0
+}
+```
 
 **DELETE methods:**
+> ## '/api/payment-types/:id'
+> * Takes in a payment_type_id parameter in the url.
+> * This will permanently delete a payment type.
+> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 
@@ -1186,6 +1228,27 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/companies/id/:id'
 > * Takes in a company_id parameter in the url.
 > * Returns the same as the '/api/companies/all' route above, but the array will contain only a single company object.
+// sample response from the '/api/companies/id/:id' GET route
+[
+    {
+        "company_id": 1,
+        "company_name": "Union Sand",
+        "address": "234 Bank St",
+        "city": "Painesville",
+        "state": "Ohio",
+        "zip": "44077",
+        "country": "USA",
+        "email": "u.sand@yahoo.net",
+        "phone": "800-555-1212",
+        "credit_card_num": "1234567890123456",
+        "cc_expiration": "11 / 24",
+        "tax_exempt": 0
+    },
+    {
+        ...
+    }
+]
+```
 
 **POST methods:**
 > ## '/api/companies'
@@ -1235,6 +1298,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **DELETE methods:**
 > ## '/api/companies/:id'
 > * Takes in a company_id parameter in the url.
+> * It will delete a single company.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
@@ -1243,10 +1307,26 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ## /api/auth
 
 **GET methods:**
+> ## '/api/auth'
+> * Takes in no parameters.
+> * It outputs status code 200 and a message from the /api/auth route root.
 
+> ## '/api/auth/logout'
+> * Takes in no parameters.
+> * It is used by Passport JS to log out a user.
+> * It calls: **req.logout();**, then sets the req.user object to that of a guest.
 
 **POST methods:**
-
+> ## '/api/auth/login'
+> * Takes in a list of parameters in the body object.
+> * If successful, ???.
+> * If unsuccessful, ???.
+```
+// sample request body for the '/api/auth' POST route
+{
+    
+}
+```
 
 **PUT methods:**
 

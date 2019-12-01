@@ -74,5 +74,9 @@ try to get the '/api/room-types/availability/:date', '/api/invoices/invoice-taxe
 
 the '/api/invoices/:id' route in the controller should also delete all taxes and payments associated with this invoice_id
 
+finish the '/api/auth' section in api discounts
+
+set the proper redirects (if any) in authController
+
 ------------------------------------------------------
 

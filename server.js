@@ -3,6 +3,7 @@ const { PORT } = process.env;
 
 const express = require('express');
 const app = express();
+const path = require('path');
 
 const passport = require('passport');
 const session = require('express-session');
@@ -43,7 +44,12 @@ const controllers = require('./controllers');
 // app.use('/api', controllers);
 app.use('/api', isAuthenticated, controllers);
 
+app.get('*', (req, res) => {
+    if (process.env.NODE_ENV === 'production') {
+        res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    }
+});
+
 app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
     console.log(`Express API Server now listening on PORT ${PORT}!`);
 });
