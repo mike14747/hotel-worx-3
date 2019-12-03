@@ -1,6 +1,11 @@
 const queryPromise = require('../config/queryPromise');
+const queryPromiseNoParams = require('../config/queryPromiseNoParams');
 
 const Charge = {
+    getAllCharges: () => {
+        const queryString = 'SELECT ch.charge_id, ct.charge_type, ch.charge_amount, ch.taxable FROM charges AS ch INNER JOIN charge_types AS ct ON ch.charge_type_id=ct.charge_type_id;';
+        return queryPromiseNoParams(queryString);
+    },
     getChargeById: (id) => {
         const queryString = 'SELECT ch.charge_id, ct.charge_type, ch.charge_amount, ch.taxable FROM charges AS ch INNER JOIN charge_types AS ct ON ch.charge_type_id=ct.charge_type_id WHERE charge_id=? LIMIT 1;';
         const queryParams = [id];

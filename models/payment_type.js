@@ -2,8 +2,8 @@ const queryPromise = require('../config/queryPromise');
 const queryPromiseNoParams = require('../config/queryPromiseNoParams');
 
 const PaymentType = {
-    getPaymentTypeId: (id) => {
-        const queryString = 'SELECT pt.payment_type_id, pt.payment_type, pt.active FROM payment_types AS pt WHERE pt.paymeny_type_id=?;';
+    getPaymentTypeById: (id) => {
+        const queryString = 'SELECT pt.payment_type_id, pt.payment_type, pt.active FROM payment_types AS pt WHERE pt.payment_type_id=?;';
         const queryParams = [id];
         return queryPromise(queryString, queryParams);
     },

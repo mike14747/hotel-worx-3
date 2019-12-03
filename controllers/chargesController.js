@@ -3,13 +3,9 @@ const Charge = require('../models/charge');
 
 // all these routes point to /api/charges as specified in server.js and controllers/index.js
 
-router.get('/', (req, res) => {
-    res.status(200).send('Sending this from the /api/charges route root!');
-});
-
-router.get('/id/:id', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const data = await Charge.getChargeById(req.params.id);
+        const data = await Charge.getAllCharges();
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -17,7 +13,17 @@ router.get('/id/:id', async (req, res) => {
     }
 });
 
-router.get('/res-room/id/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
+    try {
+        const data = await Charge.getChargeById(req.params.id);
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed.. please check your request and try again!');
+    }
+});
+
+router.get('/res-rooms/:id', async (req, res) => {
     try {
         const data = await Charge.getChargesByResRoomId(req.params.id);
         res.json(data);
@@ -69,7 +75,7 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-router.delete('/res-room/:id', async (req, res) => {
+router.delete('/res-rooms/:id', async (req, res) => {
     try {
         const data = await Charge.deleteChargesByResRoomId(req.params.id);
         res.json(data);

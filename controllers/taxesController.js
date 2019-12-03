@@ -3,13 +3,19 @@ const Tax = require('../models/tax');
 
 // all these routes point to /api/taxes as specified in server.js and controllers/index.js
 
-router.get('/', (req, res) => {
-    res.status(200).send('Sending this from the /api/taxes route root!');
+router.get('/', async (req, res) => {
+    try {
+        const data = await Tax.getAllTaxes();
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
 });
 
-router.get('/all', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const data = await Tax.getAllTaxRates();
+        const data = await Tax.getTaxById(req.params.id);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

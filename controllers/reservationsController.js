@@ -5,11 +5,7 @@ const ResRoom = require('../models/res_room');
 
 // all these routes point to /api/room-types as specified in server.js and controllers/index.js
 
-router.get('/', (req, res) => {
-    res.status(200).send('Sending this from the /api/reservations route root!');
-});
-
-router.get('/all', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const data = await Reservation.getAllReservations();
         res.json(data);
@@ -19,7 +15,7 @@ router.get('/all', async (req, res) => {
     }
 });
 
-router.get('/id/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const data = await Reservation.getReservationById(req.params.id);
         res.json(data);
@@ -29,7 +25,7 @@ router.get('/id/:id', async (req, res) => {
     }
 });
 
-router.get('/res-rooms/id/:id', async (req, res) => {
+router.get('/:id/res-rooms', async (req, res) => {
     try {
         const data = await ResRoom.getResRoomsByReservationId(req.params.id);
         res.json(data);
@@ -117,7 +113,7 @@ router.put('/res-rooms/reassign', async (req, res) => {
     }
 });
 
-router.put('/res-rooms/info', async (req, res) => {
+router.put('/res-rooms', async (req, res) => {
     const paramsObj = {
         room_type_id: req.body.room_type_id,
         check_in_date: req.body.check_in_date,
@@ -137,13 +133,9 @@ router.put('/res-rooms/info', async (req, res) => {
     }
 });
 
-router.put('/res-rooms/check-in', async (req, res) => {
-    const paramsObj = {
-        res_room_id: req.body.res_room_id,
-        checked_in: req.body.checked_in,
-    };
+router.put('/res-rooms/check-in/:id', async (req, res) => {
     try {
-        const data = await ResRoom.updateResRoomCheckinById(paramsObj);
+        const data = await ResRoom.updateResRoomCheckinById(req.params.id);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -151,13 +143,9 @@ router.put('/res-rooms/check-in', async (req, res) => {
     }
 });
 
-router.put('/res-rooms/check-out', async (req, res) => {
-    const paramsObj = {
-        res_room_id: req.body.res_room_id,
-        checked_out: req.body.checked_out,
-    };
+router.put('/res-rooms/check-out/:id', async (req, res) => {
     try {
-        const data = await ResRoom.updateResRoomCheckoutById(paramsObj);
+        const data = await ResRoom.updateResRoomCheckoutById(req.params.id);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

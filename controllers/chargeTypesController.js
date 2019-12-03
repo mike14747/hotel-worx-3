@@ -3,13 +3,9 @@ const ChargeType = require('../models/charge_type');
 
 // all these routes point to /api/charge-types as specified in server.js and controllers/index.js
 
-router.get('/', (req, res) => {
-    res.status(200).send('Sending this from the /api/charge-types route root!');
-});
-
-router.get('/id/:id', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const data = await ChargeType.getChargeTypeById(req.params.id);
+        const data = await ChargeType.getAllChargeTypes();
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -17,9 +13,9 @@ router.get('/id/:id', async (req, res) => {
     }
 });
 
-router.get('/all', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const data = await ChargeType.getAllChargeTypes();
+        const data = await ChargeType.getChargeTypeById(req.params.id);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

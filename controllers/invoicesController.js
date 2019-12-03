@@ -5,21 +5,17 @@ const InvoicePayment = require('../models/invoice_payment');
 
 // all these routes point to /api/invoices as specified in server.js and controllers/index.js
 
-router.get('/', (req, res) => {
-    res.status(200).send('Sending this from the /api/invoices route root!');
-});
-
-router.get('/all', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const data = await Invoice.getAllInvoices();
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+        res.status(500).send('Request failed.. please check your request and try again!');
     }
 });
 
-router.get('/id/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const data = await Invoice.getInvoiceById(req.params.id);
         res.json(data);
@@ -29,7 +25,7 @@ router.get('/id/:id', async (req, res) => {
     }
 });
 
-router.get('/invoice-taxes/id/:id', async (req, res) => {
+router.get('/:id/invoice-taxes', async (req, res) => {
     try {
         const data = await InvoiceTax.getTaxesByInvoiceId(req.params.id);
         res.json(data);
@@ -39,7 +35,7 @@ router.get('/invoice-taxes/id/:id', async (req, res) => {
     }
 });
 
-router.get('/invoice-payments/id/:id', async (req, res) => {
+router.get('/:id/invoice-payments', async (req, res) => {
     try {
         const data = await InvoicePayment.getPaymentsByInvoiceId(req.params.id);
         res.json(data);

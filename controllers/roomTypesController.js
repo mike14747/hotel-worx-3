@@ -3,11 +3,7 @@ const RoomType = require('../models/room_type');
 
 // all these routes point to /api/room-types as specified in server.js and controllers/index.js
 
-router.get('/', (req, res) => {
-    res.status(200).send('Sending this from the /api/room-types route root!');
-});
-
-router.get('/all', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const data = await RoomType.getAllRoomTypes();
         res.json(data);
@@ -17,7 +13,7 @@ router.get('/all', async (req, res) => {
     }
 });
 
-router.get('/id/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const data = await RoomType.getRoomTypeById(req.params.id);
         res.json(data);
