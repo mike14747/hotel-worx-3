@@ -179,7 +179,7 @@ CREATE TABLE invoices (
 CREATE TABLE invoice_taxes (
     invoice_tax_id int(10) NOT NULL AUTO_INCREMENT,
     invoice_id int(10) NOT NULL,
-    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE CASCADE ON UPDATE CASCADE,
     tax_id int(3) NOT NULL,
     tax_amount decimal(6,2) DEFAULT 0,
     PRIMARY KEY (invoice_tax_id)
@@ -190,7 +190,7 @@ CREATE TABLE invoice_taxes (
 CREATE TABLE invoice_payments (
     invoice_payment_id int(10) NOT NULL AUTO_INCREMENT,
     invoice_id int(10) NOT NULL,
-    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE CASCADE ON UPDATE CASCADE,
     payment_type_id int(3) NOT NULL,
     payment_amount decimal(6,2) DEFAULT 0,
     payment_ref_num varchar(30) NOT NULL,

@@ -21,8 +21,8 @@ class axiosTest extends Component {
             .then(axios.spread((invoice, charges, taxes, payments) => {
                 this.setState({ invoice: invoice.data[0], charges: charges.data, taxes: taxes.data, payments: payments.data });
             }))
-            .catch((error) => {
-                console.log(error);
+            .catch((err) => {
+                console.log(err);
             });
     }
 

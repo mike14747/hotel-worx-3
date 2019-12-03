@@ -1,36 +1,25 @@
-const connection = require('../config/connection');
+const queryPromise = require('../config/queryPromise');
+const queryPromiseNoParams = require('../config/queryPromiseNoParams');
 
 const TaxRate = {
-    getAllTaxRates: (cb) => {
-        const queryString = 'SELECT tr.tax_name, tr.tax_rate FROM tax_rates AS tr;';
-        connection.execute(queryString, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+    getAllTaxRates: () => {
+        const queryString = 'SELECT t.tax_name, t.tax_rate FROM taxes AS t;';
+        return queryPromiseNoParams(queryString);
     },
-    addNewTax: (paramsObj, cb) => {
+    addNewTax: (paramsObj) => {
         const queryString = 'INSERT INTO taxes (tax_name, tax_rate) VALUES (?, ?);';
         const queryParams = [paramsObj.tax_name, paramsObj.tax_rate];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
-    updateTaxById: (paramsObj, cb) => {
+    updateTaxById: (paramsObj) => {
         const queryString = 'UPDATE taxes SET tax_name=?, tax_rate=?, active=? WHERE tax_id=?;';
-        const queryParams = [paramsObj.tax_name, paramsObj.tax_rate, paramsObj.tax_id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        const queryParams = [paramsObj.tax_name, paramsObj.tax_rate, paramsObj.active, paramsObj.tax_id];
+        return queryPromise(queryString, queryParams);
     },
-    deleteTaxById: (id, cb) => {
+    deleteTaxById: (id) => {
         const queryString = 'DELETE FROM taxes WHERE tax_id=?;';
         const queryParams = [id];
-        connection.execute(queryString, queryParams, (err, result) => {
-            if (err) throw err;
-            cb(result);
-        });
+        return queryPromise(queryString, queryParams);
     },
 };
 
