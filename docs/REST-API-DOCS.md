@@ -7,8 +7,9 @@
 * Some routes will have level 2 or level 3 requirements. They will be denoted as such.
 
 ---
+---
 
-## /api/rooms
+## **/api/rooms**
 
 **GET methods:**
 > ## '/api/rooms'
@@ -221,8 +222,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/users
+## **/api/users**
 
 **GET methods:**
 > ## '/api/users'
@@ -303,8 +305,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/customers
+## **/api/customers**
 
 **GET methods:**
 > ## '/api/customers'
@@ -409,6 +412,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
 ## /api/reservations
 
@@ -440,7 +444,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/reservations/:id'
 > * Takes in a reservation_id parameter in the url.
 > * Returns an array containing a single reservation object.
-> * This route should be used in conjunction with the **/api/reservations/:id/res-rooms** route to get all rooms associated with this reservation.
+> * This route should be used in conjunction with the **/api/reservations/:id/res-rooms** route to get detailed info about all rooms associated with this reservation.
 ```
 // sample response from this route
 [
@@ -640,8 +644,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 
 ---
+---
 
-## /api/room-types
+## **/api/room-types**
 
 **GET methods:**
 > ## '/api/room-types'
@@ -745,8 +750,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/invoices
+## **/api/invoices**
 
 **GET methods:**
 > ## '/api/invoices'
@@ -899,8 +905,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/taxes
+## **/api/taxes**
 
 **GET methods:**
 > ## '/api/taxes'
@@ -972,8 +979,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/charges
+## **/api/charges**
 
 **GET methods:**
 > ## '/api/charges'
@@ -1073,8 +1081,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/charge-types
+## **/api/charge-types**
 
 **GET methods:**
 > ## '/api/charge-types'
@@ -1143,8 +1152,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/payment-types
+## **/api/payment-types**
 
 **GET methods:**
 > ## '/api/payment-types'
@@ -1210,8 +1220,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/companies
+## **/api/companies**
 
 **GET methods:**
 > ## '/api/companies'
@@ -1316,8 +1327,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
+---
 
-## /api/auth
+## **/api/auth**
 
 **GET methods:**
 > ## '/api/auth'
@@ -1348,8 +1360,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 
 ---
+---
 
-## /api?
+## **/api?**
 
 **GET methods:**
 
@@ -1363,4 +1376,5 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **DELETE methods:**
 
 
+---
 ---
