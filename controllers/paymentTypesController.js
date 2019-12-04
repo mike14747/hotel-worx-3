@@ -3,13 +3,19 @@ const PaymentType = require('../models/payment_type');
 
 // all these routes point to /api/payment-types as specified in server.js and controllers/index.js
 
-router.get('/', (req, res) => {
-    res.status(200).send('Sending this from the /api/payment-types route root!');
-});
-
-router.get('/all', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const data = await PaymentType.getAllPaymentTypes();
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const data = await PaymentType.getPaymentTypeById(req.params.id);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
