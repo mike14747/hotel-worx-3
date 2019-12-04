@@ -1,13 +1,13 @@
 const queryPromise = require('../config/queryPromise');
 const queryPromiseNoParams = require('../config/queryPromiseNoParams');
 
-const TaxRate = {
+const Tax = {
     getAllTaxes: () => {
-        const queryString = 'SELECT t.tax_name, t.tax_rate FROM taxes AS t;';
+        const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate FROM taxes AS t;';
         return queryPromiseNoParams(queryString);
     },
     getTaxById: (id) => {
-        const queryString = 'SELECT t.tax_name, t.tax_rate FROM taxes AS t WHERE tax_id=?;';
+        const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate FROM taxes AS t WHERE tax_id=?;';
         const queryParams = [id];
         return queryPromise(queryString, queryParams);
     },
@@ -28,4 +28,4 @@ const TaxRate = {
     },
 };
 
-module.exports = TaxRate;
+module.exports = Tax;

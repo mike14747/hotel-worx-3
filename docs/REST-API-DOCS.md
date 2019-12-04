@@ -13,13 +13,9 @@
 **GET methods:**
 > ## '/api/rooms'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/rooms route root.
-
-> ## '/api/rooms/all'
-> * Takes in no parameters.
-> * Returns all rooms and their details in an array of objects.
+> * Returns all rooms and their details in an array of room objects.
 ```
-// sample response from the '/api/rooms/all' GET route
+// sample response from this route
 [
     {
         "room_id": 1,
@@ -39,11 +35,11 @@
 ]
 ```
 
-> ## '/api/rooms/id/:id'
+> ## '/api/rooms/:id'
 > * Takes in a room_id parameter in the url.
-> * Returns a single room's details in an array of a single room object.
+> * Returns an array containing a single room object.
 ```
-// sample response from the '/api/rooms/id/:id' GET route
+// sample response from this route
 [
     {
         "room_id": 21,
@@ -64,7 +60,7 @@
 > * Takes in no parameters.
 > * Returns all rooms in an array of objects with just each room's room_id and room_num.
 ```
-// sample response from the '/api/rooms/all-ids-nums' GET route
+// sample response from this route
 [
     {
         "room_id": 1,
@@ -80,7 +76,7 @@
 > * Takes in no parameters.
 > * Returns detailed house status for the hotel.
 ```
-// sample response from the '/api/rooms/house-status' GET route
+// sample response from this route
 [
     {
         "roomsToSell": 98,
@@ -97,13 +93,13 @@
 > * It returns an array of room objects for all rooms meeting the criteria of the query parameters.
 > * Each of the room objects show detailed room status information.
 ```
-// sample request url for the '/api/rooms/housekeeping-status' GET route
+// sample url query request for this route
 const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 // possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved
 // possible options for all parameters are 0 and 1
 
-// sample response from the '/api/rooms/housekeeping-status' GET route
+// sample response from this route
 [
     {
         "room_num": "231",
@@ -128,7 +124,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It returns an array of active room objects which are available on the date in the url parameter.
 > * It includes the date available ends for each room (or "n/a" if a room has unlimited availability).
 ```
-// sample response from the '/api/rooms/available-list/:date' GET route
+// sample response from this route
 [
     {
         "fieldCount": 0,
@@ -160,7 +156,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/rooms' POST route
+// sample request body for this route
 {
     "room_num": "301",
     "room_type_id": 1,
@@ -178,7 +174,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/rooms' PUT route
+// sample request body for this route
 {
     "room_id": 1,
     "room_num": "101",
@@ -195,7 +191,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/rooms/clean-status' PUT route
+// sample request body for this route
 {
     "room_id": 17,
     "clean": 0
@@ -206,7 +202,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/rooms/occupied-status' PUT route
+// sample request body for this route
 {
     "room_id": 35,
     "occupied": 1
@@ -231,13 +227,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/users'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/users route root.
-
-> ## '/api/users/all'
-> * Takes in no parameters.
-> * Returns all users and their details in an array of objects (note: passwords are not included).
+> * Returns all users and their details in an array of user objects (note: passwords are not included).
 ```
-// sample response from the '/api/users/all' GET route
+// sample response from this route
 [
     {
         "user_id": 3,
@@ -251,11 +243,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/users/id/:id'
+> ## '/api/users/:id'
 > * Takes in a user_id parameter in the url.
-> * Returns a single user and their details in an array of a single user object (note: password is not included).
+> * Returns an array containing a single user object (note: password is not included).
 ```
-// sample response from the '/api/users/id/:id' GET route
+// sample response from this route
 [
     {
         "user_id": 1,
@@ -277,7 +269,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a "Username and/or Password don't meet length standards!" response.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/users' POST route
+// sample request body for this route
 {
     "username": "Jan-Front-Desk",
     "password": "new_password",
@@ -294,7 +286,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a "Username and/or Password don't meet length standards!" response.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/users' PUT route
+// sample request body for this route
 {
     "user_id": 6,
     "username": "manager123",
@@ -317,13 +309,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/customers'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/customers route root.
-
-> ## '/api/customers/all'
-> * Takes in no parameters.
 > * Returns all customers and their details in an array of customer objects.
 ```
-// sample response from the '/api/customers/all' GET route
+// sample response from this route
 [
     {
         "customer_id": 1,
@@ -345,9 +333,28 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/customers/id/:id'
+> ## '/api/customers/:id'
 > * Takes in a customer_id parameter in the url.
-> * Returns a single customer and their details in an array of a single customer object.
+> * Returns an array containing a single customer object.
+```
+// sample response from this route
+[
+    {
+        "customer_id": 1,
+        "first_name": "Jamar",
+        "last_name": "Wilkerson",
+        "address": "7193 Valley St",
+        "city": "Lexington",
+        "state": "NC",
+        "zip": "27292",
+        "country": "USA",
+        "email": "rgiersig@yahoo.com",
+        "phone": "806-427-8083",
+        "creditCardLastFour": "0920",
+        "cc_expiration": "10 / 22"
+    }
+]
+```
 
 **POST methods:**
 > ## '/api/customers'
@@ -355,7 +362,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/customers' POST route
+// sample request body for this route
 {
     "first_name": "John",
     "last_name": "Doe",
@@ -377,7 +384,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/customers' PUT route
+// sample request body for this route
 {
     "customer_id": 123,
     "first_name": "John",
@@ -408,13 +415,10 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/reservations'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/reservations route root.
-
-> ## '/api/reservations/all'
-> * Takes in no parameters.
-> * Returns all reservations and their details in an array of objects.
+> * Returns all reservations (with partial customer and res_room info) in an array of reservation objects.
+> * Each res_room on a reservation is returned on its own row.
 ```
-// sample response from the '/api/reservations/all' GET route
+// sample response from this route
 [
     {
         "reservation_id": 1001,
@@ -433,12 +437,12 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/reservations/id/:id'
+> ## '/api/reservations/:id'
 > * Takes in a reservation_id parameter in the url.
-> * Returns a single reservation and detailed customer info in an array of a single object.
-> * This route should be used in conjunction with the **/api/reservations/res-rooms/id/:id** route to get all rooms associated with this reservation.
+> * Returns an array containing a single reservation object.
+> * This route should be used in conjunction with the **/api/reservations/:id/res-rooms** route to get all rooms associated with this reservation.
 ```
-// sample response from the '/api/reservations/id/:id' GET route
+// sample response from this route
 [
     {
         "reservation_id": 1001,
@@ -461,12 +465,12 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/reservations/res-rooms/id/:id'
+> ## '/api/reservations/:id/res-rooms'
 > * Takes in a reservation_id parameter in the url.
-> * Returns all res_rooms associated with a single reservation.
-> * This route should be used in conjunction with the **/api/reservations/id/:id** route to get more info about the reservation.
+> * Returns an array of all res_rooms (and detailed res_room info) associated with a single reservation as objects.
+> * This route should be used in conjunction with the **/api/reservations/:id** route to get more info about the reservation.
 ```
-// sample response from the '/api/reservations/res-rooms/id/:id' GET route
+// sample response from this route
 [
     {
         "res_room_id": 1001,
@@ -483,7 +487,10 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "comments": "needs a late checkout time",
         "allow_charges": 1,
         "active": 1
-    }
+    },
+	{
+	    ...
+	}
 ]
 ```
 
@@ -499,7 +506,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * On this endpoint, the "insertId" will be the new reservation_id.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/reservations' POST route
+// sample request body for this route
 {
     "customerObj": {
         "first_name": "Peter",
@@ -549,7 +556,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/reservations' PUT route
+// sample request body for this route
 {
 	"reservation_id": 1201,
 	"customer_id": 201,
@@ -568,7 +575,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/reservations/res-rooms/assign' PUT route
+// sample request body for this route
 {
 	"res_room_id": 1201,
     "room_type_id": 1,
@@ -586,7 +593,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/reservations/res-rooms/reassign' PUT route
+// sample request body for this route
 {
 	"res_room_id": 1202,
     "room_type_id": 1,
@@ -596,13 +603,13 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 }
 ```
 
-> ## '/api/reservations/res-rooms/info'
+> ## '/api/reservations/res-rooms'
 > * Takes in a list of parameters in the body object.
 > * This route is used for changing information about a res_room.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/reservations/res-rooms/info' PUT route
+// sample request body for this route
 {
 	"res_room_id": 1200,
     "room_type_id": 2,
@@ -615,33 +622,19 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 }
 ```
 
-> ## '/api/reservations/res-rooms/check-in'
-> * Takes in a list of parameters in the body object.
+> ## '/api/reservations/res-rooms/:id/check-in'
+> * Takes in a res_room_id parameter in the url.
 > * This route is used for marking a res_room as checked_in.
 > * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as occupied).
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
-```
-// sample request body for the '/api/reservations/res-rooms/check-in' PUT route
-{
-	"res_room_id": 1200,
-    "checked_in": 1
-}
-```
 
-> ## '/api/reservations/res-rooms/check-out'
-> * Takes in a list of parameters in the body object.
+> ## '/api/reservations/res-rooms/:id/check-out'
+> * Takes in a res_room_id parameter in the url.
 > * This route is used for marking a res_room as checked_out.
 > * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as not occupied).
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
-```
-// sample request body for the '/api/reservations/res-rooms/check-out' PUT route
-{
-	"res_room_id": 1200,
-    "checked_out": 1
-}
-```
 
 **DELETE methods:**
 
@@ -653,13 +646,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/room-types'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/room-types route root.
-
-> ## '/api/room-types/all'
-> * Takes in no parameters.
 > * Returns all room types and their rates in an array of objects.
 ```
-// sample response from the '/api/room-types/all' GET route
+// sample response from this route
 [
     {
         "room_type_id": 1,
@@ -672,10 +661,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/room-types/id/:id'
+> ## '/api/room-types/:id'
 > * Takes in a room_type_id parameter in the url.
-> * Returns a single room type in an array containing only a single room type object.
+> * Returns an array containing a single room type object.
 ```
+// sample response from this route
 [
     {
         "room_type_id": 1,
@@ -689,7 +679,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a date parameter in the url (in the YYYY-MM-DD format).
 > * Returns an array of 14 days worth of availability objects... each of which shows detailed availabilty for that day.
 ```
-// sample response from the '/api/room-types/availability/:date' GET route
+// sample response from this route
 [
     {
         "fieldCount": 0,
@@ -725,7 +715,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/room-types' POST route
+// sample request body for this route
 {
     "type": "Double",
     "rate": 109.99
@@ -739,7 +729,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/room-types' POST route
+// sample request body for this route
 {
     "room_type_id": 2,
     "type": "King",
@@ -761,13 +751,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/invoices'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/invoices route root.
-
-> ## '/api/invoices/all'
-> * Takes in no parameters.
 > * Returns all invoices in an array of invoice objects.
 ```
-// sample response from the '/api/invoices/all' GET route
+// sample response from this route
 [
     {
         "invoice_id": 1,
@@ -781,11 +767,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/invoices/id/:id'
+> ## '/api/invoices/:id'
 > * Takes in an invoice_id parameter in the url.
 > * Returns all the details associated with the invoice (customer, company, reservation, res_room, room, room_type, payments, taxes, charges) in an array containing a single compound object.
 ```
-// sample response from the '/api/invoices/id/:id' GET route
+// sample response from this route
 [
     {
         "invoice_id": 1,
@@ -822,11 +808,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/invoices/invoice-taxes/id/:id'
+> ## '/api/invoices/:id/invoice-taxes'
 > * Takes in an invoice_id parameter in the url.
 > * Returns all taxes associated with this invoice_id in an array of tax objects.
 ```
-// sample response from the '/api/invoices/invoice-taxes/id/:id' GET route
+// sample response from this route
 [
     {
         "invoice_tax_id": 1,
@@ -840,11 +826,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/invoices/invoice-payments/id/:id'
+> ## '/api/invoices/:id/invoice-payments'
 > * Takes in an invoice_id parameter in the url.
 > * Returns all payments associated with this invoice_id in an array of payment objects.
 ```
-// sample response from the '/api/invoices/invoice-payments/id/:id' GET route
+// sample response from this route
 [
     {
         "invoice_payment_id": 1,
@@ -867,7 +853,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * On this endpoint, the "insertId" will be the new invoice_id.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/invoices' POST route
+// sample request body for this route
 {
     "invoiceObj": {
         "res_room_id": 1001,
@@ -919,20 +905,31 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/taxes'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/taxes route root.
-
-> ## '/api/taxes/all'
-> * Takes in no parameters.
-> * Returns all taxes and their info in an array of objects.
+> * Returns all taxes and their info in an array of tax objects.
 ```
-// sample response from the '/api/taxes/all' GET route
+// sample response from this route
 [
     {
+	    "tax_id": 1,
         "tax_name": "County Tax",
         "tax_rate": "5.000"
     },
     {
         ...
+    }
+]
+```
+
+> ## '/api/taxes'
+> * Takes in a tax_id parameter in the url.
+> * Returns an array containing a single tax object.
+```
+// sample response from this route
+[
+    {
+	    "tax_id": 1,
+        "tax_name": "County Tax",
+        "tax_rate": "5.000"
     }
 ]
 ```
@@ -944,7 +941,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/taxes' POST route
+// sample request body for this route
 {
     "tax_name": "Special Tax",
     "tax_rate": 2.625
@@ -958,7 +955,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/taxes' PUT route
+// sample request body for this route
 {
     "tax_id": 1,
     "tax_name": "County Tax",
@@ -981,13 +978,27 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/charges'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/charges route root.
+> * Returns an array charge objects.
+```
+// sample response from this route
+[
+    {
+        "charge_id": 1,
+        "charge_type": "Restaurant",
+        "charge_amount": "43.12",
+        "taxable": 0
+    },
+	{
+	    ...
+	}
+]
+```
 
-> ## '/api/charges/id/:id'
+> ## '/api/charges/:id'
 > * Takes in a charge_id parameter in the url.
 > * Returns an array containing a single charge object.
 ```
-// sample response from the '/api/charges/id/:id' GET route
+// sample response from this route
 [
     {
         "charge_id": 1,
@@ -998,10 +1009,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/charges/res-room/id/:id'
+> ## '/api/charges/res-rooms/:id'
 > * Takes in a res_room_id parameter in the url.
 > * Returns all charges associated with a res_room in an array of charges objects.
 ```
+// sample response from this route
 [
     {
         "charge_id": 1,
@@ -1013,6 +1025,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         ...
     }
 ]
+```
 
 **POST methods:**
 > ## '/api/charges'
@@ -1021,7 +1034,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/charges' POST route
+// sample request body for this route
 {
     "res_room_id": 1200,
     "charge_type_id": 3,
@@ -1037,7 +1050,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/charges' PUT route
+// sample request body for this route
 {
     "charge_id": 1,
     "charge_type_id": 3,
@@ -1053,7 +1066,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It returns status code 200 and a 'Charge was successfully deleted!' message if successful.
 > * It returns status code 400 and a 'Could not delete charge... please check your request and try again!' message if unsuccessful.
 
-> ## '/api/charges/res-room/:id'
+> ## '/api/charges/res-rooms/:id'
 > * Takes in a res_room_id parameter in the url.
 > * This will permanently delete all charges associated with a res_room.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
@@ -1066,24 +1079,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/charge-types'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/charge-types route root.
-
-> ## '/api/charge-types/id/:id'
-> * Takes in a charge_type_id parameter in the url.
-> * Returns an array containing a single charge object.
-```
-// sample response from the '/api/charge-types/id/:id' GET route
-[
-    {
-        "charge_type_id": 3,
-        "charge_type": "Room Service",
-        "active": 1
-    }
-]
-```
-
-> ## '/api/charge-types/all'
-> * Takes in a res_room_id parameter in the url.
 > * Returns all charge_types in an array of objects... each of which in its own object.
 ```
 [
@@ -1098,6 +1093,20 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
+> ## '/api/charge-types/:id'
+> * Takes in a charge_type_id parameter in the url.
+> * Returns an array containing a single charge object.
+```
+// sample response from this route
+[
+    {
+        "charge_type_id": 3,
+        "charge_type": "Room Service",
+        "active": 1
+    }
+]
+```
+
 **POST methods:**
 > ## '/api/charge-types'
 > * It adds a new charge_types.
@@ -1105,7 +1114,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/charge_types' POST route
+// sample request body for this route
 {
     "charge_type": "Gift Certificate"
 }
@@ -1118,7 +1127,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/charge_types' PUT route
+// sample request body for this route
 {
     "charge_type_id": 1,
     "charge_type": "Phone",
@@ -1140,13 +1149,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/payment-types'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/payment-types route root.
-
-> ## '/api/payment-types/all'
-> * Takes in no parameters.
 > * Returns all payment types and their details in an array of objects.
 ```
-// sample response from the '/api/payment-types/all' GET route
+// sample response from this route
 [
     {
         "payment_type_id": 1,
@@ -1159,9 +1164,23 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
+> ## '/api/payment-types/:id'
+> * Takes in a payment_type_id parameter in the url.
+> * Returns an array containing a single payment type object.
+```
+// sample response from this route
+[
+    {
+        "payment_type_id": 1,
+        "payment_type": "Credit Card",
+        "active": 1
+    }
+]
+```
+
 **POST methods:**
 ```
-// sample request for the '/api/payment-types' POST route
+// sample request body for this route
 {
     "payment_type": "Travelers Check",
     "active": 1
@@ -1175,7 +1194,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request for the '/api/payment-types' PUT route
+// sample request body for this route
 {
     "payment_type_id": 5,
     "payment_type": "Travelers Check2",
@@ -1197,13 +1216,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **GET methods:**
 > ## '/api/companies'
 > * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/companies route root.
-
-> ## '/api/companies/all'
-> * Takes in no parameters.
 > * Returns all companies and their details in an array of objects.
 ```
-// sample response from the '/api/companies/all' GET route
+// sample response from this route
 [
     {
         "company_id": 1,
@@ -1225,10 +1240,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/companies/id/:id'
+> ## '/api/companies/:id'
 > * Takes in a company_id parameter in the url.
-> * Returns the same as the '/api/companies/all' route above, but the array will contain only a single company object.
-// sample response from the '/api/companies/id/:id' GET route
+> * Returns an array containing a single company object.
+```
+// sample response from this route
 [
     {
         "company_id": 1,
@@ -1243,9 +1259,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "credit_card_num": "1234567890123456",
         "cc_expiration": "11 / 24",
         "tax_exempt": 0
-    },
-    {
-        ...
     }
 ]
 ```
@@ -1256,7 +1269,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/companies' POST route
+// sample request body for this route
 {
     "company_name": "Union Sand",
     "address": "234 Bank St",
@@ -1278,7 +1291,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
-// sample request body for the '/api/companies' PUT route
+// sample request body for this route
 {
     "company_id": 1,
     "company_name": "Union Sand",
@@ -1322,7 +1335,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, ???.
 > * If unsuccessful, ???.
 ```
-// sample request body for the '/api/auth' POST route
+// sample request body for this route
 {
     
 }
@@ -1351,4 +1364,3 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 
 ---
-

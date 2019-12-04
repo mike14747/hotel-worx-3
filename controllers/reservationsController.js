@@ -133,7 +133,7 @@ router.put('/res-rooms', async (req, res) => {
     }
 });
 
-router.put('/res-rooms/check-in/:id', async (req, res) => {
+router.put('/res-rooms/:id/check-in', async (req, res) => {
     try {
         const data = await ResRoom.updateResRoomCheckinById(req.params.id);
         res.json(data);
@@ -143,7 +143,7 @@ router.put('/res-rooms/check-in/:id', async (req, res) => {
     }
 });
 
-router.put('/res-rooms/check-out/:id', async (req, res) => {
+router.put('/res-rooms/:id/check-out', async (req, res) => {
     try {
         const data = await ResRoom.updateResRoomCheckoutById(req.params.id);
         res.json(data);
