@@ -158,7 +158,7 @@ router.put('/occupied-status', async (req, res) => {
     }
 });
 
-router.put('/checked-out/:id', async (req, res) => {
+router.put('/:id/checked-out', async (req, res) => {
     try {
         const data = await Room.updateRoomCheckedOutById(req.params.id);
         res.json(data);

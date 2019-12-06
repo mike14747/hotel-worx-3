@@ -1,8 +1,9 @@
-const connection = require('./connection');
+// const connection = require('./connection');
+const pool = require('./pool.js');
 
 const queryPromise = (queryString, queryParams) => {
     return new Promise((resolve, reject) => {
-        connection.query(queryString, queryParams, (err, result) => {
+        pool.query(queryString, queryParams, (err, result) => {
             if (err) return reject(err);
             resolve(result);
         });

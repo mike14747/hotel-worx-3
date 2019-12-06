@@ -209,7 +209,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "occupied": 1
 }
 ```
-> ## '/api/rooms/checked-out/:id'
+> ## '/api/rooms/:id/checked-out'
 > * Takes in a room_id parameter in the url.
 > * It sets the room's status to '**clean=0** and **occupied=0**'.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
