@@ -46,19 +46,13 @@ router.get('/:id/invoice-payments', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...req.body };
+    const paramsObj = {
+        invoiceObj: req.body.invoiceObj,
+        invoiceTaxesArr: req.body.invoiceTaxesArr,
+        invoicePaymentsArr: req.body.invoicePaymentsArr,
+    };
     try {
-        const data = await Invoice.addNewInvoice(invoiceObj);
-        const invoiceTaxesArr2 = invoiceTaxesArr.map((tax) => {
-            return [data.insertId, tax.tax_id, tax.tax_amount];
-        });
-        const invoicePaymentsArr2 = invoicePaymentsArr.map((payment) => {
-            return [data.insertId, payment.payment_type_id, payment.payment_amount, payment.payment_ref_num];
-        });
-        await Promise.all([
-            InvoiceTax.addNewInvoiceTaxes(invoiceTaxesArr2),
-            InvoicePayment.addNewInvoicePayments(invoicePaymentsArr2),
-        ]);
+        const data = await Invoice.addNewInvoice(paramsObj);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

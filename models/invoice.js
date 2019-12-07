@@ -1,6 +1,8 @@
 const queryPromise = require('../config/queryPromise');
 const queryPromiseNoParams = require('../config/queryPromiseNoParams');
 
+const pool = require('../config/pool.js');
+
 const Invoice = {
     getAllInvoices: () => {
         const queryString = 'SELECT i.invoice_id, i.res_room_id, i.total_due, i.created_at FROM invoices AS i ORDER BY i.invoice_id ASC;';
@@ -11,10 +13,34 @@ const Invoice = {
         const queryParams = [id];
         return queryPromise(queryString, queryParams);
     },
-    addNewInvoice: (paramsObj) => {
-        const queryString = 'INSERT INTO invoices (res_room_id, total_due) VALUES (?, ?);';
-        const queryParams = [paramsObj.res_room_id, paramsObj.total_due];
-        return queryPromise(queryString, queryParams);
+    addNewInvoice: async (paramsObj) => {
+        const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...paramsObj };
+        const invoiceParams = [invoiceObj.res_room_id, invoiceObj.total_due];
+        const invoiceQueryString = 'INSERT INTO invoices (res_room_id, total_due) VALUES (?, ?);';
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+            const invoiceResult = await connection.query(invoiceQueryString, invoiceParams);
+            const invoiceTaxesArr2 = invoiceTaxesArr.map((tax) => {
+                return [invoiceResult[0].insertId, tax.tax_id, tax.tax_amount];
+            });
+            const invoiceTaxesQueryString = 'INSERT INTO invoice_taxes (invoice_id, tax_id, tax_amount) VALUES ?;';
+            const invoicePaymentsArr2 = invoicePaymentsArr.map((payment) => {
+                return [invoiceResult[0].insertId, payment.payment_type_id, payment.payment_amount, payment.payment_ref_num];
+            });
+            const invoicePaymentsQueryString = 'INSERT INTO invoice_payments (invoice_id, payment_type_id, payment_amount, payment_ref_num) VALUES ?;';
+            await Promise.all([
+                connection.query(invoiceTaxesQueryString, [invoiceTaxesArr2]),
+                connection.query(invoicePaymentsQueryString, [invoicePaymentsArr2]),
+            ]);
+            await connection.commit();
+            return invoiceResult;
+        } catch (err) {
+            await connection.rollback();
+            throw err;
+        } finally {
+            await connection.release();
+        }
     },
     deleteInvoiceById: (id) => {
         const queryString = 'DELETE FROM invoices WHERE invoice_id=?;';
