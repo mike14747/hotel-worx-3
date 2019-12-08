@@ -22,12 +22,12 @@ const Reservation = {
             const customerResult = await connection.query(customerQueryString, customerParams);
             const reservationQueryString = 'INSERT INTO reservations (customer_id, company_id, user_id, comments) VALUES (?, ?, ?, ?);';
             const reservationParams = [customerResult[0].insertId, reservationObj.company_id, reservationObj.user_id, reservationObj.comments];
-            const reservationResult = await connection.query(reservationQueryString, reservationParams);
+            const [reservationResult] = await connection.query(reservationQueryString, reservationParams);
             const resRoomQueryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments, allow_charges) VALUES ?;';
             const today = new Date();
-            const confirmationCode = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + reservationResult[0].insertId.toString().slice(-3) + '001';
+            const confirmationCode = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + reservationResult.insertId.toString().slice(-3) + '001';
             const resRoomQueryParams = [resRoomsArr.map((resRoom) => {
-                return [reservationResult[0].insertId, resRoom.room_type_id, resRoom.check_in_date, resRoom.check_out_date, resRoom.adults, resRoom.rate, confirmationCode, resRoom.comments, resRoom.allow_charges];
+                return [reservationResult.insertId, resRoom.room_type_id, resRoom.check_in_date, resRoom.check_out_date, resRoom.adults, resRoom.rate, confirmationCode, resRoom.comments, resRoom.allow_charges];
             })];
             await connection.query(resRoomQueryString, resRoomQueryParams);
             await connection.commit();

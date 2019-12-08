@@ -501,11 +501,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **POST methods:**
 > ## '/api/reservations'
 > * Takes in a list of parameters in the body object.
-> * This route uses these 3 database models:
->   * customer
->   * reservation
->   * res_room
-> * The **rooms** property of the body is an array that contains an object element for each res_room in the reservation.
+> * This route accesses the reservation model which uses a database transaction that sequentially queries 3 tables (**customers, reservations and res_rooms**)... with either all succeeding/committing or rolling back if any of them fail.
+> * The **resRoomsArr** property of the body is an array that contains an object element for each res_room in the reservation.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * On this endpoint, the "insertId" will be the new reservation_id.
 > * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
@@ -625,20 +622,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "allow_charges": 1
 }
 ```
-
-> ## '/api/reservations/res-rooms/:id/check-in'
-> * Takes in a res_room_id parameter in the url.
-> * This route is used for marking a res_room as checked_in.
-> * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as occupied).
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
-
-> ## '/api/reservations/res-rooms/:id/check-out'
-> * Takes in a res_room_id parameter in the url.
-> * This route is used for marking a res_room as checked_out.
-> * It should be used in conjuction with a parallel api call to: **/api/rooms/occupied-status** (which will mark the room as not occupied).
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 **DELETE methods:**
 
@@ -854,6 +837,10 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **POST methods:**
 > ## '/api/invoices'
 > * It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).
+> * This route also does the following:
+>   * Marks the res_room of the invoice as "checked_out=1".
+>   * Marks the room of the res_room as "occupied=0" and "clean=0".
+> * It does all of the above in the invoice model using a database transaction that sequentially queries 5 tables (**invoices, invoice_taxes, invoice_payments, res_rooms and rooms**)... with either all succeeding/committing or rolling back if any of them fail.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * On this endpoint, the "insertId" will be the new invoice_id.

@@ -50,18 +50,6 @@ const ResRoom = {
         const [result] = await pool.query(queryString, queryParams);
         return result;
     },
-    updateResRoomCheckinById: async (paramsObj) => {
-        const queryString = 'UPDATE res_rooms SET checked_in=? WHERE res_room_id=?;';
-        const queryParams = [paramsObj.checked_in, paramsObj.res_room_id];
-        const [result] = await pool.query(queryString, queryParams);
-        return result;
-    },
-    updateResRoomCheckoutById: async (paramsObj) => {
-        const queryString = 'UPDATE res_rooms SET checked_out=? WHERE res_room_id=?;';
-        const queryParams = [paramsObj.checked_out, paramsObj.res_room_id];
-        const [result] = await pool.query(queryString, queryParams);
-        return result;
-    },
     updateResRoomActiveByResRoomId: async (paramsObj) => {
         const queryString = 'UPDATE res_rooms SET active=? WHERE res_room_id=?;';
         const queryParams = [paramsObj.active, paramsObj.res_room_id];

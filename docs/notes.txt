@@ -53,14 +53,18 @@ Add a company_id field (nullable) to the customer, reservation or res_romm (not 
 
  ------------------------------------------------------
 
- When an invoice is being created, these things need to happen:
+When an invoice is being created, these things need to happen:
 
+These are now done via a single model method using a transaction
  - Room.updateRoomCheckedOutById
  - ResRoom.updateResRoomCheckoutById
+
+These are now done via a single model method using a transaction
  - Invoice.addNewInvoice
  - InvoiceTax.addNewInvoiceTaxes (needs the newly created invoice_id)
  - InvoicePayment.addNewInvoicePayments (needs the newly created invoice_id)
 
+Now that both of the above have been combined into the 'addNewInvoice' invoice model method, can I delete the 'updateResRoomCheckinById' and 'updateResRoomCheckoutById' res_room model methods?
  ------------------------------------------------------
 
 Maybe try to switch over models/auth.js and controllers/authController to async/await... but maybe not

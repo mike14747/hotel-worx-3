@@ -16,22 +16,29 @@ const Invoice = {
         const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...paramsObj };
         const invoiceQueryString = 'INSERT INTO invoices (res_room_id, total_due) VALUES (?, ?);';
         const invoiceParams = [invoiceObj.res_room_id, invoiceObj.total_due];
+        const resRoomQueryString = 'UPDATE res_rooms SET checked_out=1 WHERE res_room_id=?;';
+        const resRoomParams = [invoiceObj.res_room_id];
+        const roomIdString = 'SELECT rr.room_id FROM res_rooms AS rr WHERE rr.res_room_id=? LIMIT 1;';
+        const roomOccupiedString = 'UPDATE rooms SET occupied=0, clean=0 WHERE room_id=?;';
         const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
-            const invoiceResult = await connection.query(invoiceQueryString, invoiceParams);
+            const [invoiceResult] = await connection.query(invoiceQueryString, invoiceParams);
             const invoiceTaxesArr2 = invoiceTaxesArr.map((tax) => {
-                return [invoiceResult[0].insertId, tax.tax_id, tax.tax_amount];
+                return [invoiceResult.insertId, tax.tax_id, tax.tax_amount];
             });
             const invoiceTaxesQueryString = 'INSERT INTO invoice_taxes (invoice_id, tax_id, tax_amount) VALUES ?;';
             const invoicePaymentsArr2 = invoicePaymentsArr.map((payment) => {
-                return [invoiceResult[0].insertId, payment.payment_type_id, payment.payment_amount, payment.payment_ref_num];
+                return [invoiceResult.insertId, payment.payment_type_id, payment.payment_amount, payment.payment_ref_num];
             });
             const invoicePaymentsQueryString = 'INSERT INTO invoice_payments (invoice_id, payment_type_id, payment_amount, payment_ref_num) VALUES ?;';
             await Promise.all([
                 connection.query(invoiceTaxesQueryString, [invoiceTaxesArr2]),
                 connection.query(invoicePaymentsQueryString, [invoicePaymentsArr2]),
+                connection.query(resRoomQueryString, resRoomParams),
             ]);
+            const [roomIdResult] = await connection.query(roomIdString, resRoomParams);
+            await connection.query(roomOccupiedString, [roomIdResult[0].room_id]);
             await connection.commit();
             return invoiceResult;
         } catch (err) {
