@@ -27,10 +27,10 @@ router.post('/', async (req, res) => {
     const paramsObj = {
         tax_name: req.body.tax_name,
         tax_rate: req.body.tax_rate,
-        active: req.body.active,
     };
     try {
         const data = await Tax.addNewTax(paramsObj);
+        console.log(data);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

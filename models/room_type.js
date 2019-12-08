@@ -1,17 +1,18 @@
-const queryPromise = require('../config/queryPromise');
-const queryPromiseNoParams = require('../config/queryPromiseNoParams');
+const pool = require('../config/pool.js');
 
 const RoomType = {
-    getAllRoomTypes: () => {
+    getAllRoomTypes: async () => {
         const queryString = 'SELECT rt.room_type_id, rt.type, rt.rate FROM room_types AS rt ORDER BY rt.room_type_id ASC;';
-        return queryPromiseNoParams(queryString);
+        const [result] = await pool.query(queryString);
+        return result;
     },
-    getRoomTypeById: (id) => {
+    getRoomTypeById: async (id) => {
         const queryString = 'SELECT rt.room_type_id, rt.type, rt.rate FROM room_types AS rt WHERE rt.room_type_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    getRoomTypeAvailability: (date) => {
+    getRoomTypeAvailability: async (date) => {
         const daysToShow = 14;
         let queryString = 'SET @input_date=?;';
         for (let i = 0; i < daysToShow; i++) {
@@ -20,22 +21,26 @@ const RoomType = {
             i === daysToShow - 1 && (queryString += ';');
         }
         const queryParams = [date];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    addNewRoomType: (paramsObj) => {
+    addNewRoomType: async (paramsObj) => {
         const queryString = 'INSERT INTO room_types (type, rate) VALUES (?, ?);';
         const queryParams = [paramsObj.type, paramsObj.rate];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    updateRoomTypeById: (paramsObj) => {
+    updateRoomTypeById: async (paramsObj) => {
         const queryString = 'UPDATE room_types SET type=?, rate=? WHERE room_type_id=?;';
         const queryParams = [paramsObj.type, paramsObj.rate, paramsObj.room_type_id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    deleteRoomTypeById: (id) => {
+    deleteRoomTypeById: async (id) => {
         const queryString = 'DELETE FROM room_types WHERE room_type_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
 };
 

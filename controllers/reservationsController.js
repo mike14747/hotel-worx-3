@@ -36,17 +36,13 @@ router.get('/:id/res-rooms', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { customerObj, reservationObj, resRoomsArr } = req.body;
+    const paramsObj = {
+        customerObj: req.body.customerObj,
+        reservationObj: req.body.reservationObj,
+        resRoomsArr: req.body.resRoomsArr,
+    };
     try {
-        const newCustomer = await Customer.addNewCustomer(customerObj);
-        reservationObj.customer_id = newCustomer.insertId;
-        const data = await Reservation.addNewReservation(reservationObj);
-        resRoomsArr.forEach((element, i) => {
-            resRoomsArr[i].reservation_id = data.insertId;
-            const today = new Date();
-            resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data.insertId.toString().slice(-3) + '001';
-        });
-        await ResRoom.addSomeResRooms(resRoomsArr);
+        const data = await Reservation.addNewReservation(paramsObj);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
