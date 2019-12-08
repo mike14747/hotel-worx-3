@@ -1,40 +1,46 @@
-const queryPromise = require('../config/queryPromise');
-const queryPromiseNoParams = require('../config/queryPromiseNoParams');
+const pool = require('../config/pool.js');
 
 const Generic = {
-    getAllGenerics: () => {
+    getAllGenerics: async () => {
         const queryString = 'SELECT some_field FROM some_table AS some_alias;';
-        return queryPromiseNoParams(queryString);
+        const [result] = await pool.query(queryString);
+        return result;
     },
-    getGenericById: (id) => {
+    getGenericById: async (id) => {
         const queryString = 'SELECT some_field FROM some_table AS some_alias WHERE some_condition=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    addNewGeneric: (paramsObj) => {
+    addNewGeneric: async (paramsObj) => {
         const queryString = 'INSERT INTO generic (generic_id, generic_field) VALUES (?, ?);';
         const queryParams = [paramsObj.generic_id, paramsObj.generic_field];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    updateGenericById: (paramsObj) => {
+    updateGenericById: async (paramsObj) => {
         const queryString = 'UPDATE generic SET generic_field=? WHERE generic_id=?;';
         const queryParams = [paramsObj.generic_field, paramsObj.generic_id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    deleteGenericById: (id) => {
+    deleteGenericById: async (id) => {
         const queryString = 'DELETE FROM generic WHERE generic_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
     // test methods
-    getAllTestGenerics: () => {
+    getAllTestGenerics: async () => {
         const queryString = 'SELECT c.first_name, c.last_name FROM customers AS c;';
-        return queryPromise(queryString);
+        const [result] = await pool.query(queryString);
+        return result;
     },
-    getTestGenericById: (id) => {
+    getTestGenericById: async (id) => {
         const queryString = 'SELECT c.first_name, c.last_name FROM customers AS c WHERE c.customer_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
 };
 

@@ -1,30 +1,34 @@
-const queryPromise = require('../config/queryPromise');
-const queryPromiseNoParams = require('../config/queryPromiseNoParams');
+const pool = require('../config/pool.js');
 
 const PaymentType = {
-    getPaymentTypeById: (id) => {
+    getAllPaymentTypes: async () => {
+        const queryString = 'SELECT pt.payment_type_id, pt.payment_type, pt.active FROM payment_types AS pt;';
+        const [result] = await pool.query(queryString);
+        return result;
+    },
+    getPaymentTypeById: async (id) => {
         const queryString = 'SELECT pt.payment_type_id, pt.payment_type, pt.active FROM payment_types AS pt WHERE pt.payment_type_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    getAllPaymentTypes: () => {
-        const queryString = 'SELECT pt.payment_type_id, pt.payment_type, pt.active FROM payment_types AS pt;';
-        return queryPromiseNoParams(queryString);
-    },
-    addNewPaymentType: (paramsObj) => {
+    addNewPaymentType: async (paramsObj) => {
         const queryString = 'INSERT INTO payment_types (payment_type) VALUES (?);';
         const queryParams = [paramsObj.payment_type];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    updatePaymentTypeById: (paramsObj) => {
+    updatePaymentTypeById: async (paramsObj) => {
         const queryString = 'UPDATE payment_types SET payment_type=?, active=? WHERE payment_type_id=?;';
         const queryParams = [paramsObj.payment_type, paramsObj.active, paramsObj.payment_type_id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    deletePaymentTypeById: (id) => {
+    deletePaymentTypeById: async (id) => {
         const queryString = 'DELETE FROM payment_types WHERE payment_type_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
 };
 

@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Tax.getTaxById(req.params.id);
+        const data = await Tax.getTaxById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -27,10 +27,10 @@ router.post('/', async (req, res) => {
     const paramsObj = {
         tax_name: req.body.tax_name,
         tax_rate: req.body.tax_rate,
-        active: req.body.active,
     };
     try {
         const data = await Tax.addNewTax(paramsObj);
+        console.log(data);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -56,7 +56,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await Tax.deleteTaxById(req.params.id);
+        const data = await Tax.deleteTaxById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

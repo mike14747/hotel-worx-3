@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Room.getRoomById(req.params.id);
+        const data = await Room.getRoomById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -158,9 +158,9 @@ router.put('/occupied-status', async (req, res) => {
     }
 });
 
-router.put('/checked-out/:id', async (req, res) => {
+router.put('/:id/checked-out', async (req, res) => {
     try {
-        const data = await Room.updateRoomCheckedOutById(req.params.id);
+        const data = await Room.updateRoomCheckedOutById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -170,7 +170,7 @@ router.put('/checked-out/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await Room.deleteRoomById(req.params.id);
+        const data = await Room.deleteRoomById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

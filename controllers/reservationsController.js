@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const Reservation = require('../models/reservation');
-const Customer = require('../models/customer');
 const ResRoom = require('../models/res_room');
 
 // all these routes point to /api/room-types as specified in server.js and controllers/index.js
@@ -17,7 +16,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Reservation.getReservationById(req.params.id);
+        const data = await Reservation.getReservationById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -27,7 +26,7 @@ router.get('/:id', async (req, res) => {
 
 router.get('/:id/res-rooms', async (req, res) => {
     try {
-        const data = await ResRoom.getResRoomsByReservationId(req.params.id);
+        const data = await ResRoom.getResRoomsByReservationId(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -36,17 +35,13 @@ router.get('/:id/res-rooms', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { customerObj, reservationObj, resRoomsArr } = req.body;
+    const paramsObj = {
+        customerObj: req.body.customerObj,
+        reservationObj: req.body.reservationObj,
+        resRoomsArr: req.body.resRoomsArr,
+    };
     try {
-        const newCustomer = await Customer.addNewCustomer(customerObj);
-        reservationObj.customer_id = newCustomer.insertId;
-        const data = await Reservation.addNewReservation(reservationObj);
-        resRoomsArr.forEach((element, i) => {
-            resRoomsArr[i].reservation_id = data.insertId;
-            const today = new Date();
-            resRoomsArr[i].confirmation_code = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + data.insertId.toString().slice(-3) + '001';
-        });
-        await ResRoom.addSomeResRooms(resRoomsArr);
+        const data = await Reservation.addNewReservation(paramsObj);
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -135,7 +130,7 @@ router.put('/res-rooms', async (req, res) => {
 
 router.put('/res-rooms/:id/check-in', async (req, res) => {
     try {
-        const data = await ResRoom.updateResRoomCheckinById(req.params.id);
+        const data = await ResRoom.updateResRoomCheckinById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -145,7 +140,7 @@ router.put('/res-rooms/:id/check-in', async (req, res) => {
 
 router.put('/res-rooms/:id/check-out', async (req, res) => {
     try {
-        const data = await ResRoom.updateResRoomCheckoutById(req.params.id);
+        const data = await ResRoom.updateResRoomCheckoutById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

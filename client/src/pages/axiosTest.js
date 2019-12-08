@@ -1,5 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 import axios from 'axios';
+import { UserContext } from '../App';
+
+// const user = useContext(UserContext);
 
 class axiosTest extends Component {
     state = {
@@ -13,10 +16,10 @@ class axiosTest extends Component {
 
     componentDidMount() {
         axios.all([
-            axios.get('/api/invoices/id/' + this.state.invoice_id),
-            axios.get('/api/charges/res-room/id/' + this.state.res_room_id),
-            axios.get('/api/invoices/invoice-taxes/id/' + this.state.invoice_id),
-            axios.get('/api/invoices/invoice-payments/id/' + this.state.invoice_id),
+            axios.get('/api/invoices/' + this.state.invoice_id),
+            axios.get('/api/charges/res-rooms/' + this.state.res_room_id),
+            axios.get('/api/invoices/' + this.state.invoice_id + '/invoice-taxes'),
+            axios.get('/api/invoices/' + this.state.invoice_id + '/invoice-payments'),
         ])
             .then(axios.spread((invoice, charges, taxes, payments) => {
                 this.setState({ invoice: invoice.data[0], charges: charges.data, taxes: taxes.data, payments: payments.data });
@@ -32,6 +35,11 @@ class axiosTest extends Component {
                 <h1>This is the axios call test page.</h1>
                 <h4>Hard Coded Invoice ID: {this.state.invoice_id}</h4>
                 <h4>Hard Coded Res Room ID: {this.state.res_room_id}</h4>
+                <UserContext>
+                    {props => {
+                        return <div>Username: {props.username} | Access Level: {props.access_level}</div>;
+                    }}
+                </UserContext>
                 <b>Invoice Info:</b>
                 <ul>
                     <li>Invoice ID: {this.state.invoice.invoice_id}</li>

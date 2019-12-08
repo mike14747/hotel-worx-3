@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Company.getCompanyById(req.params.id);
+        const data = await Company.getCompanyById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -72,7 +72,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await Company.deleteCompanyById(req.params.id);
+        const data = await Company.deleteCompanyById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

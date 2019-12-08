@@ -1,30 +1,35 @@
-const queryPromise = require('../config/queryPromise');
-const queryPromiseNoParams = require('../config/queryPromiseNoParams');
+const pool = require('../config/pool.js');
 
 const Tax = {
-    getAllTaxes: () => {
+    getAllTaxes: async () => {
         const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate FROM taxes AS t;';
-        return queryPromiseNoParams(queryString);
+        const [result] = await pool.query(queryString);
+        console.log(result);
+        return result;
     },
-    getTaxById: (id) => {
-        const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate FROM taxes AS t WHERE tax_id=?;';
+    getTaxById: async (id) => {
+        const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate FROM taxes AS t WHERE t.tax_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    addNewTax: (paramsObj) => {
+    addNewTax: async (paramsObj) => {
         const queryString = 'INSERT INTO taxes (tax_name, tax_rate) VALUES (?, ?);';
         const queryParams = [paramsObj.tax_name, paramsObj.tax_rate];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    updateTaxById: (paramsObj) => {
+    updateTaxById: async (paramsObj) => {
         const queryString = 'UPDATE taxes SET tax_name=?, tax_rate=?, active=? WHERE tax_id=?;';
         const queryParams = [paramsObj.tax_name, paramsObj.tax_rate, paramsObj.active, paramsObj.tax_id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    deleteTaxById: (id) => {
+    deleteTaxById: async (id) => {
         const queryString = 'DELETE FROM taxes WHERE tax_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
 };
 

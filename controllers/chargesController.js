@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Charge.getChargeById(req.params.id);
+        const data = await Charge.getChargeById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -25,7 +25,7 @@ router.get('/:id', async (req, res) => {
 
 router.get('/res-rooms/:id', async (req, res) => {
     try {
-        const data = await Charge.getChargesByResRoomId(req.params.id);
+        const data = await Charge.getChargesByResRoomId(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -67,7 +67,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await Charge.deleteChargeById(req.params.id);
+        const data = await Charge.deleteChargeById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -77,7 +77,7 @@ router.delete('/:id', async (req, res) => {
 
 router.delete('/res-rooms/:id', async (req, res) => {
     try {
-        const data = await Charge.deleteChargesByResRoomId(req.params.id);
+        const data = await Charge.deleteChargesByResRoomId(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

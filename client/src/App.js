@@ -10,7 +10,10 @@ import Calendar from './components/calendar/index';
 import NavBar from './components/navbar/navbar';
 import AxiosTest from './pages/axiosTest';
 
+export const UserContext = React.createContext();
+
 export default function App() {
+    const user = { username: 'Guest', access_level: 0 };
     return (
         <Router>
             <div>
@@ -34,7 +37,9 @@ export default function App() {
                         <Calendar />
                     </Route>
                     <Route exact path="/axiostest">
-                        <AxiosTest />
+                        <UserContext.Provider value={user}>
+                            <AxiosTest />
+                        </UserContext.Provider>
                     </Route>
                     <Route path="*">
                         <Home />
@@ -59,7 +64,7 @@ class User extends Component {
     };
 
     componentDidMount() {
-        fetch('/api/user/id/1')
+        fetch('/api/users/1')
             .then(response => response.json())
             .then(data => this.setState({ userArray: data }))
             .catch(err => console.log('There has been an error.\n\n' + err));

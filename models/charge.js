@@ -1,40 +1,46 @@
-const queryPromise = require('../config/queryPromise');
-const queryPromiseNoParams = require('../config/queryPromiseNoParams');
+const pool = require('../config/pool.js');
 
 const Charge = {
-    getAllCharges: () => {
+    getAllCharges: async () => {
         const queryString = 'SELECT ch.charge_id, ct.charge_type, ch.charge_amount, ch.taxable FROM charges AS ch INNER JOIN charge_types AS ct ON ch.charge_type_id=ct.charge_type_id;';
-        return queryPromiseNoParams(queryString);
+        const [result] = await pool.query(queryString);
+        return result;
     },
-    getChargeById: (id) => {
+    getChargeById: async (id) => {
         const queryString = 'SELECT ch.charge_id, ct.charge_type, ch.charge_amount, ch.taxable FROM charges AS ch INNER JOIN charge_types AS ct ON ch.charge_type_id=ct.charge_type_id WHERE charge_id=? LIMIT 1;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    getChargesByResRoomId: (id) => {
+    getChargesByResRoomId: async (id) => {
         const queryString = 'SELECT ch.charge_id, ct.charge_type, ch.charge_amount, ch.taxable FROM charges AS ch INNER JOIN charge_types AS ct ON ch.charge_type_id=ct.charge_type_id WHERE res_room_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    addNewCharge: (paramsObj) => {
+    addNewCharge: async (paramsObj) => {
         const queryString = 'INSERT INTO charges (res_room_id, charge_type_id, charge_amount, taxable) VALUES(?, ?, ?, ?);';
         const queryParams = [paramsObj.res_room_id, paramsObj.charge_type_id, paramsObj.charge_amount, paramsObj.taxable];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    updateChargeById: (paramsObj) => {
+    updateChargeById: async (paramsObj) => {
         const queryString = 'UPDATE charges SET charge_type_id=?, charge_amount=?, taxable=? WHERE charge_id=?;';
         const queryParams = [paramsObj.charge_type_id, paramsObj.charge_amount, paramsObj.taxable, paramsObj.charge_id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    deleteChargeById: (id) => {
+    deleteChargeById: async (id) => {
         const queryString = 'DELETE FROM charges WHERE charge_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
-    deleteChargesByResRoomId: (id) => {
+    deleteChargesByResRoomId: async (id) => {
         const queryString = 'DELETE FROM charges WHERE res_room_id=?;';
         const queryParams = [id];
-        return queryPromise(queryString, queryParams);
+        const [result] = await pool.query(queryString, queryParams);
+        return result;
     },
 };
 
