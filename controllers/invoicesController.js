@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Invoice.getInvoiceById(req.params.id);
+        const data = await Invoice.getInvoiceById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
 
 router.get('/:id/invoice-taxes', async (req, res) => {
     try {
-        const data = await InvoiceTax.getTaxesByInvoiceId(req.params.id);
+        const data = await InvoiceTax.getTaxesByInvoiceId(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -37,7 +37,7 @@ router.get('/:id/invoice-taxes', async (req, res) => {
 
 router.get('/:id/invoice-payments', async (req, res) => {
     try {
-        const data = await InvoicePayment.getPaymentsByInvoiceId(req.params.id);
+        const data = await InvoicePayment.getPaymentsByInvoiceId(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await Invoice.deleteInvoiceById(req.params.id);
+        const data = await Invoice.deleteInvoiceById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

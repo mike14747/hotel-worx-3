@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Reservation.getReservationById(req.params.id);
+        const data = await Reservation.getReservationById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
 
 router.get('/:id/res-rooms', async (req, res) => {
     try {
-        const data = await ResRoom.getResRoomsByReservationId(req.params.id);
+        const data = await ResRoom.getResRoomsByReservationId(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -131,7 +131,7 @@ router.put('/res-rooms', async (req, res) => {
 
 router.put('/res-rooms/:id/check-in', async (req, res) => {
     try {
-        const data = await ResRoom.updateResRoomCheckinById(req.params.id);
+        const data = await ResRoom.updateResRoomCheckinById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -141,7 +141,7 @@ router.put('/res-rooms/:id/check-in', async (req, res) => {
 
 router.put('/res-rooms/:id/check-out', async (req, res) => {
     try {
-        const data = await ResRoom.updateResRoomCheckoutById(req.params.id);
+        const data = await ResRoom.updateResRoomCheckoutById(Number(req.params.id));
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
