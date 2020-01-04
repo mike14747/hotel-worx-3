@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -9,8 +9,7 @@ import Generic from './pages/generic/generic';
 import Calendar from './components/calendar/index';
 import NavBar from './components/navbar/navbar';
 import AxiosTest from './pages/axiosTest';
-
-export const UserContext = React.createContext();
+import UserContext from './components/context/userContext';
 
 export default function App() {
     const user = { username: 'Guest', access_level: 0 };
@@ -18,8 +17,7 @@ export default function App() {
         <Router>
             <div>
                 <NavBar />
-                {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
+                {/* A <Switch> looks through its children <Route>s and renders the first one that matches the current URL. */}
                 <Switch>
                     <Route exact path="/about">
                         <About />
@@ -36,11 +34,9 @@ export default function App() {
                     <Route exact path="/calendar">
                         <Calendar />
                     </Route>
-                    <Route exact path="/axiostest">
-                        <UserContext.Provider value={user}>
-                            <AxiosTest />
-                        </UserContext.Provider>
-                    </Route>
+                    <UserContext.Provider value={user}>
+                        <Route exact path="/axiostest" component={AxiosTest} />
+                    </UserContext.Provider>
                     <Route path="*">
                         <Home />
                     </Route>
@@ -58,32 +54,27 @@ function About() {
     return <h2>About</h2>;
 }
 
-class User extends Component {
-    state = {
-        userArray: [],
-    };
+function User() {
+    const [users, setUsers] = useState([]);
 
-    componentDidMount() {
+    useEffect(() => {
         fetch('/api/users/1')
             .then(response => response.json())
-            .then(data => this.setState({ userArray: data }))
+            .then(data => setUsers({ data }))
             .catch(err => console.log('There has been an error.\n\n' + err));
-    }
+    }, []);
 
-    render() {
-        return (
-            <div>
-                {this.state.userArray.map(user => (
-                    <div key={user.user_id}>
-                        <p>user ID: {user.user_id}</p>
-                        <p>Username: {user.username}</p>
-                        <p>Password: {user.password}</p>
-                        <p>Access Level: {user.type}</p>
-                        <p>Active: {user.active}</p>
-                    </div>
-                ))}
-            </div>
-
-        );
-    }
+    return (
+        <div>
+            {users.map(user => (
+                <div key={user.user_id}>
+                    <p>user ID: {user.user_id}</p>
+                    <p>Username: {user.username}</p>
+                    <p>Password: {user.password}</p>
+                    <p>Access Level: {user.type}</p>
+                    <p>Active: {user.active}</p>
+                </div>
+            ))}
+        </div>
+    );
 }

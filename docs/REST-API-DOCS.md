@@ -564,7 +564,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     "company_id": null,
     "user_id": 1,
     "comments": "test reservation comment",
-    "allow_charges": 1,
     "active": 1
 }
 ```
