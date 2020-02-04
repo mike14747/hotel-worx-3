@@ -1,5 +1,3 @@
-// the controller(s) that uses this model needs to be updated to send invoicePaymentArray inside an object
-
 const pool = require('../config/pool.js');
 
 const InvoicePayment = {

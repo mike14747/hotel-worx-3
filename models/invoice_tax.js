@@ -1,5 +1,3 @@
-// the controller(s) that use this model's addNewInvoiceTaxes method needs to send the paramsArr inside an object as invoiceTaxesArr
-
 const pool = require('../config/pool.js');
 
 const InvoiceTax = {
@@ -20,7 +18,7 @@ const InvoiceTax = {
         try {
             const queryString = 'INSERT INTO invoice_taxes (invoice_id, tax_id, tax_amount) VALUES ?;';
             const queryParams = [
-                paramsObj.invoiceTaxesArr,
+                paramsObj.invoiceTaxesArray,
             ];
             const [result] = await pool.query(queryString, queryParams);
             return result;

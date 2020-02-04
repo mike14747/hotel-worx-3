@@ -1,5 +1,3 @@
-// the controller(s) using both of these model's methods need to be updated so they send id and username in objects
-
 const pool = require('../config/pool.js');
 
 const Auth = {
