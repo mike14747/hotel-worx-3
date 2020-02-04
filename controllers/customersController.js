@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Customer.getCustomerById(Number(req.params.id));
+        const data = await Customer.getCustomerById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -72,7 +72,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await Customer.deleteCustomerById(Number(req.params.id));
+        const data = await Customer.deleteCustomerById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

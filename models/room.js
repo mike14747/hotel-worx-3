@@ -1,7 +1,5 @@
 // update the controller(s) using this model's getRoomsHousekeepingStatus method so they send numbers in the pararmeters
 
-// update the controller(s) using this model's getAvailableRoomListByDate method so they send date in an object
-
 const pool = require('../config/pool.js');
 
 const Room = {

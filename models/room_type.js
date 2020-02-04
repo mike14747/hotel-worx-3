@@ -1,5 +1,3 @@
-// the controller(s) using this model's getRoomTypeAvailability method need to be updated to send the date inside an object
-
 const pool = require('../config/pool.js');
 
 const RoomType = {

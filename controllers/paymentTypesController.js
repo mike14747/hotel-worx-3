@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await PaymentType.getPaymentTypeById(Number(req.params.id));
+        const data = await PaymentType.getPaymentTypeById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -54,7 +54,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await PaymentType.deletePaymentTypeById(Number(req.params.id));
+        const data = await PaymentType.deletePaymentTypeById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

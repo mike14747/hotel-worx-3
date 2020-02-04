@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Generic.getTestGenericById(Number(req.params.id));
+        const data = await Generic.getTestGenericById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

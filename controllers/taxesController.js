@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await Tax.getTaxById(Number(req.params.id));
+        const data = await Tax.getTaxById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -56,7 +56,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await Tax.deleteTaxById(Number(req.params.id));
+        const data = await Tax.deleteTaxById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

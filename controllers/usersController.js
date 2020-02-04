@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await User.getUserById(Number(req.params.id));
+        const data = await User.getUserById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
         res.status(406).send('Username and/or Password don\'t meet length standards!');
     } else {
         try {
-            const existingUser = await User.checkExistingUsername(req.body.username);
+            const existingUser = await User.checkExistingUsername({ username: req.body.username });
             if (existingUser.length === 0) {
                 bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
                     if (err) throw err;
@@ -87,7 +87,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await User.deleteUserById(Number(req.params.id));
+        const data = await User.deleteUserById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);

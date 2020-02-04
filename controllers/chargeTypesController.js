@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const data = await ChargeType.getChargeTypeById(Number(req.params.id));
+        const data = await ChargeType.getChargeTypeById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
@@ -53,7 +53,7 @@ router.put('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const data = await ChargeType.deleteChargeTypeById(Number(req.params.id));
+        const data = await ChargeType.deleteChargeTypeById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
