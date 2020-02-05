@@ -1,5 +1,3 @@
-// this model's addNewReservation method still needs work
-
 const pool = require('../config/pool.js');
 
 const Reservation = {
@@ -28,21 +26,48 @@ const Reservation = {
         }
     },
     addNewReservation: async (paramsObj) => {
-        const { customerObj, reservationObj, resRoomsArr } = { ...paramsObj };
-        const customerQueryString = 'INSERT INTO customers (first_name, last_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
-        const customerParams = [customerObj.first_name, customerObj.last_name, customerObj.address, customerObj.city, customerObj.state, customerObj.zip, customerObj.country, customerObj.email, customerObj.phone, customerObj.credit_card_num, customerObj.cc_expiration];
         const connection = await pool.getConnection();
         try {
+            const { customerObj, reservationObj, resRoomsArr } = { ...paramsObj };
+            const customerQueryString = 'INSERT INTO customers (first_name, last_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+            const customerParams = [
+                customerObj.first_name,
+                customerObj.last_name,
+                customerObj.address,
+                customerObj.city,
+                customerObj.state,
+                customerObj.zip,
+                customerObj.country,
+                customerObj.email,
+                customerObj.phone,
+                customerObj.credit_card_num,
+                customerObj.cc_expiration,
+            ];
             await connection.beginTransaction();
             const customerResult = await connection.query(customerQueryString, customerParams);
             const reservationQueryString = 'INSERT INTO reservations (customer_id, company_id, user_id, comments) VALUES (?, ?, ?, ?);';
-            const reservationParams = [customerResult[0].insertId, reservationObj.company_id, reservationObj.user_id, reservationObj.comments];
+            const reservationParams = [
+                customerResult[0].insertId,
+                reservationObj.company_id,
+                reservationObj.user_id,
+                reservationObj.comments,
+            ];
             const [reservationResult] = await connection.query(reservationQueryString, reservationParams);
             const resRoomQueryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments, allow_charges) VALUES ?;';
             const today = new Date();
             const confirmationCode = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + reservationResult.insertId.toString().slice(-3) + '001';
             const resRoomQueryParams = [resRoomsArr.map((resRoom) => {
-                return [reservationResult.insertId, resRoom.room_type_id, resRoom.check_in_date, resRoom.check_out_date, resRoom.adults, resRoom.rate, confirmationCode, resRoom.comments, resRoom.allow_charges];
+                return [
+                    reservationResult.insertId,
+                    resRoom.room_type_id,
+                    resRoom.check_in_date,
+                    resRoom.check_out_date,
+                    resRoom.adults,
+                    resRoom.rate,
+                    confirmationCode,
+                    resRoom.comments,
+                    resRoom.allow_charges,
+                ];
             })];
             await connection.query(resRoomQueryString, resRoomQueryParams);
             await connection.commit();
@@ -52,22 +77,6 @@ const Reservation = {
             throw err;
         } finally {
             await connection.release();
-        }
-    },
-    addNewReservationOld: async (paramsObj) => {
-        try {
-            const queryString = 'INSERT INTO reservations (customer_id, company_id, user_id, comments) VALUES (?, ?, ?, ?);';
-            const queryParams = [
-                paramsObj.customer_id,
-                paramsObj.company_id,
-                paramsObj.user_id,
-                paramsObj.comments,
-            ];
-            const [result] = await pool.query(queryString, queryParams);
-            return result;
-        } catch (error) {
-            console.log(error);
-            return null;
         }
     },
     updateReservationById: async (paramsObj) => {
