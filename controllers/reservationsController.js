@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Reservation = require('../models/reservation');
 const ResRoom = require('../models/res_room');
 
-// all these routes point to /api/room-types as specified in server.js and controllers/index.js
+// all these routes point to /api/reservations as specified in server.js and controllers/index.js
 
 router.get('/', async (req, res) => {
     try {

@@ -30,8 +30,8 @@ const Room = {
     getAllRoomIdsNums: async () => {
         try {
             const queryString = 'SELECT rm.room_id, rm.room_num FROM rooms AS rm ORDER BY rm.room_id ASC;';
-            const queryParams = [];
-            const [result] = await pool.query(queryString, queryParams);
+            // const queryParams = [];
+            const [result] = await pool.query(queryString);
             return result;
         } catch (error) {
             console.log(error);

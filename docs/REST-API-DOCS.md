@@ -679,14 +679,14 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     [
         {
             "date": "2019-12-02",
-            "AvailableType1": "28",
-            "AvailableType2": "8",
-            "AvailableType3": "16",
-            "TotalAvailable": "52",
-            "OccupiedType1": "21",
-            "OccupiedType2": "12",
-            "OccupiedType3": "13",
-            "TotalOccupied": "46"
+            "AvailableType1": 28,
+            "AvailableType2": 8,
+            "AvailableType3": 16,
+            "TotalAvailable": 52,
+            "OccupiedType1": 21,
+            "OccupiedType2": 12,
+            "OccupiedType3": 13,
+            "TotalOccupied": 46
         },
         {
             ...

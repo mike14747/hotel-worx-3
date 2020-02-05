@@ -13,16 +13,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
-    try {
-        const data = await Room.getRoomById({ id: Number(req.params.id) });
-        res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
-    }
-});
-
 router.get('/all-ids-nums', async (req, res) => {
     try {
         const data = await Room.getAllRoomIdsNums();
@@ -84,6 +74,16 @@ router.get('/housekeeping-status', async (req, res) => {
 router.get('/available-list/:date', async (req, res) => {
     try {
         const data = await Room.getAvailableRoomListByDate({ date: req.params.date });
+        res.json(data);
+    } catch (err) {
+        console.log('An error has occurred! ' + err);
+        res.status(500).send('Request failed... please check your request and try again!');
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const data = await Room.getRoomById({ id: Number(req.params.id) });
         res.json(data);
     } catch (err) {
         console.log('An error has occurred! ' + err);
