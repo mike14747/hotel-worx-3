@@ -6,27 +6,25 @@ const saltRounds = 10;
 
 // all these routes point to /api/users as specified in server.js and controllers/index.js
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const data = await User.getAllUsers();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
         const data = await User.getUserById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     // input validation is needed here for the username and password
     if (req.body.username.length < 6 || req.body.password.length < 6) {
         res.status(406).send('Username and/or Password don\'t meet length standards!');
@@ -48,14 +46,13 @@ router.post('/', async (req, res) => {
             } else {
                 res.status(202).send('Username is already in use!');
             }
-        } catch (err) {
-            console.log('An error has occurred! ' + err);
-            res.status(500).send('Request failed... please check your request and try again!');
+        } catch (error) {
+            next(error);
         }
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
     // input validation is needed here for the username and password
     if (req.body.username.length < 6 || req.body.password.length < 6) {
         res.status(406).send('Username and/or Password don\'t meet length standards!');
@@ -78,20 +75,18 @@ router.put('/', async (req, res) => {
             } else {
                 res.status(202).send('Username is already in use!');
             }
-        } catch (err) {
-            console.log('An error has occurred! ' + err);
-            res.status(500).send('Request failed... please check your request and try again!');
+        } catch (error) {
+            next(error);
         }
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
         const data = await User.deleteUserById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 

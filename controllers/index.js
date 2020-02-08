@@ -35,4 +35,15 @@ router.use('/companies', companiesController);
 const paymentTypesController = require('./paymentTypesController');
 router.use('/payment-types', paymentTypesController);
 
+router.use((req, res, next) => {
+    const error = new Error('API route not found!');
+    error.status = 404;
+    next(error);
+});
+
+router.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    error.status === 404 ? res.send(error.message) : res.send('Request failed... please check your request and try again!\n' + error.message);
+});
+
 module.exports = router;
