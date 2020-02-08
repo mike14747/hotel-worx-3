@@ -5,6 +5,8 @@
    * **/api/auth** is going to be left unprotected because it needs to be accessed while logging in.
 * An access level of 1 (employee) is the default access level for these routes.
 * Some routes will have level 2 or level 3 requirements. They will be denoted as such.
+* All non-existent routes attempting to be accessed are caught by the catch-all route handler in /controllers/index.js and a status code of 404 is passed.
+* If any of these routes are unsuccessful, they pass the error via next(error) to the error handler in /controllers/index.js which returns a status code of 500 and the error.
 
 ---
 ---
@@ -155,7 +157,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/rooms'
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -173,7 +174,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/rooms'
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -190,7 +190,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/rooms/clean-status'
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -201,7 +200,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/rooms/occupied-status'
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -213,13 +211,11 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a room_id parameter in the url.
 > * It sets the room's status to '**clean=0** and **occupied=0**'.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 **DELETE methods:**
 > ## '/api/rooms/:id'
 > * Takes in a room_id parameter in the url.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -269,7 +265,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If the submitted username is already taken, it returns a status code 202 and a "Username is already in use!" response.
 > * If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a "Username and/or Password don't meet length standards!" response.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -286,7 +281,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * If the submitted username is already taken, it returns a status code 202 and a "Username is already in use!" response.
 > * If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a "Username and/or Password don't meet length standards!" response.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -302,7 +296,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/users/:id'
 > * Takes in a user_id parameter in the url.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -363,7 +356,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/customers'
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -385,7 +377,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/customers'
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -409,7 +400,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a customer_id parameter in the url.
 > * **Note**: customers cannot be deleted as long as they are still associated with a reservation because of foreign key constraints.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -505,7 +495,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * The **resRoomsArr** property of the body is an array that contains an object element for each res_room in the reservation.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * On this endpoint, the "insertId" will be the new reservation_id.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -555,7 +544,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a list of parameters in the body object.
 > * This route is used to update information about a reservation, but not the rooms associated with the reservation.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -573,7 +561,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * This route is used for assigning a room number and room type to a res_room.
 > * It will have its confirmation code updated by the reservationsController as needed.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -591,7 +578,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * This route is used for re-assigning a room number and room type to a res_room.
 > * It will not change the confirmation code associated with the room being reassigned.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -607,7 +593,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a list of parameters in the body object.
 > * This route is used for changing information about a res_room.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -679,14 +664,14 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     [
         {
             "date": "2019-12-02",
-            "AvailableType1": "28",
-            "AvailableType2": "8",
-            "AvailableType3": "16",
-            "TotalAvailable": "52",
-            "OccupiedType1": "21",
-            "OccupiedType2": "12",
-            "OccupiedType3": "13",
-            "TotalOccupied": "46"
+            "AvailableType1": 28,
+            "AvailableType2": 8,
+            "AvailableType3": 16,
+            "TotalAvailable": 52,
+            "OccupiedType1": 21,
+            "OccupiedType2": 12,
+            "OccupiedType3": 13,
+            "TotalOccupied": 46
         },
         {
             ...
@@ -700,7 +685,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It adds a new room type.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -714,7 +698,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It is used to edit an existing room type by room_type_id.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -729,7 +712,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a room_type_id parameter in the url.
 > * This will permanently delete a room type.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -843,7 +825,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 > * On this endpoint, the "insertId" will be the new invoice_id.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -888,7 +869,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in an invoice_id parameter in the url.
 > * This will permanently delete an invoice, plus any taxes and payments that were associated with that invoice through foreign key cascade on delete.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -932,7 +912,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It adds a new tax.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -946,7 +925,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It is used to edit an existing tax by tax_id.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -962,7 +940,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a tax_id parameter in the url.
 > * This will permanently delete a tax.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -1026,7 +1003,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It adds a new charge associated with a res_room.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -1042,7 +1018,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It is used to edit an existing charge by charge_id.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -1064,7 +1039,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a res_room_id parameter in the url.
 > * This will permanently delete all charges associated with a res_room.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -1107,7 +1081,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It adds a new charge_types.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -1120,7 +1093,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It is used to edit an existing charge type by charge_type_id.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -1135,7 +1107,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a charge_type_id parameter in the url.
 > * This will permanently delete a charge type.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -1188,7 +1159,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * It is used to edit an existing payment type by payment_type_id.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -1203,7 +1173,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a payment_type_id parameter in the url.
 > * This will permanently delete a payment type.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---
@@ -1264,7 +1233,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/companies'
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -1286,7 +1254,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/companies'
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 ```
 // sample request body for this route
 {
@@ -1310,7 +1277,6 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > * Takes in a company_id parameter in the url.
 > * It will delete a single company.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If unsuccessful, it console logs the error and returns status code 500 and a "Request failed... please check your request and try again!" message.
 
 ---
 ---

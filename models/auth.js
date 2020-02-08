@@ -1,22 +1,31 @@
-// const connection = require('../config/connection');
 const pool = require('../config/pool.js');
 
 const Auth = {
-    getUserByIdForPassport: (id, cb) => {
-        const queryString = 'SELECT u.user_id, u.username, u.access_id FROM users AS u WHERE u.user_id=? LIMIT 1;';
-        const queryParams = [id];
-        pool.execute(queryString, queryParams, (err, result) => {
-            if (err) cb(err, false);
-            cb(null, result);
-        });
+    getUserByIdForPassport: async (paramsObj) => {
+        try {
+            const queryString = 'SELECT u.user_id, u.username, u.access_id FROM users AS u WHERE u.user_id=? LIMIT 1;';
+            const queryParams = [
+                paramsObj.id,
+            ];
+            const [result] = await pool.query(queryString, queryParams);
+            return (null, result);
+        } catch (error) {
+            console.log(error);
+            return (error, false);
+        }
     },
-    getUserByUsernameForPassport: (username, cb) => {
-        const queryString = 'SELECT u.user_id, u.username, u.password, u.access_id FROM users AS u WHERE username=? LIMIT 1;';
-        const queryParams = [username];
-        pool.execute(queryString, queryParams, (err, result) => {
-            if (err) cb(err, false);
-            cb(null, result);
-        });
+    getUserByUsernameForPassport: async (paramsObj) => {
+        try {
+            const queryString = 'SELECT u.user_id, u.username, u.password, u.access_id FROM users AS u WHERE username=? LIMIT 1;';
+            const queryParams = [
+                paramsObj.username,
+            ];
+            const [result] = await pool.query(queryString, queryParams);
+            return (null, result);
+        } catch (error) {
+            console.log(error);
+            return (error, false);
+        }
     },
 };
 
