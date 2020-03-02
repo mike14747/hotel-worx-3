@@ -37,6 +37,10 @@ function isAuthenticated(req, res, next) {
     }
 }
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 const authController = require('./controllers/authController');
 app.use('/api/auth', authController);
 
