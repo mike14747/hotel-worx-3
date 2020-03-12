@@ -2,6 +2,12 @@ const router = require('express').Router();
 
 // all these routes point to the base route path of /api as specified in server.js
 
+// remove this once the app goes into production with the frontend and backend on the same server
+router.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
+
 const usersController = require('./usersController');
 router.use('/users', usersController);
 

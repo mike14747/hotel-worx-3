@@ -96,12 +96,8 @@
 > * It returns an array of room objects for all rooms meeting the criteria of the query parameters.
 > * Each of the room objects show detailed room status information.
 ```
-// sample url query request for this route
+// sample url query request for this route (possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved... possible options for all parameters are 0 and 1)
 const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
-
-// possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved
-// possible options for all parameters are 0 and 1
-
 // sample response from this route
 [
     {
@@ -117,7 +113,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
         "stayover": null
     },
     {
-        ..
+        ...
     }
 ]
 ```
@@ -1296,37 +1292,3 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 **POST methods:**
 > ## '/api/auth/login'
 > * Takes in a list of parameters in the body object.
-> * If successful, ???.
-> * If unsuccessful, ???.
-```
-// sample request body for this route
-{
-    
-}
-```
-
-**PUT methods:**
-
-
-**DELETE methods:**
-
-
----
----
-
-## **/api?**
-
-**GET methods:**
-
-
-**POST methods:**
-
-
-**PUT methods:**
-
-
-**DELETE methods:**
-
-
----
----
