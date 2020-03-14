@@ -11,3 +11,4 @@ deployment:
         - /bin/cp server.js $DEPLOYPATH
         - /bin/mkdir ${DEPLOYPATH}/config
         - /bin/cp ./config/pool.js ${DEPLOYPATH}/config
+        - /bin/cp ./docs/index.html $DEPLOYPATH
