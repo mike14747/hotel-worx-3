@@ -7,8 +7,8 @@ deployment:
         - /bin/rm -rf ${DEPLOYPATH}/models
         - /bin/cp -r controllers $DEPLOYPATH
         - /bin/cp -r models $DEPLOYPATH
-        - /bin/cp package.json $DEPLOYPATH
-        - /bin/cp server.js $DEPLOYPATH
+        - /bin/cp ./docs/package.json $DEPLOYPATH
+        - /bin/cp ./docs/server.js $DEPLOYPATH
         - /bin/mkdir ${DEPLOYPATH}/config
         - /bin/cp ./config/pool.js ${DEPLOYPATH}/config
         - /bin/cp ./docs/index.html $DEPLOYPATH

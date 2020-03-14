@@ -1,0 +1,16 @@
+{
+    "name": "hotel-worx-3",
+    "version": "1.0.0",
+    "description": "Revamp of the original hotel-worx.",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "license": "MIT",
+    "author": "Sibel Baslamisli and Mike Gullo",
+    "dependencies": {
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "mysql2": "^1.7.0"
+    }
+}
