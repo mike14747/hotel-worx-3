@@ -2,15 +2,34 @@
     "name": "hotel-worx-3",
     "version": "1.0.0",
     "description": "Revamp of the original hotel-worx.",
+    "homepage": "https://www.hotel-worx-3.mikegullo.com",
     "main": "server.js",
     "scripts": {
         "start": "node server.js"
     },
     "license": "MIT",
     "author": "Sibel Baslamisli and Mike Gullo",
+    "devDependencies": {
+        "babel-eslint": "^10.0.3",
+        "concurrently": "^5.0.0",
+        "eslint": "^6.7.2",
+        "eslint-config-standard": "^14.1.0",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-node": "^10.0.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-react": "^7.16.0",
+        "eslint-plugin-standard": "^4.0.1",
+        "nodemon": "^1.19.4"
+    },
     "dependencies": {
+        "bcrypt": "^3.0.7",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
-        "mysql2": "^1.7.0"
+        "express-mysql-session": "^2.1.0",
+        "express-session": "^1.17.0",
+        "if-env": "^1.0.4",
+        "mysql2": "^1.7.0",
+        "passport": "^0.4.0",
+        "passport-local": "^1.0.0"
     }
 }
