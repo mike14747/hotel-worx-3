@@ -70,7 +70,7 @@ router.get('/housekeeping-status', async (req, res, next) => {
 router.get('/available-list/:date', async (req, res, next) => {
     try {
         const data = await Room.getAvailableRoomListByDate({ date: req.params.date });
-        res.json(data);
+        res.json(data[1]);
     } catch (error) {
         next(error);
     }

@@ -83,10 +83,10 @@
 [
     {
         "roomsToSell": 98,
-        "cleanOccupied": "79",
-        "cleanVacant": "14",
-        "dirtyOccupied": "0",
-        "dirtyVacant": "5"
+        "cleanOccupied": 79,
+        "cleanVacant": 14,
+        "dirtyOccupied": 0,
+        "dirtyVacant": 5
     }
 ]
 ```
@@ -121,31 +121,21 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 > ## '/api/rooms/available-list/:date'
 > * Takes in a date parameter in the url (in the 'YYYY-MM-DD' format, eg: /api/rooms/available-list/2019-11-18).
 > * It returns an array of active room objects which are available on the date in the url parameter.
-> * It includes the date available ends for each room (or "n/a" if a room has unlimited availability).
+> * It includes the date availability ends for each room (or "n/a" if a room has unlimited availability).
 ```
 // sample response from this route
 [
     {
-        "fieldCount": 0,
-        "affectedRows": 0,
-        "insertId": 0,
-        "info": "",
-        "serverStatus": 10,
-        "warningStatus": 0
+        "room_id": 1,
+        "room_num": "101",
+        "room_type_id": 1,
+        "clean": 1,
+        "occupied": 1,
+        "availability_ends": "2019-12-02"
     },
-    [
-        {
-            "room_id": 3,
-            "room_num": "103",
-            "room_type_id": 1,
-            "clean": 1,
-            "occupied": 1,
-            "availability_ends": "2019-11-08"
-        },
-        {
-            ...
-        }
-    ]
+    {
+        ...
+    }
 ]
 ```
 
@@ -1074,7 +1064,7 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 
 **POST methods:**
 > ## '/api/charge-types'
-> * It adds a new charge_types.
+> * It adds a new charge type.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
@@ -1142,6 +1132,10 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ```
 
 **POST methods:**
+> ## '/api/payment-types'
+> * It adds a new payment type.
+> * Takes in a list of parameters in the body object.
+> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
