@@ -37,10 +37,6 @@ function isAuthenticated(req, res, next) {
     }
 }
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
 const authController = require('./controllers/authController');
 app.use('/api/auth', authController);
 
@@ -51,6 +47,8 @@ app.use('/api', isAuthenticated, controllers);
 app.get('*', (req, res) => {
     if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    } else {
+        res.sendFile(path.join(__dirname, 'index.html'));
     }
 });
 

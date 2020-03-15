@@ -12,6 +12,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+app.get('/port', (req, res) => {
+    res.send(`Express API Server now listening on PORT ${PORT}!`);
+});
+
 const controllers = require('./controllers');
 app.use('/api', controllers);
 
