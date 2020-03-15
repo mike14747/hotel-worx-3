@@ -24,7 +24,7 @@ router.get('/:id', async (req, res, next) => {
 router.get('/availability/:date', async (req, res, next) => {
     try {
         const data = await RoomType.getRoomTypeAvailability({ date: req.params.date });
-        res.json(data);
+        res.json(data[1]);
     } catch (error) {
         next(error);
     }

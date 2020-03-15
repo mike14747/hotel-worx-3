@@ -1,1298 +1,1487 @@
-<h1 id="rest-api-endpoint-docs-for-hotel-worx-3">REST API Endpoint Docs for hotel-worx-3</h1>
-<h2 id="note-">Note:</h2>
-<ul>
-<li>All of the <strong>/api</strong> routes except <strong>/api/auth</strong> are going to be protected routes when this app goes to production (you need to be logged in as a valid user)<ul>
-<li><strong>/api/auth</strong> is going to be left unprotected because it needs to be accessed while logging in.</li>
-</ul>
-</li>
-<li>An access level of 1 (employee) is the default access level for these routes.</li>
-<li>Some routes will have level 2 or level 3 requirements. They will be denoted as such.</li>
-<li>All non-existent routes attempting to be accessed are caught by the catch-all route handler in /controllers/index.js and a status code of 404 is passed.</li>
-<li>If any of these routes are unsuccessful, they pass the error via next(error) to the error handler in /controllers/index.js which returns a status code of 500 and the error.</li>
-</ul>
-<h2 id="-">---</h2>
-<h2 id="-api-rooms-"><strong>/api/rooms</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-rooms-">&#39;/api/rooms&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all rooms and their details in an array of room objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"room_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"101"</span>,
-      <span class="hljs-string">"description"</span>: <span class="hljs-string">"balcony"</span>,
-      <span class="hljs-string">"num_beds"</span>: <span class="hljs-number">2</span>,
-      <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
-      <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-rooms-id-">&#39;/api/rooms/:id&#39;</h2>
-<ul>
-<li>Takes in a room_id parameter in the url.</li>
-<li>Returns an array containing a single room object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"room_id"</span>: <span class="hljs-number">21</span>,
-      <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"121"</span>,
-      <span class="hljs-string">"description"</span>: <span class="hljs-string">""</span>,
-      <span class="hljs-string">"num_beds"</span>: <span class="hljs-number">2</span>,
-      <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
-      <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-rooms-all-ids-nums-">&#39;/api/rooms/all-ids-nums&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all rooms in an array of objects with just each room&#39;s room_id and room_num.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"room_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"101"</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-rooms-house-status-">&#39;/api/rooms/house-status&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns detailed house status for the hotel.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"roomsToSell"</span>: <span class="hljs-number">98</span>,
-      <span class="hljs-string">"cleanOccupied"</span>: <span class="hljs-string">"79"</span>,
-      <span class="hljs-string">"cleanVacant"</span>: <span class="hljs-string">"14"</span>,
-      <span class="hljs-string">"dirtyOccupied"</span>: <span class="hljs-string">"0"</span>,
-      <span class="hljs-string">"dirtyVacant"</span>: <span class="hljs-string">"5"</span>
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-rooms-housekeeping-status-">&#39;/api/rooms/housekeeping-status&#39;</h2>
-<ul>
-<li>Takes in a varying number of query parameters in the url... ranging from 0 to 10.</li>
-<li>It returns an array of room objects for all rooms meeting the criteria of the query parameters.</li>
-<li>Each of the room objects show detailed room status information.<pre><code><span class="hljs-regexp">//</span> sample url query request <span class="hljs-keyword">for</span> <span class="hljs-keyword">this</span> route (possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved... possible options <span class="hljs-keyword">for</span> all parameters are <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-number">1</span>)
-const queryUrl = <span class="hljs-string">'/api/rooms/housekeeping-status?clean=1&amp;occupied=0'</span>;
-<span class="hljs-regexp">//</span> sample response from <span class="hljs-keyword">this</span> route
-[
-  {
-      <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"231"</span>,
-      <span class="hljs-string">"clean"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"occupied"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
-      <span class="hljs-string">"checked_in"</span>: <span class="hljs-literal">null</span>,
-      <span class="hljs-string">"checked_out"</span>: <span class="hljs-literal">null</span>,
-      <span class="hljs-string">"room_id"</span>: <span class="hljs-literal">null</span>,
-      <span class="hljs-string">"departure"</span>: <span class="hljs-literal">null</span>,
-      <span class="hljs-string">"stayover"</span>: <span class="hljs-literal">null</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-rooms-available-list-date-">&#39;/api/rooms/available-list/:date&#39;</h2>
-<ul>
-<li>Takes in a date parameter in the url (in the &#39;YYYY-MM-DD&#39; format, eg: /api/rooms/available-list/2019-11-18).</li>
-<li>It returns an array of active room objects which are available on the date in the url parameter.</li>
-<li>It includes the date available ends for each room (or &quot;n/a&quot; if a room has unlimited availability).<pre><code>// sample response from this route
-[
-  {
-      <span class="hljs-string">"fieldCount"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"affectedRows"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"insertId"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"info"</span>: <span class="hljs-string">""</span>,
-      <span class="hljs-string">"serverStatus"</span>: <span class="hljs-number">10</span>,
-      <span class="hljs-string">"warningStatus"</span>: <span class="hljs-number">0</span>
-  },
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hotel Worx 3 Backend</title>
+</head>
+
+<body>
+    <h1 id="rest-api-endpoint-docs-for-hotel-worx-3">REST API Endpoint Docs for hotel-worx-3</h1>
+    <h2 id="note-">Note:</h2>
+    <ul>
+        <li>All of the <strong>/api</strong> routes except <strong>/api/auth</strong> are going to be protected routes
+            when this app goes to production (you need to be logged in as a valid user)<ul>
+                <li><strong>/api/auth</strong> is going to be left unprotected because it needs to be accessed while
+                    logging in.</li>
+            </ul>
+        </li>
+        <li>An access level of 1 (employee) is the default access level for these routes.</li>
+        <li>Some routes will have level 2 or level 3 requirements. They will be denoted as such.</li>
+        <li>All non-existent routes attempting to be accessed are caught by the catch-all route handler in
+            /controllers/index.js and a status code of 404 is passed.</li>
+        <li>If any of these routes are unsuccessful, they pass the error via next(error) to the error handler in
+            /controllers/index.js which returns a status code of 500 and the error.</li>
+    </ul>
+    <h2 id="-">---</h2>
+    <h2 id="-api-rooms-"><strong>/api/rooms</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-rooms-">&#39;/api/rooms&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all rooms and their details in an array of room objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
   [
-      {
-          <span class="hljs-string">"room_id"</span>: <span class="hljs-number">3</span>,
-          <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"103"</span>,
-          <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-          <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
-          <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
-          <span class="hljs-string">"availability_ends"</span>: <span class="hljs-string">"2019-11-08"</span>
-      },
-      {
-          ...
-      }
+    {
+        <span class="hljs-string">"room_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"101"</span>,
+        <span class="hljs-string">"description"</span>: <span class="hljs-string">"balcony"</span>,
+        <span class="hljs-string">"num_beds"</span>: <span class="hljs-number">2</span>,
+        <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
+        <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>
+    },
+    {
+        ...
+    }
   ]
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-rooms-">&#39;/api/rooms&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"301"</span>,
-  <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"description"</span>: <span class="hljs-string">"This is a test description"</span>,
-  <span class="hljs-string">"num_beds"</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-rooms-">&#39;/api/rooms&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"room_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"101"</span>,
-  <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"description"</span>: <span class="hljs-string">"This is a test description"</span>,
-  <span class="hljs-string">"num_beds"</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-}
-</code></pre><h2 id="-api-rooms-clean-status-">&#39;/api/rooms/clean-status&#39;</h2>
-</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"room_id"</span>: <span class="hljs-number">17</span>,
-  <span class="hljs-string">"clean"</span>: <span class="hljs-number">0</span>
-}
-</code></pre><h2 id="-api-rooms-occupied-status-">&#39;/api/rooms/occupied-status&#39;</h2>
-</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"room_id"</span>: <span class="hljs-number">35</span>,
-  <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>
-}
-</code></pre><h2 id="-api-rooms-id-checked-out-">&#39;/api/rooms/:id/checked-out&#39;</h2>
-</li>
-<li>Takes in a room_id parameter in the url.</li>
-<li>It sets the room&#39;s status to &#39;<strong>clean=0</strong> and <strong>occupied=0</strong>&#39;.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-rooms-id-">&#39;/api/rooms/:id&#39;</h2>
-<ul>
-<li>Takes in a room_id parameter in the url.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-users-"><strong>/api/users</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-users-">&#39;/api/users&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all users and their details in an array of user objects (note: passwords are not included).<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"user_id"</span>: <span class="hljs-number">3</span>,
-      <span class="hljs-string">"username"</span>: <span class="hljs-string">"jonathon123"</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Employee"</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-users-id-">&#39;/api/users/:id&#39;</h2>
-<ul>
-<li>Takes in a user_id parameter in the url.</li>
-<li>Returns an array containing a single user object (note: password is not included).<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"user_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"username"</span>: <span class="hljs-string">"admin"</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"Administrator"</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-users-">&#39;/api/users&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-<li>If the submitted username is already taken, it returns a status code 202 and a &quot;Username is already in use!&quot; response.</li>
-<li>If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a &quot;Username and/or Password don&#39;t meet length standards!&quot; response.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"username"</span>: <span class="hljs-string">"Jan-Front-Desk"</span>,
-  <span class="hljs-string">"password"</span>: <span class="hljs-string">"new_password"</span>,
-  <span class="hljs-string">"access_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-users-">&#39;/api/users&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-<li>If the submitted username is already taken, it returns a status code 202 and a &quot;Username is already in use!&quot; response.</li>
-<li>If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a &quot;Username and/or Password don&#39;t meet length standards!&quot; response.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"user_id"</span>: <span class="hljs-number">6</span>,
-  <span class="hljs-string">"username"</span>: <span class="hljs-string">"manager123"</span>,
-  <span class="hljs-string">"password"</span>: <span class="hljs-string">"updated_password"</span>,
-  <span class="hljs-string">"access_id"</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-users-id-">&#39;/api/users/:id&#39;</h2>
-<ul>
-<li>Takes in a user_id parameter in the url.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-customers-"><strong>/api/customers</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-customers-">&#39;/api/customers&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all customers and their details in an array of customer objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
-      <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
-      <span class="hljs-string">"address"</span>: <span class="hljs-string">"7193 Valley St"</span>,
-      <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lexington"</span>,
-      <span class="hljs-string">"state"</span>: <span class="hljs-string">"NC"</span>,
-      <span class="hljs-string">"zip"</span>: <span class="hljs-string">"27292"</span>,
-      <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-      <span class="hljs-string">"email"</span>: <span class="hljs-string">"rgiersig@yahoo.com"</span>,
-      <span class="hljs-string">"phone"</span>: <span class="hljs-string">"806-427-8083"</span>,
-      <span class="hljs-string">"creditCardLastFour"</span>: <span class="hljs-string">"0920"</span>,
-      <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"10 / 22"</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-customers-id-">&#39;/api/customers/:id&#39;</h2>
-<ul>
-<li>Takes in a customer_id parameter in the url.</li>
-<li>Returns an array containing a single customer object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
-      <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
-      <span class="hljs-string">"address"</span>: <span class="hljs-string">"7193 Valley St"</span>,
-      <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lexington"</span>,
-      <span class="hljs-string">"state"</span>: <span class="hljs-string">"NC"</span>,
-      <span class="hljs-string">"zip"</span>: <span class="hljs-string">"27292"</span>,
-      <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-      <span class="hljs-string">"email"</span>: <span class="hljs-string">"rgiersig@yahoo.com"</span>,
-      <span class="hljs-string">"phone"</span>: <span class="hljs-string">"806-427-8083"</span>,
-      <span class="hljs-string">"creditCardLastFour"</span>: <span class="hljs-string">"0920"</span>,
-      <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"10 / 22"</span>
-  }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-customers-">&#39;/api/customers&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"John"</span>,
-  <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
-  <span class="hljs-string">"address"</span>: <span class="hljs-string">"123 Main St"</span>,
-  <span class="hljs-string">"city"</span>: <span class="hljs-string">"Cleveland"</span>,
-  <span class="hljs-string">"state"</span>: <span class="hljs-string">"OH"</span>,
-  <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44124"</span>,
-  <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-  <span class="hljs-string">"email"</span>: <span class="hljs-string">"temp@temp.com"</span>,
-  <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
-  <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"4444111122223333"</span>,
-  <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"05 / 23"</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-customers-">&#39;/api/customers&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">123</span>,
-  <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"John"</span>,
-  <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
-  <span class="hljs-string">"address"</span>: <span class="hljs-string">"123 Main St"</span>,
-  <span class="hljs-string">"city"</span>: <span class="hljs-string">"Cleveland"</span>,
-  <span class="hljs-string">"state"</span>: <span class="hljs-string">"OH"</span>,
-  <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44124"</span>,
-  <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-  <span class="hljs-string">"email"</span>: <span class="hljs-string">"temp@temp.com"</span>,
-  <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
-  <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"4444111122223333"</span>,
-  <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"05 / 23"</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-customers-id-">&#39;/api/customers/:id&#39;</h2>
-<ul>
-<li>Takes in a customer_id parameter in the url.</li>
-<li><strong>Note</strong>: customers cannot be deleted as long as they are still associated with a reservation because of foreign key constraints.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-reservations">/api/reservations</h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-reservations-">&#39;/api/reservations&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all reservations (with partial customer and res_room info) in an array of reservation objects.</li>
-<li>Each res_room on a reservation is returned on its own row.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
-      <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
-      <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"created_at"</span>: <span class="hljs-string">"Nov 30, 2019 (01:19 PM)"</span>,
-      <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"Nov 27, 2019"</span>,
-      <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"Dec 01, 2019"</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-reservations-id-">&#39;/api/reservations/:id&#39;</h2>
-<ul>
-<li>Takes in a reservation_id parameter in the url.</li>
-<li>Returns an array containing a single reservation object.</li>
-<li>This route should be used in conjunction with the <strong>/api/reservations/:id/res-rooms</strong> route to get detailed info about all rooms associated with this reservation.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"user_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"created_at"</span>: <span class="hljs-string">"Nov 30, 2019 (01:19 PM)"</span>,
-      <span class="hljs-string">"comments"</span>: <span class="hljs-string">""</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
-      <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
-      <span class="hljs-string">"address"</span>: <span class="hljs-string">"7193 Valley St"</span>,
-      <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lexington"</span>,
-      <span class="hljs-string">"state"</span>: <span class="hljs-string">"NC"</span>,
-      <span class="hljs-string">"zip"</span>: <span class="hljs-string">"27292"</span>,
-      <span class="hljs-string">"email"</span>: <span class="hljs-string">"rgiersig@yahoo.com"</span>,
-      <span class="hljs-string">"phone"</span>: <span class="hljs-string">"806-427-8083"</span>,
-      <span class="hljs-string">"ccLastFour"</span>: <span class="hljs-string">"0920"</span>,
-      <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"10 / 22"</span>
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-reservations-id-res-rooms-">&#39;/api/reservations/:id/res-rooms&#39;</h2>
-<ul>
-<li>Takes in a reservation_id parameter in the url.</li>
-<li>Returns an array of all res_rooms (and detailed res_room info) associated with a single reservation as objects.</li>
-<li>This route should be used in conjunction with the <strong>/api/reservations/:id</strong> route to get more info about the reservation.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"Nov 27, 2019"</span>,
-      <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"Dec 01, 2019"</span>,
-      <span class="hljs-string">"checked_in"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"checked_out"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"adults"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"room_id"</span>: <span class="hljs-number">9</span>,
-      <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>,
-      <span class="hljs-string">"confirmation_code"</span>: <span class="hljs-string">"190501001001"</span>,
-      <span class="hljs-string">"comments"</span>: <span class="hljs-string">"needs a late checkout time"</span>,
-      <span class="hljs-string">"allow_charges"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-reservations-">&#39;/api/reservations&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>This route accesses the reservation model which uses a database transaction that sequentially queries 3 tables (<strong>customers, reservations and res_rooms</strong>)... with either all succeeding/committing or rolling back if any of them fail.</li>
-<li>The <strong>resRoomsArr</strong> property of the body is an array that contains an object element for each res_room in the reservation.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-<li>On this endpoint, the &quot;insertId&quot; will be the new reservation_id.<pre><code>// sample request body <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"customerObj"</span>: {
-      <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Peter"</span>,
-      <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Pan"</span>,
-      <span class="hljs-string">"address"</span>: <span class="hljs-string">"1111 FairyTale Lane"</span>,
-      <span class="hljs-string">"city"</span>: <span class="hljs-string">"Fantasyland"</span>,
-      <span class="hljs-string">"state"</span>: <span class="hljs-string">"Vermont"</span>,
-      <span class="hljs-string">"zip"</span>: <span class="hljs-string">"23456"</span>,
-      <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-      <span class="hljs-string">"email"</span>: <span class="hljs-string">"p.pan@yahoo.net"</span>,
-      <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
-      <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
-      <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 21"</span>
-  },
-  <span class="hljs-string">"reservationObj"</span>: {
-      <span class="hljs-string">"company_id"</span>: null,
-      <span class="hljs-string">"user_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"comments"</span>: <span class="hljs-string">"test reservation comment"</span>
-  },
-  <span class="hljs-string">"resRoomsArr"</span>: [
-      {
-          <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">2</span>,
-          <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"2019-12-12"</span>,
-          <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"2019-12-15"</span>,
-          <span class="hljs-string">"adults"</span>: <span class="hljs-number">2</span>,
-          <span class="hljs-string">"rate"</span>: <span class="hljs-number">119.99</span>,
-          <span class="hljs-string">"comments"</span>: <span class="hljs-string">"need a good view"</span>,
-          <span class="hljs-string">"allow_charges"</span>: <span class="hljs-number">1</span>
-      },
-      {
-          <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-          <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"2019-12-12"</span>,
-          <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"2019-12-17"</span>,
-          <span class="hljs-string">"adults"</span>: <span class="hljs-number">2</span>,
-          <span class="hljs-string">"rate"</span>: <span class="hljs-number">109.99</span>,
-          <span class="hljs-string">"comments"</span>: <span class="hljs-string">"want a late checkout"</span>,
-          <span class="hljs-string">"allow_charges"</span>: <span class="hljs-number">0</span>
-      }
-  ]
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-reservations-">&#39;/api/reservations&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>This route is used to update information about a reservation, but not the rooms associated with the reservation.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code><span class="hljs-regexp">//</span> sample request body <span class="hljs-keyword">for</span> <span class="hljs-keyword">this</span> route
-{
-  <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1201</span>,
-  <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">201</span>,
-  <span class="hljs-string">"company_id"</span>: <span class="hljs-literal">null</span>,
-  <span class="hljs-string">"user_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"comments"</span>: <span class="hljs-string">"test reservation comment"</span>,
-  <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-<h2 id="-api-reservations-res-rooms-assign-">&#39;/api/reservations/res-rooms/assign&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>This route is used for assigning a room number and room type to a res_room.</li>
-<li>It will have its confirmation code updated by the reservationsController as needed.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1201</span>,
-  <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"room_id"</span>: <span class="hljs-number">98</span>,
-  <span class="hljs-string">"rate"</span>: <span class="hljs-number">109.99</span>,
-  <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1201</span>,
-  <span class="hljs-string">"confirmation_code"</span>: <span class="hljs-string">"191130201001"</span>
-}
-</code></pre></li>
-</ul>
-<h2 id="-api-reservations-res-rooms-reassign-">&#39;/api/reservations/res-rooms/reassign&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>This route is used for re-assigning a room number and room type to a res_room.</li>
-<li>It will not change the confirmation code associated with the room being reassigned.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1202</span>,
-  <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"room_id"</span>: <span class="hljs-number">91</span>,
-  <span class="hljs-string">"rate"</span>: <span class="hljs-number">109.99</span>,
-  <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1201</span>
-}
-</code></pre></li>
-</ul>
-<h2 id="-api-reservations-res-rooms-">&#39;/api/reservations/res-rooms&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>This route is used for changing information about a res_room.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1200</span>,
-  <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"2020-03-14"</span>,
-  <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"2020-03-18"</span>,
-  <span class="hljs-string">"adults"</span>: <span class="hljs-number">3</span>,
-  <span class="hljs-string">"rate"</span>: <span class="hljs-number">119.99</span>,
-  <span class="hljs-string">"comments"</span>: <span class="hljs-string">"blah, blah"</span>,
-  <span class="hljs-string">"allow_charges"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<h2 id="-">---</h2>
-<h2 id="-api-room-types-"><strong>/api/room-types</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-room-types-">&#39;/api/room-types&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all room types and their rates in an array of objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
-      <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-room-types-id-">&#39;/api/room-types/:id&#39;</h2>
-<ul>
-<li>Takes in a room_type_id parameter in the url.</li>
-<li>Returns an array containing a single room type object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
-      <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-room-types-availability-date-">&#39;/api/room-types/availability/:date&#39;</h2>
-<ul>
-<li>Takes in a date parameter in the url (in the YYYY-MM-DD format).</li>
-<li>Returns an array of 14 days worth of availability objects... each of which shows detailed availabilty for that day.<pre><code>// sample response from this route
-[
-  {
-      <span class="hljs-string">"fieldCount"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"affectedRows"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"insertId"</span>: <span class="hljs-number">0</span>,
-      <span class="hljs-string">"info"</span>: <span class="hljs-string">""</span>,
-      <span class="hljs-string">"serverStatus"</span>: <span class="hljs-number">10</span>,
-      <span class="hljs-string">"warningStatus"</span>: <span class="hljs-number">0</span>
-  },
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-rooms-id-">&#39;/api/rooms/:id&#39;</h2>
+        <ul>
+            <li>Takes in a room_id parameter in the url.</li>
+            <li>Returns an array containing a single room object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
   [
-      {
-          <span class="hljs-string">"date"</span>: <span class="hljs-string">"2019-12-02"</span>,
-          <span class="hljs-string">"AvailableType1"</span>: <span class="hljs-number">28</span>,
-          <span class="hljs-string">"AvailableType2"</span>: <span class="hljs-number">8</span>,
-          <span class="hljs-string">"AvailableType3"</span>: <span class="hljs-number">16</span>,
-          <span class="hljs-string">"TotalAvailable"</span>: <span class="hljs-number">52</span>,
-          <span class="hljs-string">"OccupiedType1"</span>: <span class="hljs-number">21</span>,
-          <span class="hljs-string">"OccupiedType2"</span>: <span class="hljs-number">12</span>,
-          <span class="hljs-string">"OccupiedType3"</span>: <span class="hljs-number">13</span>,
-          <span class="hljs-string">"TotalOccupied"</span>: <span class="hljs-number">46</span>
-      },
-      {
-          ...
-      }
+    {
+        <span class="hljs-string">"room_id"</span>: <span class="hljs-number">21</span>,
+        <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"121"</span>,
+        <span class="hljs-string">"description"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"num_beds"</span>: <span class="hljs-number">2</span>,
+        <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
+        <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>
+    }
   ]
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-room-types-">&#39;/api/room-types&#39;</h2>
-<ul>
-<li>It adds a new room type.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"type"</span>: <span class="hljs-string">"Double"</span>,
-  <span class="hljs-string">"rate"</span>: <span class="hljs-number">109.99</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-room-types-">&#39;/api/room-types&#39;</h2>
-<ul>
-<li>It is used to edit an existing room type by room_type_id.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">2</span>,
-  <span class="hljs-string">"type"</span>: <span class="hljs-string">"King"</span>,
-  <span class="hljs-string">"rate"</span>: <span class="hljs-string">"119.99"</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-room-types-id-">&#39;/api/room-types/:id&#39;</h2>
-<ul>
-<li>Takes in a room_type_id parameter in the url.</li>
-<li>This will permanently delete a room type.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-invoices-"><strong>/api/invoices</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-invoices-">&#39;/api/invoices&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all invoices in an array of invoice objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"invoice_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"total_due"</span>: <span class="hljs-string">"604.25"</span>,
-      <span class="hljs-string">"created_at"</span>: <span class="hljs-string">"2019-11-30T18:19:24.000Z"</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-invoices-id-">&#39;/api/invoices/:id&#39;</h2>
-<ul>
-<li>Takes in an invoice_id parameter in the url.</li>
-<li>Returns all the details associated with the invoice (customer, company, reservation, res_room, room, room_type, payments, taxes, charges) in an array containing a single compound object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"invoice_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"total_due"</span>: <span class="hljs-string">"604.25"</span>,
-      <span class="hljs-string">"num_nights"</span>: <span class="hljs-number">4</span>,
-      <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"Nov 27, 2019"</span>,
-      <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"Dec 01, 2019"</span>,
-      <span class="hljs-string">"adults"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"room_id"</span>: <span class="hljs-number">9</span>,
-      <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>,
-      <span class="hljs-string">"confirmation_code"</span>: <span class="hljs-string">"190501001001"</span>,
-      <span class="hljs-string">"res_room_comments"</span>: <span class="hljs-string">"needs a late checkout time"</span>,
-      <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"109"</span>,
-      <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
-      <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"company_id"</span>: <span class="hljs-literal">null</span>,
-      <span class="hljs-string">"reservation_comments"</span>: <span class="hljs-string">""</span>,
-      <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
-      <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
-      <span class="hljs-string">"address"</span>: <span class="hljs-string">"7193 Valley St"</span>,
-      <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lexington"</span>,
-      <span class="hljs-string">"state"</span>: <span class="hljs-string">"NC"</span>,
-      <span class="hljs-string">"zip"</span>: <span class="hljs-string">"27292"</span>,
-      <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-      <span class="hljs-string">"email"</span>: <span class="hljs-string">"rgiersig@yahoo.com"</span>,
-      <span class="hljs-string">"phone"</span>: <span class="hljs-string">"806-427-8083"</span>,
-      <span class="hljs-string">"creditCardLastFour"</span>: <span class="hljs-string">"0920"</span>,
-      <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"10 / 22"</span>,
-      <span class="hljs-string">"company_name"</span>: <span class="hljs-literal">null</span>
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-invoices-id-invoice-taxes-">&#39;/api/invoices/:id/invoice-taxes&#39;</h2>
-<ul>
-<li>Takes in an invoice_id parameter in the url.</li>
-<li>Returns all taxes associated with this invoice_id in an array of tax objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"invoice_tax_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"invoice_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"County Tax"</span>,
-      <span class="hljs-string">"tax_amount"</span>: <span class="hljs-string">"24.40"</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-invoices-id-invoice-payments-">&#39;/api/invoices/:id/invoice-payments&#39;</h2>
-<ul>
-<li>Takes in an invoice_id parameter in the url.</li>
-<li>Returns all payments associated with this invoice_id in an array of payment objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"invoice_payment_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"invoice_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Credit Card"</span>,
-      <span class="hljs-string">"payment_amount"</span>: <span class="hljs-string">"484.25"</span>,
-      <span class="hljs-string">"payment_ref_num"</span>: <span class="hljs-string">"1234"</span>
-  },
-  {
-      ...
-  }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-invoices-">&#39;/api/invoices&#39;</h2>
-<ul>
-<li>It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).</li>
-<li>This route also does the following:<ul>
-<li>Marks the res_room of the invoice as &quot;checked_out=1&quot;.</li>
-<li>Marks the room of the res_room as &quot;occupied=0&quot; and &quot;clean=0&quot;.</li>
-</ul>
-</li>
-<li>It does all of the above in the invoice model using a database transaction that sequentially queries 5 tables (<strong>invoices, invoice_taxes, invoice_payments, res_rooms and rooms</strong>)... with either all succeeding/committing or rolling back if any of them fail.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-<li>On this endpoint, the &quot;insertId&quot; will be the new invoice_id.<pre><code>// sample request body <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"invoiceObj"</span>: {
-      <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
-      <span class="hljs-string">"total_due"</span>: <span class="hljs-number">470.76</span>
-  },
-  <span class="hljs-string">"invoiceTaxesArr"</span>: [
-      {
-          <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">1</span>,
-          <span class="hljs-string">"tax_amount"</span>: <span class="hljs-number">22.00</span>
-      },
-      {
-          <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">2</span>,
-          <span class="hljs-string">"tax_amount"</span>: <span class="hljs-number">13.20</span>
-      },
-      {
-          <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">3</span>,
-          <span class="hljs-string">"tax_amount"</span>: <span class="hljs-number">30.80</span>
-      }
-  ],
-  <span class="hljs-string">"invoicePaymentsArr"</span>: [
-      {
-          <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">1</span>,
-          <span class="hljs-string">"payment_amount"</span>: <span class="hljs-number">350.96</span>,
-          <span class="hljs-string">"payment_ref_num"</span>: <span class="hljs-string">"1234"</span>
-      },
-      {
-          <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">3</span>,
-          <span class="hljs-string">"payment_amount"</span>: <span class="hljs-number">120.00</span>,
-          <span class="hljs-string">"payment_ref_num"</span>: <span class="hljs-string">""</span>
-      }
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-rooms-all-ids-nums-">&#39;/api/rooms/all-ids-nums&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all rooms in an array of objects with just each room&#39;s room_id and room_num.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"room_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"101"</span>
+    },
+    {
+        ...
+    }
   ]
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-invoices-id-">&#39;/api/invoices/:id&#39;</h2>
-<ul>
-<li>Takes in an invoice_id parameter in the url.</li>
-<li>This will permanently delete an invoice, plus any taxes and payments that were associated with that invoice through foreign key cascade on delete.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-taxes-"><strong>/api/taxes</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-taxes-">&#39;/api/taxes&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all taxes and their info in an array of tax objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-rooms-house-status-">&#39;/api/rooms/house-status&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns detailed house status for the hotel.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"roomsToSell"</span>: <span class="hljs-number">98</span>,
+        <span class="hljs-string">"cleanOccupied"</span>: <span class="hljs-number">79</span>,
+        <span class="hljs-string">"cleanVacant"</span>: <span class="hljs-number">14</span>,
+        <span class="hljs-string">"dirtyOccupied"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"dirtyVacant"</span>: <span class="hljs-number">5</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-rooms-housekeeping-status-">&#39;/api/rooms/housekeeping-status&#39;</h2>
+        <ul>
+            <li>Takes in a varying number of query parameters in the url... ranging from 0 to 10.</li>
+            <li>It returns an array of room objects for all rooms meeting the criteria of the query parameters.</li>
+            <li>Each of the room objects show detailed room status information.
+                <pre><code><span class="hljs-regexp">//</span> sample url query request <span class="hljs-keyword">for</span> <span class="hljs-keyword">this</span> route (possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved... possible options <span class="hljs-keyword">for</span> all parameters are <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> <span class="hljs-number">1</span>)
+  const queryUrl = <span class="hljs-string">'/api/rooms/housekeeping-status?clean=1&amp;occupied=0'</span>;
+  <span class="hljs-regexp">//</span> sample response from <span class="hljs-keyword">this</span> route
+  [
+    {
+        <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"231"</span>,
+        <span class="hljs-string">"clean"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"occupied"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
+        <span class="hljs-string">"checked_in"</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-string">"checked_out"</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-string">"room_id"</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-string">"departure"</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-string">"stayover"</span>: <span class="hljs-literal">null</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-rooms-available-list-date-">&#39;/api/rooms/available-list/:date&#39;</h2>
+        <ul>
+            <li>Takes in a date parameter in the url (in the &#39;YYYY-MM-DD&#39; format, eg:
+                /api/rooms/available-list/2019-11-18).</li>
+            <li>It returns an array of active room objects which are available on the date in the url parameter.</li>
+            <li>It includes the date availability ends for each room (or &quot;n/a&quot; if a room has unlimited
+                availability).
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"room_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"101"</span>,
+        <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"availability_ends"</span>: <span class="hljs-string">"2019-12-02"</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-rooms-">&#39;/api/rooms&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"County Tax"</span>,
-      <span class="hljs-string">"tax_rate"</span>: <span class="hljs-string">"5.000"</span>
-  },
-  {
-      ...
+    <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"301"</span>,
+    <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"description"</span>: <span class="hljs-string">"This is a test description"</span>,
+    <span class="hljs-string">"num_beds"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
   }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-taxes-">&#39;/api/taxes&#39;</h2>
-<ul>
-<li>Takes in a tax_id parameter in the url.</li>
-<li>Returns an array containing a single tax object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-rooms-">&#39;/api/rooms&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"County Tax"</span>,
-      <span class="hljs-string">"tax_rate"</span>: <span class="hljs-string">"5.000"</span>
+    <span class="hljs-string">"room_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"101"</span>,
+    <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"description"</span>: <span class="hljs-string">"This is a test description"</span>,
+    <span class="hljs-string">"num_beds"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-string">"clean"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
   }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-taxes-">&#39;/api/taxes&#39;</h2>
-<ul>
-<li>It adds a new tax.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"Special Tax"</span>,
-  <span class="hljs-string">"tax_rate"</span>: <span class="hljs-number">2.625</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-taxes-">&#39;/api/taxes&#39;</h2>
-<ul>
-<li>It is used to edit an existing tax by tax_id.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"County Tax"</span>,
-  <span class="hljs-string">"tax_rate"</span>: <span class="hljs-number">5.500</span>,
-  <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-taxes-id-">&#39;/api/taxes/:id&#39;</h2>
-<ul>
-<li>Takes in a tax_id parameter in the url.</li>
-<li>This will permanently delete a tax.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-charges-"><strong>/api/charges</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-charges-">&#39;/api/charges&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns an array charge objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+                <h2 id="-api-rooms-clean-status-">&#39;/api/rooms/clean-status&#39;</h2>
+            </li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"charge_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Restaurant"</span>,
-      <span class="hljs-string">"charge_amount"</span>: <span class="hljs-string">"43.12"</span>,
-      <span class="hljs-string">"taxable"</span>: <span class="hljs-number">0</span>
-  },
-  {
-      ...
+    <span class="hljs-string">"room_id"</span>: <span class="hljs-number">17</span>,
+    <span class="hljs-string">"clean"</span>: <span class="hljs-number">0</span>
   }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-charges-id-">&#39;/api/charges/:id&#39;</h2>
-<ul>
-<li>Takes in a charge_id parameter in the url.</li>
-<li>Returns an array containing a single charge object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+                <h2 id="-api-rooms-occupied-status-">&#39;/api/rooms/occupied-status&#39;</h2>
+            </li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"charge_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Restaurant"</span>,
-      <span class="hljs-string">"charge_amount"</span>: <span class="hljs-string">"43.12"</span>,
-      <span class="hljs-string">"taxable"</span>: <span class="hljs-number">0</span>
+    <span class="hljs-string">"room_id"</span>: <span class="hljs-number">35</span>,
+    <span class="hljs-string">"occupied"</span>: <span class="hljs-number">1</span>
   }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-charges-res-rooms-id-">&#39;/api/charges/res-rooms/:id&#39;</h2>
-<ul>
-<li>Takes in a res_room_id parameter in the url.</li>
-<li>Returns all charges associated with a res_room in an array of charges objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+                <h2 id="-api-rooms-id-checked-out-">&#39;/api/rooms/:id/checked-out&#39;</h2>
+            </li>
+            <li>Takes in a room_id parameter in the url.</li>
+            <li>It sets the room&#39;s status to &#39;<strong>clean=0</strong> and <strong>occupied=0</strong>&#39;.
+            </li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-rooms-id-">&#39;/api/rooms/:id&#39;</h2>
+        <ul>
+            <li>Takes in a room_id parameter in the url.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-users-"><strong>/api/users</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-users-">&#39;/api/users&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all users and their details in an array of user objects (note: passwords are not included).
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"user_id"</span>: <span class="hljs-number">3</span>,
+        <span class="hljs-string">"username"</span>: <span class="hljs-string">"jonathon123"</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Employee"</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-users-id-">&#39;/api/users/:id&#39;</h2>
+        <ul>
+            <li>Takes in a user_id parameter in the url.</li>
+            <li>Returns an array containing a single user object (note: password is not included).
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"user_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"username"</span>: <span class="hljs-string">"admin"</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"Administrator"</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-users-">&#39;/api/users&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+            <li>If the submitted username is already taken, it returns a status code 202 and a &quot;Username is already
+                in use!&quot; response.</li>
+            <li>If the submitted username and/or password are less than 6 characters long, it returns a status code 406
+                and a &quot;Username and/or Password don&#39;t meet length standards!&quot; response.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"charge_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Restaurant"</span>,
-      <span class="hljs-string">"charge_amount"</span>: <span class="hljs-string">"43.12"</span>,
-      <span class="hljs-string">"taxable"</span>: <span class="hljs-number">0</span>
-  },
-  {
-      ...
+    <span class="hljs-string">"username"</span>: <span class="hljs-string">"Jan-Front-Desk"</span>,
+    <span class="hljs-string">"password"</span>: <span class="hljs-string">"new_password"</span>,
+    <span class="hljs-string">"access_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
   }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-charges-">&#39;/api/charges&#39;</h2>
-<ul>
-<li>It adds a new charge associated with a res_room.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1200</span>,
-  <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">3</span>,
-  <span class="hljs-string">"charge_amount"</span>: <span class="hljs-number">43.12</span>,
-  <span class="hljs-string">"taxable"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-charges-">&#39;/api/charges&#39;</h2>
-<ul>
-<li>It is used to edit an existing charge by charge_id.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"charge_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">3</span>,
-  <span class="hljs-string">"charge_amount"</span>: <span class="hljs-number">43.12</span>,
-  <span class="hljs-string">"taxable"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-charges-id-">&#39;/api/charges/:id&#39;</h2>
-<ul>
-<li>Takes in a charge_id parameter in the url.</li>
-<li>This will permanently delete a single charge.</li>
-<li>It returns status code 200 and a &#39;Charge was successfully deleted!&#39; message if successful.</li>
-<li>It returns status code 400 and a &#39;Could not delete charge... please check your request and try again!&#39; message if unsuccessful.</li>
-</ul>
-<h2 id="-api-charges-res-rooms-id-">&#39;/api/charges/res-rooms/:id&#39;</h2>
-<ul>
-<li>Takes in a res_room_id parameter in the url.</li>
-<li>This will permanently delete all charges associated with a res_room.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-charge-types-"><strong>/api/charge-types</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-charge-types-">&#39;/api/charge-types&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all charge_types in an array of objects... each of which in its own object.<pre><code>[
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-users-">&#39;/api/users&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+            <li>If the submitted username is already taken, it returns a status code 202 and a &quot;Username is already
+                in use!&quot; response.</li>
+            <li>If the submitted username and/or password are less than 6 characters long, it returns a status code 406
+                and a &quot;Username and/or Password don&#39;t meet length standards!&quot; response.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Phone"</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-  },
-  {
-      ...
+    <span class="hljs-string">"user_id"</span>: <span class="hljs-number">6</span>,
+    <span class="hljs-string">"username"</span>: <span class="hljs-string">"manager123"</span>,
+    <span class="hljs-string">"password"</span>: <span class="hljs-string">"updated_password"</span>,
+    <span class="hljs-string">"access_id"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
   }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-charge-types-id-">&#39;/api/charge-types/:id&#39;</h2>
-<ul>
-<li>Takes in a charge_type_id parameter in the url.</li>
-<li>Returns an array containing a single charge object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-users-id-">&#39;/api/users/:id&#39;</h2>
+        <ul>
+            <li>Takes in a user_id parameter in the url.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-customers-"><strong>/api/customers</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-customers-">&#39;/api/customers&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all customers and their details in an array of customer objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
+        <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
+        <span class="hljs-string">"address"</span>: <span class="hljs-string">"7193 Valley St"</span>,
+        <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lexington"</span>,
+        <span class="hljs-string">"state"</span>: <span class="hljs-string">"NC"</span>,
+        <span class="hljs-string">"zip"</span>: <span class="hljs-string">"27292"</span>,
+        <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+        <span class="hljs-string">"email"</span>: <span class="hljs-string">"rgiersig@yahoo.com"</span>,
+        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"806-427-8083"</span>,
+        <span class="hljs-string">"creditCardLastFour"</span>: <span class="hljs-string">"0920"</span>,
+        <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"10 / 22"</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-customers-id-">&#39;/api/customers/:id&#39;</h2>
+        <ul>
+            <li>Takes in a customer_id parameter in the url.</li>
+            <li>Returns an array containing a single customer object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
+        <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
+        <span class="hljs-string">"address"</span>: <span class="hljs-string">"7193 Valley St"</span>,
+        <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lexington"</span>,
+        <span class="hljs-string">"state"</span>: <span class="hljs-string">"NC"</span>,
+        <span class="hljs-string">"zip"</span>: <span class="hljs-string">"27292"</span>,
+        <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+        <span class="hljs-string">"email"</span>: <span class="hljs-string">"rgiersig@yahoo.com"</span>,
+        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"806-427-8083"</span>,
+        <span class="hljs-string">"creditCardLastFour"</span>: <span class="hljs-string">"0920"</span>,
+        <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"10 / 22"</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-customers-">&#39;/api/customers&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">3</span>,
-      <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Room Service"</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"John"</span>,
+    <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
+    <span class="hljs-string">"address"</span>: <span class="hljs-string">"123 Main St"</span>,
+    <span class="hljs-string">"city"</span>: <span class="hljs-string">"Cleveland"</span>,
+    <span class="hljs-string">"state"</span>: <span class="hljs-string">"OH"</span>,
+    <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44124"</span>,
+    <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+    <span class="hljs-string">"email"</span>: <span class="hljs-string">"temp@temp.com"</span>,
+    <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
+    <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"4444111122223333"</span>,
+    <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"05 / 23"</span>
   }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-charge-types-">&#39;/api/charge-types&#39;</h2>
-<ul>
-<li>It adds a new charge_types.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Gift Certificate"</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-charge-types-">&#39;/api/charge-types&#39;</h2>
-<ul>
-<li>It is used to edit an existing charge type by charge_type_id.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Phone"</span>,
-  <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-charge-types-id-">&#39;/api/charge-types/:id&#39;</h2>
-<ul>
-<li>Takes in a charge_type_id parameter in the url.</li>
-<li>This will permanently delete a charge type.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-payment-types-"><strong>/api/payment-types</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-payment-types-">&#39;/api/payment-types&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all payment types and their details in an array of objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-customers-">&#39;/api/customers&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Credit Card"</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-  },
-  {
-      ...
+    <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">123</span>,
+    <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"John"</span>,
+    <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Doe"</span>,
+    <span class="hljs-string">"address"</span>: <span class="hljs-string">"123 Main St"</span>,
+    <span class="hljs-string">"city"</span>: <span class="hljs-string">"Cleveland"</span>,
+    <span class="hljs-string">"state"</span>: <span class="hljs-string">"OH"</span>,
+    <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44124"</span>,
+    <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+    <span class="hljs-string">"email"</span>: <span class="hljs-string">"temp@temp.com"</span>,
+    <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
+    <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"4444111122223333"</span>,
+    <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"05 / 23"</span>
   }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-payment-types-id-">&#39;/api/payment-types/:id&#39;</h2>
-<ul>
-<li>Takes in a payment_type_id parameter in the url.</li>
-<li>Returns an array containing a single payment type object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-customers-id-">&#39;/api/customers/:id&#39;</h2>
+        <ul>
+            <li>Takes in a customer_id parameter in the url.</li>
+            <li><strong>Note</strong>: customers cannot be deleted as long as they are still associated with a
+                reservation because of foreign key constraints.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-reservations">/api/reservations</h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-reservations-">&#39;/api/reservations&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all reservations (with partial customer and res_room info) in an array of reservation objects.
+            </li>
+            <li>Each res_room on a reservation is returned on its own row.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
+        <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
+        <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"created_at"</span>: <span class="hljs-string">"Nov 30, 2019 (01:19 PM)"</span>,
+        <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"Nov 27, 2019"</span>,
+        <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"Dec 01, 2019"</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-reservations-id-">&#39;/api/reservations/:id&#39;</h2>
+        <ul>
+            <li>Takes in a reservation_id parameter in the url.</li>
+            <li>Returns an array containing a single reservation object.</li>
+            <li>This route should be used in conjunction with the <strong>/api/reservations/:id/res-rooms</strong> route
+                to get detailed info about all rooms associated with this reservation.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"user_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"created_at"</span>: <span class="hljs-string">"Nov 30, 2019 (01:19 PM)"</span>,
+        <span class="hljs-string">"comments"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
+        <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
+        <span class="hljs-string">"address"</span>: <span class="hljs-string">"7193 Valley St"</span>,
+        <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lexington"</span>,
+        <span class="hljs-string">"state"</span>: <span class="hljs-string">"NC"</span>,
+        <span class="hljs-string">"zip"</span>: <span class="hljs-string">"27292"</span>,
+        <span class="hljs-string">"email"</span>: <span class="hljs-string">"rgiersig@yahoo.com"</span>,
+        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"806-427-8083"</span>,
+        <span class="hljs-string">"ccLastFour"</span>: <span class="hljs-string">"0920"</span>,
+        <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"10 / 22"</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-reservations-id-res-rooms-">&#39;/api/reservations/:id/res-rooms&#39;</h2>
+        <ul>
+            <li>Takes in a reservation_id parameter in the url.</li>
+            <li>Returns an array of all res_rooms (and detailed res_room info) associated with a single reservation as
+                objects.</li>
+            <li>This route should be used in conjunction with the <strong>/api/reservations/:id</strong> route to get
+                more info about the reservation.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"Nov 27, 2019"</span>,
+        <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"Dec 01, 2019"</span>,
+        <span class="hljs-string">"checked_in"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"checked_out"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"adults"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"room_id"</span>: <span class="hljs-number">9</span>,
+        <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>,
+        <span class="hljs-string">"confirmation_code"</span>: <span class="hljs-string">"190501001001"</span>,
+        <span class="hljs-string">"comments"</span>: <span class="hljs-string">"needs a late checkout time"</span>,
+        <span class="hljs-string">"allow_charges"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-reservations-">&#39;/api/reservations&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>This route accesses the reservation model which uses a database transaction that sequentially queries 3
+                tables (<strong>customers, reservations and res_rooms</strong>)... with either all succeeding/committing
+                or rolling back if any of them fail.</li>
+            <li>The <strong>resRoomsArr</strong> property of the body is an array that contains an object element for
+                each res_room in the reservation.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+            <li>On this endpoint, the &quot;insertId&quot; will be the new reservation_id.
+                <pre><code>// sample request body <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Credit Card"</span>,
-      <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    <span class="hljs-string">"customerObj"</span>: {
+        <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Peter"</span>,
+        <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Pan"</span>,
+        <span class="hljs-string">"address"</span>: <span class="hljs-string">"1111 FairyTale Lane"</span>,
+        <span class="hljs-string">"city"</span>: <span class="hljs-string">"Fantasyland"</span>,
+        <span class="hljs-string">"state"</span>: <span class="hljs-string">"Vermont"</span>,
+        <span class="hljs-string">"zip"</span>: <span class="hljs-string">"23456"</span>,
+        <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+        <span class="hljs-string">"email"</span>: <span class="hljs-string">"p.pan@yahoo.net"</span>,
+        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
+        <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
+        <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 21"</span>
+    },
+    <span class="hljs-string">"reservationObj"</span>: {
+        <span class="hljs-string">"company_id"</span>: null,
+        <span class="hljs-string">"user_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"comments"</span>: <span class="hljs-string">"test reservation comment"</span>
+    },
+    <span class="hljs-string">"resRoomsArr"</span>: [
+        {
+            <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">2</span>,
+            <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"2019-12-12"</span>,
+            <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"2019-12-15"</span>,
+            <span class="hljs-string">"adults"</span>: <span class="hljs-number">2</span>,
+            <span class="hljs-string">"rate"</span>: <span class="hljs-number">119.99</span>,
+            <span class="hljs-string">"comments"</span>: <span class="hljs-string">"need a good view"</span>,
+            <span class="hljs-string">"allow_charges"</span>: <span class="hljs-number">1</span>
+        },
+        {
+            <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+            <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"2019-12-12"</span>,
+            <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"2019-12-17"</span>,
+            <span class="hljs-string">"adults"</span>: <span class="hljs-number">2</span>,
+            <span class="hljs-string">"rate"</span>: <span class="hljs-number">109.99</span>,
+            <span class="hljs-string">"comments"</span>: <span class="hljs-string">"want a late checkout"</span>,
+            <span class="hljs-string">"allow_charges"</span>: <span class="hljs-number">0</span>
+        }
+    ]
   }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-reservations-">&#39;/api/reservations&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>This route is used to update information about a reservation, but not the rooms associated with the
+                reservation.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code><span class="hljs-regexp">//</span> sample request body <span class="hljs-keyword">for</span> <span class="hljs-keyword">this</span> route
+  {
+    <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1201</span>,
+    <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">201</span>,
+    <span class="hljs-string">"company_id"</span>: <span class="hljs-literal">null</span>,
+    <span class="hljs-string">"user_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"comments"</span>: <span class="hljs-string">"test reservation comment"</span>,
+    <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-reservations-res-rooms-assign-">&#39;/api/reservations/res-rooms/assign&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>This route is used for assigning a room number and room type to a res_room.</li>
+            <li>It will have its confirmation code updated by the reservationsController as needed.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1201</span>,
+    <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"room_id"</span>: <span class="hljs-number">98</span>,
+    <span class="hljs-string">"rate"</span>: <span class="hljs-number">109.99</span>,
+    <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1201</span>,
+    <span class="hljs-string">"confirmation_code"</span>: <span class="hljs-string">"191130201001"</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-reservations-res-rooms-reassign-">&#39;/api/reservations/res-rooms/reassign&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>This route is used for re-assigning a room number and room type to a res_room.</li>
+            <li>It will not change the confirmation code associated with the room being reassigned.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1202</span>,
+    <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"room_id"</span>: <span class="hljs-number">91</span>,
+    <span class="hljs-string">"rate"</span>: <span class="hljs-number">109.99</span>,
+    <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1201</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-reservations-res-rooms-">&#39;/api/reservations/res-rooms&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>This route is used for changing information about a res_room.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1200</span>,
+    <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"2020-03-14"</span>,
+    <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"2020-03-18"</span>,
+    <span class="hljs-string">"adults"</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-string">"rate"</span>: <span class="hljs-number">119.99</span>,
+    <span class="hljs-string">"comments"</span>: <span class="hljs-string">"blah, blah"</span>,
+    <span class="hljs-string">"allow_charges"</span>: <span class="hljs-number">1</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <h2 id="-">---</h2>
+    <h2 id="-api-room-types-"><strong>/api/room-types</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-room-types-">&#39;/api/room-types&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all room types and their rates in an array of objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
+        <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-room-types-id-">&#39;/api/room-types/:id&#39;</h2>
+        <ul>
+            <li>Takes in a room_type_id parameter in the url.</li>
+            <li>Returns an array containing a single room type object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
+        <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-room-types-availability-date-">&#39;/api/room-types/availability/:date&#39;</h2>
+        <ul>
+            <li>Takes in a date parameter in the url (in the YYYY-MM-DD format).</li>
+            <li>Returns an array of 14 days worth of availability objects... each of which shows detailed availabilty
+                for that day.
+                <pre><code>// sample response from this route
+  [
+    {
+        <span class="hljs-string">"fieldCount"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"affectedRows"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"insertId"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-string">"info"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"serverStatus"</span>: <span class="hljs-number">10</span>,
+        <span class="hljs-string">"warningStatus"</span>: <span class="hljs-number">0</span>
+    },
+    [
+        {
+            <span class="hljs-string">"date"</span>: <span class="hljs-string">"2019-12-02"</span>,
+            <span class="hljs-string">"AvailableType1"</span>: <span class="hljs-number">28</span>,
+            <span class="hljs-string">"AvailableType2"</span>: <span class="hljs-number">8</span>,
+            <span class="hljs-string">"AvailableType3"</span>: <span class="hljs-number">16</span>,
+            <span class="hljs-string">"TotalAvailable"</span>: <span class="hljs-number">52</span>,
+            <span class="hljs-string">"OccupiedType1"</span>: <span class="hljs-number">21</span>,
+            <span class="hljs-string">"OccupiedType2"</span>: <span class="hljs-number">12</span>,
+            <span class="hljs-string">"OccupiedType3"</span>: <span class="hljs-number">13</span>,
+            <span class="hljs-string">"TotalOccupied"</span>: <span class="hljs-number">46</span>
+        },
+        {
+            ...
+        }
+    ]
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-room-types-">&#39;/api/room-types&#39;</h2>
+        <ul>
+            <li>It adds a new room type.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Double"</span>,
+    <span class="hljs-string">"rate"</span>: <span class="hljs-number">109.99</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-room-types-">&#39;/api/room-types&#39;</h2>
+        <ul>
+            <li>It is used to edit an existing room type by room_type_id.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">2</span>,
+    <span class="hljs-string">"type"</span>: <span class="hljs-string">"King"</span>,
+    <span class="hljs-string">"rate"</span>: <span class="hljs-string">"119.99"</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-room-types-id-">&#39;/api/room-types/:id&#39;</h2>
+        <ul>
+            <li>Takes in a room_type_id parameter in the url.</li>
+            <li>This will permanently delete a room type.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-invoices-"><strong>/api/invoices</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-invoices-">&#39;/api/invoices&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all invoices in an array of invoice objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"invoice_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"total_due"</span>: <span class="hljs-string">"604.25"</span>,
+        <span class="hljs-string">"created_at"</span>: <span class="hljs-string">"2019-11-30T18:19:24.000Z"</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-invoices-id-">&#39;/api/invoices/:id&#39;</h2>
+        <ul>
+            <li>Takes in an invoice_id parameter in the url.</li>
+            <li>Returns all the details associated with the invoice (customer, company, reservation, res_room, room,
+                room_type, payments, taxes, charges) in an array containing a single compound object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"invoice_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"total_due"</span>: <span class="hljs-string">"604.25"</span>,
+        <span class="hljs-string">"num_nights"</span>: <span class="hljs-number">4</span>,
+        <span class="hljs-string">"reservation_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"room_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"check_in_date"</span>: <span class="hljs-string">"Nov 27, 2019"</span>,
+        <span class="hljs-string">"check_out_date"</span>: <span class="hljs-string">"Dec 01, 2019"</span>,
+        <span class="hljs-string">"adults"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"room_id"</span>: <span class="hljs-number">9</span>,
+        <span class="hljs-string">"rate"</span>: <span class="hljs-string">"109.99"</span>,
+        <span class="hljs-string">"confirmation_code"</span>: <span class="hljs-string">"190501001001"</span>,
+        <span class="hljs-string">"res_room_comments"</span>: <span class="hljs-string">"needs a late checkout time"</span>,
+        <span class="hljs-string">"room_num"</span>: <span class="hljs-string">"109"</span>,
+        <span class="hljs-string">"type"</span>: <span class="hljs-string">"2 Queens"</span>,
+        <span class="hljs-string">"customer_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"company_id"</span>: <span class="hljs-literal">null</span>,
+        <span class="hljs-string">"reservation_comments"</span>: <span class="hljs-string">""</span>,
+        <span class="hljs-string">"first_name"</span>: <span class="hljs-string">"Jamar"</span>,
+        <span class="hljs-string">"last_name"</span>: <span class="hljs-string">"Wilkerson"</span>,
+        <span class="hljs-string">"address"</span>: <span class="hljs-string">"7193 Valley St"</span>,
+        <span class="hljs-string">"city"</span>: <span class="hljs-string">"Lexington"</span>,
+        <span class="hljs-string">"state"</span>: <span class="hljs-string">"NC"</span>,
+        <span class="hljs-string">"zip"</span>: <span class="hljs-string">"27292"</span>,
+        <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+        <span class="hljs-string">"email"</span>: <span class="hljs-string">"rgiersig@yahoo.com"</span>,
+        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"806-427-8083"</span>,
+        <span class="hljs-string">"creditCardLastFour"</span>: <span class="hljs-string">"0920"</span>,
+        <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"10 / 22"</span>,
+        <span class="hljs-string">"company_name"</span>: <span class="hljs-literal">null</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-invoices-id-invoice-taxes-">&#39;/api/invoices/:id/invoice-taxes&#39;</h2>
+        <ul>
+            <li>Takes in an invoice_id parameter in the url.</li>
+            <li>Returns all taxes associated with this invoice_id in an array of tax objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"invoice_tax_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"invoice_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"County Tax"</span>,
+        <span class="hljs-string">"tax_amount"</span>: <span class="hljs-string">"24.40"</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-invoices-id-invoice-payments-">&#39;/api/invoices/:id/invoice-payments&#39;</h2>
+        <ul>
+            <li>Takes in an invoice_id parameter in the url.</li>
+            <li>Returns all payments associated with this invoice_id in an array of payment objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"invoice_payment_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"invoice_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Credit Card"</span>,
+        <span class="hljs-string">"payment_amount"</span>: <span class="hljs-string">"484.25"</span>,
+        <span class="hljs-string">"payment_ref_num"</span>: <span class="hljs-string">"1234"</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-invoices-">&#39;/api/invoices&#39;</h2>
+        <ul>
+            <li>It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).
+            </li>
+            <li>This route also does the following:<ul>
+                    <li>Marks the res_room of the invoice as &quot;checked_out=1&quot;.</li>
+                    <li>Marks the room of the res_room as &quot;occupied=0&quot; and &quot;clean=0&quot;.</li>
+                </ul>
+            </li>
+            <li>It does all of the above in the invoice model using a database transaction that sequentially queries 5
+                tables (<strong>invoices, invoice_taxes, invoice_payments, res_rooms and rooms</strong>)... with either
+                all succeeding/committing or rolling back if any of them fail.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+            <li>On this endpoint, the &quot;insertId&quot; will be the new invoice_id.
+                <pre><code>// sample request body <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"invoiceObj"</span>: {
+        <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1001</span>,
+        <span class="hljs-string">"total_due"</span>: <span class="hljs-number">470.76</span>
+    },
+    <span class="hljs-string">"invoiceTaxesArr"</span>: [
+        {
+            <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">1</span>,
+            <span class="hljs-string">"tax_amount"</span>: <span class="hljs-number">22.00</span>
+        },
+        {
+            <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">2</span>,
+            <span class="hljs-string">"tax_amount"</span>: <span class="hljs-number">13.20</span>
+        },
+        {
+            <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">3</span>,
+            <span class="hljs-string">"tax_amount"</span>: <span class="hljs-number">30.80</span>
+        }
+    ],
+    <span class="hljs-string">"invoicePaymentsArr"</span>: [
+        {
+            <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">1</span>,
+            <span class="hljs-string">"payment_amount"</span>: <span class="hljs-number">350.96</span>,
+            <span class="hljs-string">"payment_ref_num"</span>: <span class="hljs-string">"1234"</span>
+        },
+        {
+            <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">3</span>,
+            <span class="hljs-string">"payment_amount"</span>: <span class="hljs-number">120.00</span>,
+            <span class="hljs-string">"payment_ref_num"</span>: <span class="hljs-string">""</span>
+        }
+    ]
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-invoices-id-">&#39;/api/invoices/:id&#39;</h2>
+        <ul>
+            <li>Takes in an invoice_id parameter in the url.</li>
+            <li>This will permanently delete an invoice, plus any taxes and payments that were associated with that
+                invoice through foreign key cascade on delete.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-taxes-"><strong>/api/taxes</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-taxes-">&#39;/api/taxes&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all taxes and their info in an array of tax objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"County Tax"</span>,
+        <span class="hljs-string">"tax_rate"</span>: <span class="hljs-string">"5.000"</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-taxes-">&#39;/api/taxes&#39;</h2>
+        <ul>
+            <li>Takes in a tax_id parameter in the url.</li>
+            <li>Returns an array containing a single tax object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"County Tax"</span>,
+        <span class="hljs-string">"tax_rate"</span>: <span class="hljs-string">"5.000"</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-taxes-">&#39;/api/taxes&#39;</h2>
+        <ul>
+            <li>It adds a new tax.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"Special Tax"</span>,
+    <span class="hljs-string">"tax_rate"</span>: <span class="hljs-number">2.625</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-taxes-">&#39;/api/taxes&#39;</h2>
+        <ul>
+            <li>It is used to edit an existing tax by tax_id.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"tax_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"tax_name"</span>: <span class="hljs-string">"County Tax"</span>,
+    <span class="hljs-string">"tax_rate"</span>: <span class="hljs-number">5.500</span>,
+    <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-taxes-id-">&#39;/api/taxes/:id&#39;</h2>
+        <ul>
+            <li>Takes in a tax_id parameter in the url.</li>
+            <li>This will permanently delete a tax.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-charges-"><strong>/api/charges</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-charges-">&#39;/api/charges&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns an array charge objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"charge_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Restaurant"</span>,
+        <span class="hljs-string">"charge_amount"</span>: <span class="hljs-string">"43.12"</span>,
+        <span class="hljs-string">"taxable"</span>: <span class="hljs-number">0</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-charges-id-">&#39;/api/charges/:id&#39;</h2>
+        <ul>
+            <li>Takes in a charge_id parameter in the url.</li>
+            <li>Returns an array containing a single charge object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"charge_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Restaurant"</span>,
+        <span class="hljs-string">"charge_amount"</span>: <span class="hljs-string">"43.12"</span>,
+        <span class="hljs-string">"taxable"</span>: <span class="hljs-number">0</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-charges-res-rooms-id-">&#39;/api/charges/res-rooms/:id&#39;</h2>
+        <ul>
+            <li>Takes in a res_room_id parameter in the url.</li>
+            <li>Returns all charges associated with a res_room in an array of charges objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"charge_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Restaurant"</span>,
+        <span class="hljs-string">"charge_amount"</span>: <span class="hljs-string">"43.12"</span>,
+        <span class="hljs-string">"taxable"</span>: <span class="hljs-number">0</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-charges-">&#39;/api/charges&#39;</h2>
+        <ul>
+            <li>It adds a new charge associated with a res_room.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"res_room_id"</span>: <span class="hljs-number">1200</span>,
+    <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-string">"charge_amount"</span>: <span class="hljs-number">43.12</span>,
+    <span class="hljs-string">"taxable"</span>: <span class="hljs-number">1</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-charges-">&#39;/api/charges&#39;</h2>
+        <ul>
+            <li>It is used to edit an existing charge by charge_id.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"charge_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">3</span>,
+    <span class="hljs-string">"charge_amount"</span>: <span class="hljs-number">43.12</span>,
+    <span class="hljs-string">"taxable"</span>: <span class="hljs-number">1</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-charges-id-">&#39;/api/charges/:id&#39;</h2>
+        <ul>
+            <li>Takes in a charge_id parameter in the url.</li>
+            <li>This will permanently delete a single charge.</li>
+            <li>It returns status code 200 and a &#39;Charge was successfully deleted!&#39; message if successful.</li>
+            <li>It returns status code 400 and a &#39;Could not delete charge... please check your request and try
+                again!&#39; message if unsuccessful.</li>
+        </ul>
+        <h2 id="-api-charges-res-rooms-id-">&#39;/api/charges/res-rooms/:id&#39;</h2>
+        <ul>
+            <li>Takes in a res_room_id parameter in the url.</li>
+            <li>This will permanently delete all charges associated with a res_room.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-charge-types-"><strong>/api/charge-types</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-charge-types-">&#39;/api/charge-types&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all charge_types in an array of objects... each of which in its own object.
+                <pre><code>[
+    {
+        <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Phone"</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-charge-types-id-">&#39;/api/charge-types/:id&#39;</h2>
+        <ul>
+            <li>Takes in a charge_type_id parameter in the url.</li>
+            <li>Returns an array containing a single charge object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">3</span>,
+        <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Room Service"</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-charge-types-">&#39;/api/charge-types&#39;</h2>
+        <ul>
+            <li>It adds a new charge type.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Gift Certificate"</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-charge-types-">&#39;/api/charge-types&#39;</h2>
+        <ul>
+            <li>It is used to edit an existing charge type by charge_type_id.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"charge_type_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"charge_type"</span>: <span class="hljs-string">"Phone"</span>,
+    <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-charge-types-id-">&#39;/api/charge-types/:id&#39;</h2>
+        <ul>
+            <li>Takes in a charge_type_id parameter in the url.</li>
+            <li>This will permanently delete a charge type.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-payment-types-"><strong>/api/payment-types</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-payment-types-">&#39;/api/payment-types&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all payment types and their details in an array of objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Credit Card"</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-payment-types-id-">&#39;/api/payment-types/:id&#39;</h2>
+        <ul>
+            <li>Takes in a payment_type_id parameter in the url.</li>
+            <li>Returns an array containing a single payment type object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Credit Card"</span>,
+        <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-payment-types-">&#39;/api/payment-types&#39;</h2>
+        <ul>
+            <li>It adds a new payment type.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
     <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Travelers Check"</span>,
     <span class="hljs-string">"active"</span>: <span class="hljs-number">1</span>
-}
-</code></pre><p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-payment-types-">&#39;/api/payment-types&#39;</h2>
-<ul>
-<li>It is used to edit an existing payment type by payment_type_id.</li>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">5</span>,
-  <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Travelers Check2"</span>,
-  <span class="hljs-string">"active"</span>: <span class="hljs-number">0</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-payment-types-id-">&#39;/api/payment-types/:id&#39;</h2>
-<ul>
-<li>Takes in a payment_type_id parameter in the url.</li>
-<li>This will permanently delete a payment type.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-companies-"><strong>/api/companies</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-companies-">&#39;/api/companies&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>Returns all companies and their details in an array of objects.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
-  {
-      <span class="hljs-string">"company_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"company_name"</span>: <span class="hljs-string">"Union Sand"</span>,
-      <span class="hljs-string">"address"</span>: <span class="hljs-string">"234 Bank St"</span>,
-      <span class="hljs-string">"city"</span>: <span class="hljs-string">"Painesville"</span>,
-      <span class="hljs-string">"state"</span>: <span class="hljs-string">"Ohio"</span>,
-      <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44077"</span>,
-      <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-      <span class="hljs-string">"email"</span>: <span class="hljs-string">"u.sand@yahoo.net"</span>,
-      <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
-      <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
-      <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 24"</span>,
-      <span class="hljs-string">"tax_exempt"</span>: <span class="hljs-number">0</span>
-  },
-  {
-      ...
   }
-]
-</code></pre></li>
-</ul>
-<h2 id="-api-companies-id-">&#39;/api/companies/:id&#39;</h2>
-<ul>
-<li>Takes in a company_id parameter in the url.</li>
-<li>Returns an array containing a single company object.<pre><code><span class="hljs-comment">// sample response from this route</span>
-[
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-payment-types-">&#39;/api/payment-types&#39;</h2>
+        <ul>
+            <li>It is used to edit an existing payment type by payment_type_id.</li>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
   {
-      <span class="hljs-string">"company_id"</span>: <span class="hljs-number">1</span>,
-      <span class="hljs-string">"company_name"</span>: <span class="hljs-string">"Union Sand"</span>,
-      <span class="hljs-string">"address"</span>: <span class="hljs-string">"234 Bank St"</span>,
-      <span class="hljs-string">"city"</span>: <span class="hljs-string">"Painesville"</span>,
-      <span class="hljs-string">"state"</span>: <span class="hljs-string">"Ohio"</span>,
-      <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44077"</span>,
-      <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-      <span class="hljs-string">"email"</span>: <span class="hljs-string">"u.sand@yahoo.net"</span>,
-      <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
-      <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
-      <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 24"</span>,
-      <span class="hljs-string">"tax_exempt"</span>: <span class="hljs-number">0</span>
+    <span class="hljs-string">"payment_type_id"</span>: <span class="hljs-number">5</span>,
+    <span class="hljs-string">"payment_type"</span>: <span class="hljs-string">"Travelers Check2"</span>,
+    <span class="hljs-string">"active"</span>: <span class="hljs-number">0</span>
   }
-]
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-companies-">&#39;/api/companies&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"company_name"</span>: <span class="hljs-string">"Union Sand"</span>,
-  <span class="hljs-string">"address"</span>: <span class="hljs-string">"234 Bank St"</span>,
-  <span class="hljs-string">"city"</span>: <span class="hljs-string">"Painesville"</span>,
-  <span class="hljs-string">"state"</span>: <span class="hljs-string">"Ohio"</span>,
-  <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44077"</span>,
-  <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-  <span class="hljs-string">"email"</span>: <span class="hljs-string">"u.sand@yahoo.net"</span>,
-  <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
-  <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
-  <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 24"</span>,
-  <span class="hljs-string">"tax_exempt"</span>: <span class="hljs-number">0</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>PUT methods:</strong></p>
-<blockquote>
-<h2 id="-api-companies-">&#39;/api/companies&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.<pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
-{
-  <span class="hljs-string">"company_id"</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-string">"company_name"</span>: <span class="hljs-string">"Union Sand"</span>,
-  <span class="hljs-string">"address"</span>: <span class="hljs-string">"234 Bank St"</span>,
-  <span class="hljs-string">"city"</span>: <span class="hljs-string">"Painesville"</span>,
-  <span class="hljs-string">"state"</span>: <span class="hljs-string">"Ohio"</span>,
-  <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44077"</span>,
-  <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
-  <span class="hljs-string">"email"</span>: <span class="hljs-string">"u.sand@yahoo.net"</span>,
-  <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
-  <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
-  <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 24"</span>,
-  <span class="hljs-string">"tax_exempt"</span>: <span class="hljs-number">0</span>
-}
-</code></pre></li>
-</ul>
-</blockquote>
-<p><strong>DELETE methods:</strong></p>
-<blockquote>
-<h2 id="-api-companies-id-">&#39;/api/companies/:id&#39;</h2>
-<ul>
-<li>Takes in a company_id parameter in the url.</li>
-<li>It will delete a single company.</li>
-<li>If successful, it returns status code 200 and a JSON object including things like &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
-</ul>
-</blockquote>
-<h2 id="-">---</h2>
-<h2 id="-api-auth-"><strong>/api/auth</strong></h2>
-<p><strong>GET methods:</strong></p>
-<blockquote>
-<h2 id="-api-auth-">&#39;/api/auth&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>It outputs status code 200 and a message from the /api/auth route root.</li>
-</ul>
-<h2 id="-api-auth-logout-">&#39;/api/auth/logout&#39;</h2>
-<ul>
-<li>Takes in no parameters.</li>
-<li>It is used by Passport JS to log out a user.</li>
-<li>It calls: <strong>req.logout();</strong>, then sets the req.user object to that of a guest.</li>
-</ul>
-</blockquote>
-<p><strong>POST methods:</strong></p>
-<blockquote>
-<h2 id="-api-auth-login-">&#39;/api/auth/login&#39;</h2>
-<ul>
-<li>Takes in a list of parameters in the body object.</li>
-</ul>
-</blockquote>
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-payment-types-id-">&#39;/api/payment-types/:id&#39;</h2>
+        <ul>
+            <li>Takes in a payment_type_id parameter in the url.</li>
+            <li>This will permanently delete a payment type.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-companies-"><strong>/api/companies</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-companies-">&#39;/api/companies&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>Returns all companies and their details in an array of objects.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"company_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"company_name"</span>: <span class="hljs-string">"Union Sand"</span>,
+        <span class="hljs-string">"address"</span>: <span class="hljs-string">"234 Bank St"</span>,
+        <span class="hljs-string">"city"</span>: <span class="hljs-string">"Painesville"</span>,
+        <span class="hljs-string">"state"</span>: <span class="hljs-string">"Ohio"</span>,
+        <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44077"</span>,
+        <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+        <span class="hljs-string">"email"</span>: <span class="hljs-string">"u.sand@yahoo.net"</span>,
+        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
+        <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
+        <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 24"</span>,
+        <span class="hljs-string">"tax_exempt"</span>: <span class="hljs-number">0</span>
+    },
+    {
+        ...
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+        <h2 id="-api-companies-id-">&#39;/api/companies/:id&#39;</h2>
+        <ul>
+            <li>Takes in a company_id parameter in the url.</li>
+            <li>Returns an array containing a single company object.
+                <pre><code><span class="hljs-comment">// sample response from this route</span>
+  [
+    {
+        <span class="hljs-string">"company_id"</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-string">"company_name"</span>: <span class="hljs-string">"Union Sand"</span>,
+        <span class="hljs-string">"address"</span>: <span class="hljs-string">"234 Bank St"</span>,
+        <span class="hljs-string">"city"</span>: <span class="hljs-string">"Painesville"</span>,
+        <span class="hljs-string">"state"</span>: <span class="hljs-string">"Ohio"</span>,
+        <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44077"</span>,
+        <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+        <span class="hljs-string">"email"</span>: <span class="hljs-string">"u.sand@yahoo.net"</span>,
+        <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
+        <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
+        <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 24"</span>,
+        <span class="hljs-string">"tax_exempt"</span>: <span class="hljs-number">0</span>
+    }
+  ]
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-companies-">&#39;/api/companies&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"company_name"</span>: <span class="hljs-string">"Union Sand"</span>,
+    <span class="hljs-string">"address"</span>: <span class="hljs-string">"234 Bank St"</span>,
+    <span class="hljs-string">"city"</span>: <span class="hljs-string">"Painesville"</span>,
+    <span class="hljs-string">"state"</span>: <span class="hljs-string">"Ohio"</span>,
+    <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44077"</span>,
+    <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+    <span class="hljs-string">"email"</span>: <span class="hljs-string">"u.sand@yahoo.net"</span>,
+    <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
+    <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
+    <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 24"</span>,
+    <span class="hljs-string">"tax_exempt"</span>: <span class="hljs-number">0</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>PUT methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-companies-">&#39;/api/companies&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.
+                <pre><code>// sample request <span class="hljs-keyword">body</span> <span class="hljs-keyword">for</span> this route
+  {
+    <span class="hljs-string">"company_id"</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-string">"company_name"</span>: <span class="hljs-string">"Union Sand"</span>,
+    <span class="hljs-string">"address"</span>: <span class="hljs-string">"234 Bank St"</span>,
+    <span class="hljs-string">"city"</span>: <span class="hljs-string">"Painesville"</span>,
+    <span class="hljs-string">"state"</span>: <span class="hljs-string">"Ohio"</span>,
+    <span class="hljs-string">"zip"</span>: <span class="hljs-string">"44077"</span>,
+    <span class="hljs-string">"country"</span>: <span class="hljs-string">"USA"</span>,
+    <span class="hljs-string">"email"</span>: <span class="hljs-string">"u.sand@yahoo.net"</span>,
+    <span class="hljs-string">"phone"</span>: <span class="hljs-string">"800-555-1212"</span>,
+    <span class="hljs-string">"credit_card_num"</span>: <span class="hljs-string">"1234567890123456"</span>,
+    <span class="hljs-string">"cc_expiration"</span>: <span class="hljs-string">"11 / 24"</span>,
+    <span class="hljs-string">"tax_exempt"</span>: <span class="hljs-number">0</span>
+  }
+  </code></pre>
+            </li>
+        </ul>
+    </blockquote>
+    <p><strong>DELETE methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-companies-id-">&#39;/api/companies/:id&#39;</h2>
+        <ul>
+            <li>Takes in a company_id parameter in the url.</li>
+            <li>It will delete a single company.</li>
+            <li>If successful, it returns status code 200 and a JSON object including things like
+                &quot;affectedRows&quot;, &quot;insertId&quot; and such.</li>
+        </ul>
+    </blockquote>
+    <h2 id="-">---</h2>
+    <h2 id="-api-auth-"><strong>/api/auth</strong></h2>
+    <p><strong>GET methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-auth-">&#39;/api/auth&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>It outputs status code 200 and a message from the /api/auth route root.</li>
+        </ul>
+        <h2 id="-api-auth-logout-">&#39;/api/auth/logout&#39;</h2>
+        <ul>
+            <li>Takes in no parameters.</li>
+            <li>It is used by Passport JS to log out a user.</li>
+            <li>It calls: <strong>req.logout();</strong>, then sets the req.user object to that of a guest.</li>
+        </ul>
+    </blockquote>
+    <p><strong>POST methods:</strong></p>
+    <blockquote>
+        <h2 id="-api-auth-login-">&#39;/api/auth/login&#39;</h2>
+        <ul>
+            <li>Takes in a list of parameters in the body object.</li>
+        </ul>
+    </blockquote>
+</body>
+
+</html>

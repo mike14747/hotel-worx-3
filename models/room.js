@@ -40,7 +40,7 @@ const Room = {
     },
     getRoomsHouseStatus: async () => {
         try {
-            const queryString = 'SELECT COUNT(*) AS roomsToSell, SUM(CASE WHEN rm.clean=1 && rm.occupied=1 THEN 1 ELSE 0 END) AS cleanOccupied, SUM(CASE WHEN rm.clean=1 && rm.occupied=0 THEN 1 ELSE 0 END) AS cleanVacant, SUM(CASE WHEN rm.clean=0 && rm.occupied=1 THEN 1 ELSE 0 END) AS dirtyOccupied, SUM(CASE WHEN rm.clean=0 && rm.occupied=0 THEN 1 ELSE 0 END) AS dirtyVacant FROM rooms AS rm WHERE rm.active=1;';
+            const queryString = 'SELECT COUNT(*) AS roomsToSell, CAST(SUM(CASE WHEN rm.clean=1 && rm.occupied=1 THEN 1 ELSE 0 END) AS signed) AS cleanOccupied, CAST(SUM(CASE WHEN rm.clean=1 && rm.occupied=0 THEN 1 ELSE 0 END) AS signed) AS cleanVacant, CAST(SUM(CASE WHEN rm.clean=0 && rm.occupied=1 THEN 1 ELSE 0 END) AS signed) AS dirtyOccupied, CAST(SUM(CASE WHEN rm.clean=0 && rm.occupied=0 THEN 1 ELSE 0 END) AS signed) AS dirtyVacant FROM rooms AS rm WHERE rm.active=1;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
             return result;
