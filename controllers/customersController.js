@@ -3,27 +3,25 @@ const Customer = require('../models/customer');
 
 // all these routes point to /api/customers as specified in server.js and controllers/index.js
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const data = await Customer.getAllCustomers();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const data = await Customer.getCustomerById(Number(req.params.id));
+        const data = await Customer.getCustomerById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     const paramsObj = {
         first_name: req.body.first_name,
         last_name: req.body.last_name,
@@ -40,13 +38,12 @@ router.post('/', async (req, res) => {
     try {
         const data = await Customer.addNewCustomer(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
     const paramsObj = {
         customer_id: req.body.customer_id,
         first_name: req.body.first_name,
@@ -64,19 +61,17 @@ router.put('/', async (req, res) => {
     try {
         const data = await Customer.updateCustomerById(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await Customer.deleteCustomerById(Number(req.params.id));
+        const data = await Customer.deleteCustomerById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 

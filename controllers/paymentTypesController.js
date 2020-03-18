@@ -3,27 +3,25 @@ const PaymentType = require('../models/payment_type');
 
 // all these routes point to /api/payment-types as specified in server.js and controllers/index.js
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const data = await PaymentType.getAllPaymentTypes();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const data = await PaymentType.getPaymentTypeById(Number(req.params.id));
+        const data = await PaymentType.getPaymentTypeById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     const paramsObj = {
         payment_type: req.body.payment_type,
         active: req.body.active,
@@ -31,13 +29,12 @@ router.post('/', async (req, res) => {
     try {
         const data = await PaymentType.addNewPaymentType(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
     const paramsObj = {
         payment_type_id: req.body.payment_type_id,
         payment_type: req.body.payment_type,
@@ -46,19 +43,17 @@ router.put('/', async (req, res) => {
     try {
         const data = await PaymentType.updatePaymentTypeById(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await PaymentType.deletePaymentTypeById(Number(req.params.id));
+        const data = await PaymentType.deletePaymentTypeById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 

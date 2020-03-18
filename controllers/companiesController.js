@@ -3,27 +3,25 @@ const Company = require('../models/company');
 
 // all these routes point to /api/companies as specified in server.js and controllers/index.js
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const data = await Company.getAllCompanies();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const data = await Company.getCompanyById(Number(req.params.id));
+        const data = await Company.getCompanyById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     const paramsObj = {
         company_name: req.body.company_name,
         address: req.body.address,
@@ -40,13 +38,12 @@ router.post('/', async (req, res) => {
     try {
         const data = await Company.addNewCompany(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
     const paramsObj = {
         company_id: req.body.company_id,
         company_name: req.body.company_name,
@@ -64,19 +61,17 @@ router.put('/', async (req, res) => {
     try {
         const data = await Company.updateCompanyById(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await Company.deleteCompanyById(Number(req.params.id));
+        const data = await Company.deleteCompanyById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 

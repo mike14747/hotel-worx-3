@@ -3,47 +3,34 @@ const Room = require('../models/room');
 
 // all these routes point to /api/rooms as specified in server.js and controllers/index.js
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const data = await Room.getAllRooms();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id', async (req, res) => {
-    try {
-        const data = await Room.getRoomById(Number(req.params.id));
-        res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
-    }
-});
-
-router.get('/all-ids-nums', async (req, res) => {
+router.get('/all-ids-nums', async (req, res, next) => {
     try {
         const data = await Room.getAllRoomIdsNums();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/house-status', async (req, res) => {
+router.get('/house-status', async (req, res, next) => {
     try {
         const data = await Room.getRoomsHouseStatus();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/housekeeping-status', async (req, res) => {
+router.get('/housekeeping-status', async (req, res, next) => {
     const baseObj = {
         active: 1,
         inactive: 0,
@@ -75,23 +62,30 @@ router.get('/housekeeping-status', async (req, res) => {
     try {
         const data = await Room.getRoomsHousekeepingStatus(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/available-list/:date', async (req, res) => {
+router.get('/available-list/:date', async (req, res, next) => {
     try {
-        const data = await Room.getAvailableRoomListByDate(req.params.date);
-        res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+        const data = await Room.getAvailableRoomListByDate({ date: req.params.date });
+        res.json(data[1]);
+    } catch (error) {
+        next(error);
     }
 });
 
-router.post('/', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
+    try {
+        const data = await Room.getRoomById({ id: Number(req.params.id) });
+        res.json(data);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.post('/', async (req, res, next) => {
     const paramsObj = {
         room_num: req.body.room_num,
         room_type_id: req.body.room_type_id,
@@ -104,13 +98,12 @@ router.post('/', async (req, res) => {
     try {
         const data = await Room.addNewRoom(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
     const paramsObj = {
         room_id: req.body.room_id,
         room_num: req.body.room_num,
@@ -124,13 +117,12 @@ router.put('/', async (req, res) => {
     try {
         const data = await Room.updateRoomById(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.put('/clean-status', async (req, res) => {
+router.put('/clean-status', async (req, res, next) => {
     const paramsObj = {
         room_id: req.body.room_id,
         clean: req.body.clean,
@@ -138,13 +130,12 @@ router.put('/clean-status', async (req, res) => {
     try {
         const data = await Room.updateRoomCleanById(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.put('/occupied-status', async (req, res) => {
+router.put('/occupied-status', async (req, res, next) => {
     const paramsObj = {
         room_id: req.body.room_id,
         occupied: req.body.occupied,
@@ -152,29 +143,26 @@ router.put('/occupied-status', async (req, res) => {
     try {
         const data = await Room.updateRoomOccupiedById(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.put('/:id/checked-out', async (req, res) => {
+router.put('/:id/checked-out', async (req, res, next) => {
     try {
-        const data = await Room.updateRoomCheckedOutById(Number(req.params.id));
+        const data = await Room.updateRoomCheckedOutById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await Room.deleteRoomById(Number(req.params.id));
+        const data = await Room.deleteRoomById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 

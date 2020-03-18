@@ -3,27 +3,25 @@ const Tax = require('../models/tax');
 
 // all these routes point to /api/taxes as specified in server.js and controllers/index.js
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const data = await Tax.getAllTaxes();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const data = await Tax.getTaxById(Number(req.params.id));
+        const data = await Tax.getTaxById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     const paramsObj = {
         tax_name: req.body.tax_name,
         tax_rate: req.body.tax_rate,
@@ -32,13 +30,12 @@ router.post('/', async (req, res) => {
         const data = await Tax.addNewTax(paramsObj);
         console.log(data);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', async (req, res, next) => {
     const paramsObj = {
         tax_id: req.body.tax_id,
         tax_name: req.body.tax_name,
@@ -48,19 +45,17 @@ router.put('/', async (req, res) => {
     try {
         const data = await Tax.updateTaxById(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await Tax.deleteTaxById(Number(req.params.id));
+        const data = await Tax.deleteTaxById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 

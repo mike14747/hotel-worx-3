@@ -1,0 +1,16 @@
+---
+deployment:
+    tasks:
+        - export DEPLOYPATH=/home/mikeqsgc/hotel-worx-3.mikegullo.com/
+        - /bin/rm -rf ${DEPLOYPATH}/config
+        - /bin/rm -rf ${DEPLOYPATH}/controllers
+        - /bin/rm -rf ${DEPLOYPATH}/models
+        - /bin/cp -r controllers $DEPLOYPATH
+        - /bin/cp -r models $DEPLOYPATH
+        - /bin/cp ./docs/package.json $DEPLOYPATH
+        - /bin/cp server.js $DEPLOYPATH
+        - /bin/mkdir ${DEPLOYPATH}/config
+        - /bin/cp ./config/connection.js ${DEPLOYPATH}/config
+        - /bin/cp ./config/pool.js ${DEPLOYPATH}/config
+        - /bin/cp ./config/sessionStore.js ${DEPLOYPATH}/config
+        - /bin/cp ./docs/index.html $DEPLOYPATH

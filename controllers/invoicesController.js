@@ -5,47 +5,43 @@ const InvoicePayment = require('../models/invoice_payment');
 
 // all these routes point to /api/invoices as specified in server.js and controllers/index.js
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const data = await Invoice.getAllInvoices();
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed.. please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const data = await Invoice.getInvoiceById(Number(req.params.id));
+        const data = await Invoice.getInvoiceById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id/invoice-taxes', async (req, res) => {
+router.get('/:id/invoice-taxes', async (req, res, next) => {
     try {
-        const data = await InvoiceTax.getTaxesByInvoiceId(Number(req.params.id));
+        const data = await InvoiceTax.getTaxesByInvoiceId({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.get('/:id/invoice-payments', async (req, res) => {
+router.get('/:id/invoice-payments', async (req, res, next) => {
     try {
-        const data = await InvoicePayment.getPaymentsByInvoiceId(Number(req.params.id));
+        const data = await InvoicePayment.getPaymentsByInvoiceId({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     const paramsObj = {
         invoiceObj: req.body.invoiceObj,
         invoiceTaxesArr: req.body.invoiceTaxesArr,
@@ -54,19 +50,17 @@ router.post('/', async (req, res) => {
     try {
         const data = await Invoice.addNewInvoice(paramsObj);
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await Invoice.deleteInvoiceById(Number(req.params.id));
+        const data = await Invoice.deleteInvoiceById({ id: Number(req.params.id) });
         res.json(data);
-    } catch (err) {
-        console.log('An error has occurred! ' + err);
-        res.status(500).send('Request failed... please check your request and try again!');
+    } catch (error) {
+        next(error);
     }
 });
 
