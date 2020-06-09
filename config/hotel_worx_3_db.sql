@@ -1,6 +1,6 @@
--- DROP DATABASE IF EXISTS hotel_worx_3_db;
--- CREATE DATABASE hotel_worx_3_db;
--- USE hotel_worx_3_db;
+DROP DATABASE IF EXISTS hotel_worx_3_db;
+CREATE DATABASE hotel_worx_3_db;
+USE hotel_worx_3_db;
 
 set foreign_key_checks=0;
 
