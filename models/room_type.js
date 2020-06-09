@@ -1,4 +1,4 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const RoomType = {
     getAllRoomTypes: async () => {
@@ -6,10 +6,9 @@ const RoomType = {
             const queryString = 'SELECT rt.room_type_id, rt.type, rt.rate FROM room_types AS rt ORDER BY rt.room_type_id ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getRoomTypeById: async (paramsObj) => {
@@ -19,10 +18,9 @@ const RoomType = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getRoomTypeAvailability: async (paramsObj) => {
@@ -38,10 +36,9 @@ const RoomType = {
                 paramsObj.date,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addNewRoomType: async (paramsObj) => {
@@ -52,10 +49,9 @@ const RoomType = {
                 paramsObj.rate,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateRoomTypeById: async (paramsObj) => {
@@ -67,10 +63,9 @@ const RoomType = {
                 paramsObj.room_type_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     deleteRoomTypeById: async (paramsObj) => {
@@ -80,10 +75,9 @@ const RoomType = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };
