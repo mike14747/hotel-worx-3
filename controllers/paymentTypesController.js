@@ -6,7 +6,7 @@ const PaymentType = require('../models/payment_type');
 router.get('/', async (req, res, next) => {
     try {
         const data = await PaymentType.getAllPaymentTypes();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -14,8 +14,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const data = await PaymentType.getPaymentTypeById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await PaymentType.getPaymentTypeById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -28,7 +28,7 @@ router.post('/', async (req, res, next) => {
     };
     try {
         const data = await PaymentType.addNewPaymentType(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -42,7 +42,7 @@ router.put('/', async (req, res, next) => {
     };
     try {
         const data = await PaymentType.updatePaymentTypeById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -50,8 +50,8 @@ router.put('/', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await PaymentType.deletePaymentTypeById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await PaymentType.deletePaymentTypeById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }

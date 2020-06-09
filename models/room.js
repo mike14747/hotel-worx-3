@@ -1,6 +1,6 @@
 // update the controller(s) using this model's getRoomsHousekeepingStatus method so they send numbers in the pararmeters
 
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const Room = {
     getAllRooms: async () => {
@@ -8,10 +8,9 @@ const Room = {
             const queryString = 'SELECT rm.room_id, rm.room_num, rm.description, rm.num_beds, rm.clean, rm.occupied, rm.active, rt.room_type_id, rt.type, rt.rate FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id ORDER BY rm.room_num ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getRoomById: async (paramsObj) => {
@@ -21,10 +20,9 @@ const Room = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getAllRoomIdsNums: async () => {
@@ -32,10 +30,9 @@ const Room = {
             const queryString = 'SELECT rm.room_id, rm.room_num FROM rooms AS rm ORDER BY rm.room_id ASC;';
             // const queryParams = [];
             const [result] = await pool.query(queryString);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getRoomsHouseStatus: async () => {
@@ -43,10 +40,9 @@ const Room = {
             const queryString = 'SELECT COUNT(*) AS roomsToSell, CAST(SUM(CASE WHEN rm.clean=1 && rm.occupied=1 THEN 1 ELSE 0 END) AS signed) AS cleanOccupied, CAST(SUM(CASE WHEN rm.clean=1 && rm.occupied=0 THEN 1 ELSE 0 END) AS signed) AS cleanVacant, CAST(SUM(CASE WHEN rm.clean=0 && rm.occupied=1 THEN 1 ELSE 0 END) AS signed) AS dirtyOccupied, CAST(SUM(CASE WHEN rm.clean=0 && rm.occupied=0 THEN 1 ELSE 0 END) AS signed) AS dirtyVacant FROM rooms AS rm WHERE rm.active=1;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getAvailableRoomListByDate: async (paramsObj) => {
@@ -56,10 +52,9 @@ const Room = {
                 paramsObj.date,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addNewRoom: async (paramsObj) => {
@@ -75,10 +70,9 @@ const Room = {
                 paramsObj.active,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateRoomById: async (paramsObj) => {
@@ -95,10 +89,9 @@ const Room = {
                 paramsObj.room_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateRoomOccupiedById: async (paramsObj) => {
@@ -109,10 +102,9 @@ const Room = {
                 paramsObj.room_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateRoomCheckedOutById: async (paramsObj) => {
@@ -122,10 +114,9 @@ const Room = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateRoomCleanById: async (paramsObj) => {
@@ -136,10 +127,9 @@ const Room = {
                 paramsObj.room_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     deleteRoomById: async (paramsObj) => {
@@ -149,10 +139,9 @@ const Room = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getRoomsHousekeepingStatus: async (paramsObj) => {
@@ -167,10 +156,9 @@ const Room = {
                 paramsObj.occupied2,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

@@ -2,6 +2,7 @@
     "extends": [
         "standard",
         "plugin:react/recommended",
+		"plugin:react-hooks/recommended",
         "plugin:import/errors",
         "plugin:import/warnings"
     ],
@@ -17,11 +18,12 @@
             "jsx": true
         }
     },
+    "parser": "esprima",
     "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parser": "babel-eslint",
+		"document": "readonly",
+		"navigator": "readonly",
+		"window": "readonly"
+	},
     "rules": {
         "indent": [
             "error",

@@ -6,7 +6,7 @@ const RoomType = require('../models/room_type');
 router.get('/', async (req, res, next) => {
     try {
         const data = await RoomType.getAllRoomTypes();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -14,13 +14,14 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const data = await RoomType.getRoomTypeById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await RoomType.getRoomTypeById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
 });
 
+// this route needs some tinkering to implement "data[0] ? res.json(data[0]) : next(data[1]);"
 router.get('/availability/:date', async (req, res, next) => {
     try {
         const data = await RoomType.getRoomTypeAvailability({ date: req.params.date });
@@ -37,7 +38,7 @@ router.post('/', async (req, res, next) => {
     };
     try {
         const data = await RoomType.addNewRoomType(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -51,7 +52,7 @@ router.put('/', async (req, res, next) => {
     };
     try {
         const data = await RoomType.updateRoomTypeById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -59,8 +60,8 @@ router.put('/', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await RoomType.deleteRoomTypeById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await RoomType.deleteRoomTypeById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }

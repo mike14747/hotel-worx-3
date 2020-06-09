@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/user');
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 // all these routes point to /api/users as specified in server.js and controllers/index.js
@@ -9,7 +9,7 @@ const saltRounds = 10;
 router.get('/', async (req, res, next) => {
     try {
         const data = await User.getAllUsers();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -17,8 +17,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const data = await User.getUserById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await User.getUserById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -41,7 +41,7 @@ router.post('/', async (req, res, next) => {
                         active: req.body.active,
                     };
                     const data = await User.addNewUser(paramsObj);
-                    res.json(data);
+                    data[0] ? res.json(data[0]) : next(data[1]);
                 });
             } else {
                 res.status(202).send('Username is already in use!');
@@ -70,7 +70,7 @@ router.put('/', async (req, res, next) => {
                     paramsObj.access_id = req.body.access_id;
                     paramsObj.active = req.body.active;
                     const data = await User.updateUserById(paramsObj);
-                    res.json(data);
+                    data[0] ? res.json(data[0]) : next(data[1]);
                 });
             } else {
                 res.status(202).send('Username is already in use!');
@@ -84,7 +84,7 @@ router.put('/', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
     try {
         const data = await User.deleteUserById({ id: Number(req.params.id) });
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }

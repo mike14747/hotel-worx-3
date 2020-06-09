@@ -1,4 +1,4 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const InvoiceTax = {
     getTaxesByInvoiceId: async (paramsObj) => {
@@ -8,10 +8,9 @@ const InvoiceTax = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addNewInvoiceTaxes: async (paramsObj) => {
@@ -21,10 +20,9 @@ const InvoiceTax = {
                 paramsObj.invoiceTaxesArray,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

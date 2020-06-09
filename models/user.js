@@ -1,30 +1,26 @@
-// the controller(s) using this model need to have references to checkExistingUsername updated to pass username inside an object
-
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const User = {
-    getAllUsers: async () => {
+	getAllUsers: async () => {
         try {
-            const queryString = 'SELECT u.user_id, u.username, a.type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id;';
+            const queryString = 'SELECT u.user_id, u.username, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getUserById: async (paramsObj) => {
         try {
-            const queryString = 'SELECT u.user_id, u.username, a.type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id WHERE u.user_id=? LIMIT 1;';
+            const queryString = 'SELECT u.user_id, u.username, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id WHERE u.user_id=? LIMIT 1;';
             const queryParams = [
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     checkExistingUsername: async (paramsObj) => {
@@ -34,10 +30,9 @@ const User = {
                 paramsObj.username,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     checkUsernameForUpdate: async (paramsObj) => {
@@ -48,10 +43,9 @@ const User = {
                 paramsObj.user_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addNewUser: async (paramsObj) => {
@@ -64,10 +58,9 @@ const User = {
                 paramsObj.active,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateUserById: async (paramsObj) => {
@@ -81,10 +74,9 @@ const User = {
                 paramsObj.user_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     deleteUserById: async (paramsObj) => {
@@ -94,10 +86,9 @@ const User = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

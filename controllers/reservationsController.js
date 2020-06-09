@@ -7,7 +7,7 @@ const ResRoom = require('../models/res_room');
 router.get('/', async (req, res, next) => {
     try {
         const data = await Reservation.getAllReservations();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -15,8 +15,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const data = await Reservation.getReservationById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await Reservation.getReservationById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -24,8 +24,8 @@ router.get('/:id', async (req, res, next) => {
 
 router.get('/:id/res-rooms', async (req, res, next) => {
     try {
-        const data = await ResRoom.getResRoomsByReservationId({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await ResRoom.getResRoomsByReservationId({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -39,7 +39,7 @@ router.post('/', async (req, res, next) => {
     };
     try {
         const data = await Reservation.addNewReservation(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -56,12 +56,13 @@ router.put('/', async (req, res, next) => {
     };
     try {
         const data = await Reservation.updateReservationById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
 });
 
+// this route needs some tinkering to implement "data[0] ? res.json(data[0]) : next(data[1]);"
 router.put('/res-rooms/assign', async (req, res, next) => {
     const baseConfirmationCode = req.body.confirmation_code.slice(0, -3);
     try {
@@ -95,7 +96,7 @@ router.put('/res-rooms/reassign', async (req, res, next) => {
     };
     try {
         const data = await ResRoom.updateResRoomReassignById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -114,7 +115,7 @@ router.put('/res-rooms', async (req, res, next) => {
     };
     try {
         const data = await ResRoom.updateResRoomInfoById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -122,8 +123,8 @@ router.put('/res-rooms', async (req, res, next) => {
 
 router.put('/res-rooms/:id/check-in', async (req, res, next) => {
     try {
-        const data = await ResRoom.updateResRoomCheckinById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await ResRoom.updateResRoomCheckinById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -131,8 +132,8 @@ router.put('/res-rooms/:id/check-in', async (req, res, next) => {
 
 router.put('/res-rooms/:id/check-out', async (req, res, next) => {
     try {
-        const data = await ResRoom.updateResRoomCheckoutById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await ResRoom.updateResRoomCheckoutById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }

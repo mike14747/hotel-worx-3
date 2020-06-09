@@ -1,4 +1,4 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const Invoice = {
     getAllInvoices: async () => {
@@ -6,10 +6,9 @@ const Invoice = {
             const queryString = 'SELECT i.invoice_id, i.res_room_id, i.total_due, i.created_at FROM invoices AS i ORDER BY i.invoice_id ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getInvoiceById: async (paramsObj) => {
@@ -19,12 +18,12 @@ const Invoice = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
+	// this model method needs some tinkering before it can be updated to the new "return [results, null]; / return [null, error];" system
     addNewInvoice: async (paramsObj) => {
         const connection = await pool.getConnection();
         try {
@@ -69,10 +68,9 @@ const Invoice = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

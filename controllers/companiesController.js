@@ -6,7 +6,7 @@ const Company = require('../models/company');
 router.get('/', async (req, res, next) => {
     try {
         const data = await Company.getAllCompanies();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -14,8 +14,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const data = await Company.getCompanyById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await Company.getCompanyById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -37,7 +37,7 @@ router.post('/', async (req, res, next) => {
     };
     try {
         const data = await Company.addNewCompany(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -60,7 +60,7 @@ router.put('/', async (req, res, next) => {
     };
     try {
         const data = await Company.updateCompanyById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -68,8 +68,8 @@ router.put('/', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await Company.deleteCompanyById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await Company.deleteCompanyById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }

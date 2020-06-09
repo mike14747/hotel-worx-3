@@ -6,7 +6,7 @@ const ChargeType = require('../models/charge_type');
 router.get('/', async (req, res, next) => {
     try {
         const data = await ChargeType.getAllChargeTypes();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -14,8 +14,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const data = await ChargeType.getChargeTypeById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await ChargeType.getChargeTypeById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -27,7 +27,7 @@ router.post('/', async (req, res, next) => {
     };
     try {
         const data = await ChargeType.addNewChargeType(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -41,7 +41,7 @@ router.put('/', async (req, res, next) => {
     };
     try {
         const data = await ChargeType.updateChargeTypeById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -49,8 +49,8 @@ router.put('/', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await ChargeType.deleteChargeTypeById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await ChargeType.deleteChargeTypeById({ id: parseInt(req.params.id) || 0 });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }

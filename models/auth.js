@@ -1,30 +1,28 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const Auth = {
-    getUserByIdForPassport: async (paramsObj) => {
+    getUserByIdPassport: async (paramsObj) => {
         try {
-            const queryString = 'SELECT u.user_id, u.username, u.access_id FROM users AS u WHERE u.user_id=? LIMIT 1;';
+            const queryString = 'SELECT u.user_id, u.username, a.access_level, a.access_type FROM users AS u INNER JOIN access_levels AS a USING (access_id) WHERE u.active=1 && u.user_id=? LIMIT 1;';
             const queryParams = [
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return (null, result);
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return (error, false);
+            return [null, error];
         }
     },
-    getUserByUsernameForPassport: async (paramsObj) => {
+    getUserByUsernamePassport: async (paramsObj) => {
         try {
-            const queryString = 'SELECT u.user_id, u.username, u.password, u.access_id FROM users AS u WHERE username=? LIMIT 1;';
+            const queryString = 'SELECT u.user_id, u.username, u.hashed_password, a.access_level, a.access_type FROM users AS u INNER JOIN access_levels AS a USING (access_id) WHERE u.active=1 && u.username=? LIMIT 1;';
             const queryParams = [
                 paramsObj.username,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return (null, result);
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return (error, false);
+            return [null, error];
         }
     },
 };

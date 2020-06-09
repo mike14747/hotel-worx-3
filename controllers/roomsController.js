@@ -6,7 +6,7 @@ const Room = require('../models/room');
 router.get('/', async (req, res, next) => {
     try {
         const data = await Room.getAllRooms();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -15,7 +15,7 @@ router.get('/', async (req, res, next) => {
 router.get('/all-ids-nums', async (req, res, next) => {
     try {
         const data = await Room.getAllRoomIdsNums();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -24,7 +24,7 @@ router.get('/all-ids-nums', async (req, res, next) => {
 router.get('/house-status', async (req, res, next) => {
     try {
         const data = await Room.getRoomsHouseStatus();
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -45,15 +45,15 @@ router.get('/housekeeping-status', async (req, res, next) => {
         notreserved: 0,
     };
     const paramsObj = { ...baseObj, ...req.query };
-    paramsObj.active2 = Number(paramsObj.inactive) === 1 ? 0 : 1;
-    paramsObj.clean2 = Number(paramsObj.dirty) === 1 ? 0 : 1;
-    paramsObj.occupied2 = Number(paramsObj.vacant) === 1 ? 0 : 1;
+    paramsObj.active2 = parseInt(paramsObj.inactive) === 1 ? 0 : 1;
+    paramsObj.clean2 = parseInt(paramsObj.dirty) === 1 ? 0 : 1;
+    paramsObj.occupied2 = parseInt(paramsObj.vacant) === 1 ? 0 : 1;
     const conditionsArray = [];
-    Number(paramsObj.arrived) === 1 && conditionsArray.push('(rr.checked_in=1 && rr.check_in_date=CURDATE() && rr.checked_out=0)');
-    Number(paramsObj.departed) === 1 && conditionsArray.push('(rr.check_out_date=CURDATE() && rr.checked_out=1)');
-    Number(paramsObj.stayover) === 1 && conditionsArray.push('(CURDATE()>rr.check_in_date && CURDATE()<rr.check_out_date)');
-    Number(paramsObj.dueout) === 1 && conditionsArray.push('(rr.check_out_date=CURDATE() && rr.checked_out=0)');
-    Number(paramsObj.notreserved) === 1 && conditionsArray.push('(rr.check_in_date IS NULL || (CURDATE() NOT BETWEEN rr.check_in_date AND rr.check_out_date))');
+    parseInt(paramsObj.arrived) === 1 && conditionsArray.push('(rr.checked_in=1 && rr.check_in_date=CURDATE() && rr.checked_out=0)');
+    parseInt(paramsObj.departed) === 1 && conditionsArray.push('(rr.check_out_date=CURDATE() && rr.checked_out=1)');
+    parseInt(paramsObj.stayover) === 1 && conditionsArray.push('(CURDATE()>rr.check_in_date && CURDATE()<rr.check_out_date)');
+    parseInt(paramsObj.dueout) === 1 && conditionsArray.push('(rr.check_out_date=CURDATE() && rr.checked_out=0)');
+    parseInt(paramsObj.notreserved) === 1 && conditionsArray.push('(rr.check_in_date IS NULL || (CURDATE() NOT BETWEEN rr.check_in_date AND rr.check_out_date))');
     if (conditionsArray.length > 0) {
         paramsObj.extraConditions = ' && (' + conditionsArray.join(' || ') + ')';
     } else {
@@ -61,12 +61,13 @@ router.get('/housekeeping-status', async (req, res, next) => {
     }
     try {
         const data = await Room.getRoomsHousekeepingStatus(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
 });
 
+// this route needs some tinkering to implement "data[0] ? res.json(data[0]) : next(data[1]);"
 router.get('/available-list/:date', async (req, res, next) => {
     try {
         const data = await Room.getAvailableRoomListByDate({ date: req.params.date });
@@ -78,8 +79,8 @@ router.get('/available-list/:date', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const data = await Room.getRoomById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await Room.getRoomById({ id: parseInt(req.params.id) });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -97,7 +98,7 @@ router.post('/', async (req, res, next) => {
     };
     try {
         const data = await Room.addNewRoom(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -116,7 +117,7 @@ router.put('/', async (req, res, next) => {
     };
     try {
         const data = await Room.updateRoomById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -129,7 +130,7 @@ router.put('/clean-status', async (req, res, next) => {
     };
     try {
         const data = await Room.updateRoomCleanById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -142,7 +143,7 @@ router.put('/occupied-status', async (req, res, next) => {
     };
     try {
         const data = await Room.updateRoomOccupiedById(paramsObj);
-        res.json(data);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -150,8 +151,8 @@ router.put('/occupied-status', async (req, res, next) => {
 
 router.put('/:id/checked-out', async (req, res, next) => {
     try {
-        const data = await Room.updateRoomCheckedOutById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await Room.updateRoomCheckedOutById({ id: parseInt(req.params.id) });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
@@ -159,8 +160,8 @@ router.put('/:id/checked-out', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
-        const data = await Room.deleteRoomById({ id: Number(req.params.id) });
-        res.json(data);
+        const data = await Room.deleteRoomById({ id: parseInt(req.params.id) });
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
