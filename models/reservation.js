@@ -23,7 +23,7 @@ const Reservation = {
             return [null, error];
         }
     },
-	// this model method needs some tinkering before it can be updated to the new "return [results, null]; / return [null, error];" system
+	// this model was changed to the new "return [results, null]; / return [null, error];" system, but it hasn't been tested
     addNewReservation: async (paramsObj) => {
         const connection = await pool.getConnection();
         try {
@@ -70,10 +70,10 @@ const Reservation = {
             })];
             await connection.query(resRoomQueryString, resRoomQueryParams);
             await connection.commit();
-            return reservationResult;
-        } catch (err) {
+            return [reservationResult, null];
+        } catch (error) {
             await connection.rollback();
-            throw err;
+            return [null, error];
         } finally {
             await connection.release();
         }

@@ -62,7 +62,7 @@ router.put('/', async (req, res, next) => {
     }
 });
 
-// this route needs some tinkering to implement "data[0] ? res.json(data[0]) : next(data[1]);"
+// this route was changed to implement "data[0] ? res.json(data[0]) : next(data[1]);", but it hasn't been tested
 router.put('/res-rooms/assign', async (req, res, next) => {
     const baseConfirmationCode = req.body.confirmation_code.slice(0, -3);
     try {
@@ -80,8 +80,8 @@ router.put('/res-rooms/assign', async (req, res, next) => {
             rate: req.body.rate,
             confirmation_code: newConfirmationCode,
         };
-        const assignedRoom = await ResRoom.updateResRoomAssignById(paramsObj);
-        res.json(assignedRoom);
+        const data = await ResRoom.updateResRoomAssignById(paramsObj);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
