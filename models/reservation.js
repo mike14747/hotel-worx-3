@@ -23,11 +23,12 @@ const Reservation = {
             return [null, error];
         }
     },
-	// this model was changed to the new "return [results, null]; / return [null, error];" system, but it hasn't been tested
+    // this model was changed to the new "return [results, null]; / return [null, error];" system, but it hasn't been tested
     addNewReservation: async (paramsObj) => {
+        console.log(paramsObj);
         const connection = await pool.getConnection();
         try {
-            const { customerObj, reservationObj, resRoomsArr } = { ...paramsObj };
+            const { customerObj, reservationObj, resRoomsArr } = paramsObj;
             const customerQueryString = 'INSERT INTO customers (first_name, last_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
             const customerParams = [
                 customerObj.first_name,

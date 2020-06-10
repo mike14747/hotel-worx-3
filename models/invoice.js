@@ -26,7 +26,7 @@ const Invoice = {
     addNewInvoice: async (paramsObj) => {
         const connection = await pool.getConnection();
         try {
-            const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...paramsObj };
+            const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = paramsObj;
             const invoiceQueryString = 'INSERT INTO invoices (res_room_id, total_due) VALUES (?, ?);';
             const invoiceParams = [invoiceObj.res_room_id, invoiceObj.total_due];
             const resRoomQueryString = 'UPDATE res_rooms SET checked_out=1 WHERE res_room_id=?;';
