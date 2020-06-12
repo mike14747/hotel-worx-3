@@ -23,11 +23,10 @@ const Invoice = {
             return [null, error];
         }
     },
-	// this model method needs some tinkering before it can be updated to the new "return [results, null]; / return [null, error];" system
     addNewInvoice: async (paramsObj) => {
         const connection = await pool.getConnection();
         try {
-            const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...paramsObj };
+            const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = paramsObj;
             const invoiceQueryString = 'INSERT INTO invoices (res_room_id, total_due) VALUES (?, ?);';
             const invoiceParams = [invoiceObj.res_room_id, invoiceObj.total_due];
             const resRoomQueryString = 'UPDATE res_rooms SET checked_out=1 WHERE res_room_id=?;';
@@ -52,11 +51,10 @@ const Invoice = {
             const [roomIdResult] = await connection.query(roomIdString, resRoomParams);
             await connection.query(roomOccupiedString, [roomIdResult[0].room_id]);
             await connection.commit();
-            return invoiceResult;
+            return [invoiceResult, null];
         } catch (error) {
             await connection.rollback();
-            console.log(error);
-            return null;
+            return [null, error];
         } finally {
             await connection.release();
         }

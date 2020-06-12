@@ -86,7 +86,16 @@ The following are stored as decimal values and will always be received as string
 
 ------------------------------------------------------
 
+The following controllers have  // this route needs some tinkering to implement "data[0] ? res.json(data[0]) : next(data[1]);"
 
+reservationsController.js
+roomTypesController.js
+
+
+
+hotel_worx_3_db.sql had some changes to the users and access_levels tables, so the seeds spreadsheet might need to be updated too.
+
+Figure out why the "getRoomTypeAvailability" room_type model method on the "/api/room-types/availability/:date" route doesn't return just an array of daily availablility.
 
 ------------------------------------------------------
 

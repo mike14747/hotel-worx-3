@@ -22,10 +22,11 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // this route needs some tinkering to implement "data[0] ? res.json(data[0]) : next(data[1]);"
+// this route was changed to implement "data[0] ? res.json(data[0]) : next(data[1]);", but it hasn't been tested
 router.get('/availability/:date', async (req, res, next) => {
     try {
         const data = await RoomType.getRoomTypeAvailability({ date: req.params.date });
-        res.json(data[1]);
+        data[0] ? res.json(data[0]) : next(data[1]);
     } catch (error) {
         next(error);
     }
