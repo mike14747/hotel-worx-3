@@ -5,17 +5,17 @@ const Company = require('../models/company');
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Company.getAllCompanies();
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Company.getAllCompanies();
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Company.getCompanyById({ id: parseInt(req.params.id) || 0 });
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Company.getCompanyById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -36,8 +36,8 @@ router.post('/', async (req, res, next) => {
         tax_exempt: req.body.tax_exempt,
     };
     try {
-        const data = await Company.addNewCompany(paramsObj);
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Company.addNewCompany(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -59,17 +59,17 @@ router.put('/', async (req, res, next) => {
         tax_exempt: req.body.tax_exempt,
     };
     try {
-        const data = await Company.updateCompanyById(paramsObj);
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Company.updateCompanyById(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Company.deleteCompanyById({ id: parseInt(req.params.id) || 0 });
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Company.deleteCompanyById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
