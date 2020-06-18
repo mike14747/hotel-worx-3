@@ -5,17 +5,17 @@ const PaymentType = require('../models/payment_type');
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await PaymentType.getAllPaymentTypes();
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await PaymentType.getAllPaymentTypes();
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await PaymentType.getPaymentTypeById({ id: parseInt(req.params.id) || 0 });
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await PaymentType.getPaymentTypeById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -27,8 +27,8 @@ router.post('/', async (req, res, next) => {
         active: req.body.active,
     };
     try {
-        const data = await PaymentType.addNewPaymentType(paramsObj);
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await PaymentType.addNewPaymentType(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -41,17 +41,17 @@ router.put('/', async (req, res, next) => {
         active: req.body.active,
     };
     try {
-        const data = await PaymentType.updatePaymentTypeById(paramsObj);
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await PaymentType.updatePaymentTypeById(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await PaymentType.deletePaymentTypeById({ id: parseInt(req.params.id) || 0 });
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await PaymentType.deletePaymentTypeById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }

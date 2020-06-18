@@ -5,26 +5,26 @@ const Charge = require('../models/charge');
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Charge.getAllCharges();
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Charge.getAllCharges();
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Charge.getChargeById({ id: parseInt(req.params.id) || 0 });
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Charge.getChargeById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/res-rooms/:id', async (req, res, next) => {
+router.get('/res-rooms/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Charge.getChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Charge.getChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -38,8 +38,8 @@ router.post('/', async (req, res, next) => {
         taxable: req.body.taxable,
     };
     try {
-        const data = await Charge.addNewCharge(paramsObj);
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Charge.addNewCharge(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -53,26 +53,26 @@ router.put('/', async (req, res, next) => {
         taxable: req.body.taxable,
     };
     try {
-        const data = await Charge.updateChargeById(paramsObj);
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Charge.updateChargeById(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Charge.deleteChargeById({ id: parseInt(req.params.id) || 0 });
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Charge.deleteChargeById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/res-rooms/:id', async (req, res, next) => {
+router.delete('/res-rooms/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Charge.deleteChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
-        data[0] ? res.json(data[0]) : next(data[1]);
+        const [data, error] = await Charge.deleteChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
