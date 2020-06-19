@@ -52,7 +52,7 @@ const Room = {
                 paramsObj.date,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return [result, null];
+            return [result[1], null];
         } catch (error) {
             return [null, error];
         }
