@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Room = require('../models/room');
+const { housekeepingStatus } = require('./utils/roomsFunctions');
 
 // all these routes point to /api/rooms as specified in server.js and controllers/index.js
 
@@ -31,35 +32,8 @@ router.get('/house-status', async (req, res, next) => {
 });
 
 router.get('/housekeeping-status', async (req, res, next) => {
-    const baseObj = {
-        active: 1,
-        inactive: 0,
-        clean: 1,
-        dirty: 1,
-        occupied: 1,
-        vacant: 1,
-        arrived: 0,
-        departed: 0,
-        stayover: 0,
-        dueout: 0,
-        notreserved: 0,
-    };
-    const paramsObj = { ...baseObj, ...req.query };
-    paramsObj.active2 = parseInt(paramsObj.inactive) === 1 ? 0 : 1;
-    paramsObj.clean2 = parseInt(paramsObj.dirty) === 1 ? 0 : 1;
-    paramsObj.occupied2 = parseInt(paramsObj.vacant) === 1 ? 0 : 1;
-    const conditionsArray = [];
-    parseInt(paramsObj.arrived) === 1 && conditionsArray.push('(rr.checked_in=1 && rr.check_in_date=CURDATE() && rr.checked_out=0)');
-    parseInt(paramsObj.departed) === 1 && conditionsArray.push('(rr.check_out_date=CURDATE() && rr.checked_out=1)');
-    parseInt(paramsObj.stayover) === 1 && conditionsArray.push('(CURDATE()>rr.check_in_date && CURDATE()<rr.check_out_date)');
-    parseInt(paramsObj.dueout) === 1 && conditionsArray.push('(rr.check_out_date=CURDATE() && rr.checked_out=0)');
-    parseInt(paramsObj.notreserved) === 1 && conditionsArray.push('(rr.check_in_date IS NULL || (CURDATE() NOT BETWEEN rr.check_in_date AND rr.check_out_date))');
-    if (conditionsArray.length > 0) {
-        paramsObj.extraConditions = ' && (' + conditionsArray.join(' || ') + ')';
-    } else {
-        paramsObj.extraConditions = '';
-    }
     try {
+        const paramsObj = housekeepingStatus(req.query);
         const [data, error] = await Room.getRoomsHousekeepingStatus(paramsObj);
         data ? res.json(data) : next(error);
     } catch (error) {
@@ -69,10 +43,10 @@ router.get('/housekeeping-status', async (req, res, next) => {
 
 // this route needs some tinkering to implement "data ? res.json(data) : next(error);"
 router.get('/available-list/:date', async (req, res, next) => {
-	// /^[0-9]{4}-(([0]{1}[0-9]{1})|([1]{1}[0-2]{1}))-(([0-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/g
+    if (!/^[0-9]{4}-(([0]{1}[0-9]{1})|([1]{1}[0-2]{1}))-(([0-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/g.test(req.params.date)) return next(new Error('The query parameter, date, is not in the proper format (YYYY-MM-DD)!'));
     try {
         const [data, error] = await Room.getAvailableRoomListByDate({ date: req.params.date });
-        res.json(data[1]);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }

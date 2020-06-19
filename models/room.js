@@ -1,5 +1,3 @@
-// update the controller(s) using this model's getRoomsHousekeepingStatus method so they send numbers in the pararmeters
-
 const pool = require('../config/connectionPool.js').getDb();
 
 const Room = {
@@ -52,7 +50,7 @@ const Room = {
                 paramsObj.date,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return [result, null];
+            return [result[1], null];
         } catch (error) {
             return [null, error];
         }

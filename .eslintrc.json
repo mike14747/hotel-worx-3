@@ -13,12 +13,12 @@
         "es6": true
     },
     "parserOptions": {
-        "ecmaVersion": 6,
+        "ecmaVersion": 9,
         "ecmaFeatures": {
             "jsx": true
         }
     },
-    "parser": "esprima",
+    "parser": "babel-eslint",
     "globals": {
 		"document": "readonly",
 		"navigator": "readonly",
