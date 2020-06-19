@@ -47,7 +47,6 @@ router.get('/available-list/:date', async (req, res, next) => {
     try {
         const [data, error] = await Room.getAvailableRoomListByDate({ date: req.params.date });
         data ? res.json(data) : next(error);
-        // res.json(data[1]);
     } catch (error) {
         next(error);
     }

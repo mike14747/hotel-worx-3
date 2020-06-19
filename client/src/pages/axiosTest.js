@@ -11,15 +11,14 @@ export default function AxiosTest() {
     const [invoiceId, setInvoiceId] = useState(1);
     const user = useContext(UserContext);
 
-    const apiRoot = process.env.REACT_APP_API_ROOT;
-    console.log(apiRoot);
+    // const apiRoot = process.env.REACT_APP_API_ROOT;
 
     useEffect(() => {
         axios.all([
-            axios.get(apiRoot + '/invoices/' + invoiceId),
-            axios.get(apiRoot + '/charges/res-rooms/' + resRoomId),
-            axios.get(apiRoot + '/invoices/' + invoiceId + '/invoice-taxes'),
-            axios.get(apiRoot + '/invoices/' + invoiceId + '/invoice-payments'),
+            axios.get('/api/invoices/' + invoiceId),
+            axios.get('/api/charges/res-rooms/' + resRoomId),
+            axios.get('/api/invoices/' + invoiceId + '/invoice-taxes'),
+            axios.get('/api/invoices/' + invoiceId + '/invoice-payments'),
         ])
             .then(axios.spread((invoice, charges, taxes, payments) => {
                 setInvoice(invoice.data[0]);
@@ -30,7 +29,7 @@ export default function AxiosTest() {
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
+    }, [invoiceId, resRoomId]);
 
     return (
         <div>
