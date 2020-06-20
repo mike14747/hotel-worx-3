@@ -52,7 +52,7 @@ router.get('/available-list/:date', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9])', async (req, res, next) => {
+router.get('/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await Room.getRoomById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
@@ -124,7 +124,7 @@ router.put('/occupied-status', async (req, res, next) => {
     }
 });
 
-router.put('/:id([0-9])/checked-out', async (req, res, next) => {
+router.put('/:id([0-9]+)/checked-out', async (req, res, next) => {
     try {
         const [data, error] = await Room.updateRoomCheckedOutById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
@@ -133,7 +133,7 @@ router.put('/:id([0-9])/checked-out', async (req, res, next) => {
     }
 });
 
-router.delete('/:id([0-9])', async (req, res, next) => {
+router.delete('/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await Room.deleteRoomById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);

@@ -7,8 +7,8 @@ export default function AxiosTest() {
     const [charges, setCharges] = useState([]);
     const [taxes, setTaxes] = useState([]);
     const [payments, setPayments] = useState([]);
-    const [resRoomId, setResRoomId] = useState(1001);
-    const [invoiceId, setInvoiceId] = useState(1);
+    const resRoomId = 1001;
+    const invoiceId = 1;
     const user = useContext(UserContext);
 
     // const apiRoot = process.env.REACT_APP_API_ROOT;
@@ -29,7 +29,7 @@ export default function AxiosTest() {
             .catch((err) => {
                 console.log(err);
             });
-    }, [invoiceId, resRoomId]);
+    }, [invoiceId]);
 
     return (
         <div>
