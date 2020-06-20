@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9])', async (req, res, next) => {
+router.get('/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await Charge.getChargeById({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);
@@ -21,7 +21,7 @@ router.get('/:id([0-9])', async (req, res, next) => {
     }
 });
 
-router.get('/res-rooms/:id([0-9])', async (req, res, next) => {
+router.get('/res-rooms/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await Charge.getChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);
@@ -60,7 +60,7 @@ router.put('/', async (req, res, next) => {
     }
 });
 
-router.delete('/:id([0-9])', async (req, res, next) => {
+router.delete('/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await Charge.deleteChargeById({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);
@@ -69,7 +69,7 @@ router.delete('/:id([0-9])', async (req, res, next) => {
     }
 });
 
-router.delete('/res-rooms/:id([0-9])', async (req, res, next) => {
+router.delete('/res-rooms/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await Charge.deleteChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);

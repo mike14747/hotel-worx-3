@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9])', async (req, res, next) => {
+router.get('/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await ChargeType.getChargeTypeById({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);
@@ -47,7 +47,7 @@ router.put('/', async (req, res, next) => {
     }
 });
 
-router.delete('/:id([0-9])', async (req, res, next) => {
+router.delete('/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await ChargeType.deleteChargeTypeById({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);

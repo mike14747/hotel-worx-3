@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9])', async (req, res, next) => {
+router.get('/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await RoomType.getRoomTypeById({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);
@@ -24,7 +24,7 @@ router.get('/:id([0-9])', async (req, res, next) => {
 // this route needs some tinkering to implement "data ? res.json(data) : next(error);"
 // this route was changed to implement "data ? res.json(data) : next(error);", but it hasn't been tested
 router.get('/availability/:date', async (req, res, next) => {
-	// /^[0-9]{4}-(([0]{1}[0-9]{1})|([1]{1}[0-2]{1}))-(([0-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/g
+    // /^[0-9]{4}-(([0]{1}[0-9]{1})|([1]{1}[0-2]{1}))-(([0-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/g
     try {
         const [data, error] = await RoomType.getRoomTypeAvailability({ date: req.params.date });
         data ? res.json(data) : next(error);
@@ -60,7 +60,7 @@ router.put('/', async (req, res, next) => {
     }
 });
 
-router.delete('/:id([0-9])', async (req, res, next) => {
+router.delete('/:id([0-9]+)', async (req, res, next) => {
     try {
         const [data, error] = await RoomType.deleteRoomTypeById({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);
