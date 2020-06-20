@@ -1,8 +1,9 @@
 {
     "extends": [
+        "eslint:recommended",
         "standard",
         "plugin:react/recommended",
-		"plugin:react-hooks/recommended",
+        "plugin:react-hooks/recommended",
         "plugin:import/errors",
         "plugin:import/warnings"
     ],
@@ -13,17 +14,17 @@
         "es6": true
     },
     "parserOptions": {
-        "ecmaVersion": 9,
+        "ecmaVersion": 2020,
         "ecmaFeatures": {
             "jsx": true
         }
     },
-    "parser": "babel-eslint",
+    "parser": "espree",
     "globals": {
-		"document": "readonly",
-		"navigator": "readonly",
-		"window": "readonly"
-	},
+        "document": "readonly",
+        "navigator": "readonly",
+        "window": "readonly"
+    },
     "rules": {
         "indent": [
             "error",
@@ -61,7 +62,7 @@
             }
         ],
         "react/jsx-filename-extension": [
-            1,
+            "warn",
             {
                 "extensions": [
                     ".js",
@@ -70,8 +71,16 @@
             }
         ],
         "react/jsx-indent": [
-            2,
+            "error",
             4
+        ],
+        "no-unused-vars": [
+            "warn",
+            {
+                "vars": "all",
+                "args": "none",
+                "ignoreRestSiblings": true
+            }
         ]
     }
 }

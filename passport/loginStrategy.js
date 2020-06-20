@@ -6,17 +6,17 @@ const Auth = require('../models/auth');
 const LoginStrategy = new Strategy(async (username, password, done) => {
     // console.log(bcryptjs.hashSync(password, salt));
     try {
-        const data = await Auth.getUserByUsernamePassport({ username: username });
-        if (!data[0]) return done(data[1]);
-        if (data[0].length === 1) {
-            bcryptjs.compare(password, data[0][0].hashed_password)
+        const [data, error] = await Auth.getUserByUsernamePassport({ username: username });
+        if (!data) return done(error);
+        if (data.length === 1) {
+            bcryptjs.compare(password, data[0].hashed_password)
                 .then((res) => {
                     if (res) {
                         const user = {
-                            id: data[0][0].user_id,
-                            username: data[0][0].username,
-                            access_level: data[0][0].access_level,
-                            access_type: data[0][0].access_type,
+                            id: data[0].user_id,
+                            username: data[0].username,
+                            access_level: data[0].access_level,
+                            access_type: data[0].access_type,
                         };
                         return done(null, user);
                     }
