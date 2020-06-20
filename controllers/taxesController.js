@@ -5,17 +5,17 @@ const Tax = require('../models/tax');
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Tax.getAllTaxes();
-        res.json(data);
+        const [data, error] = await Tax.getAllTaxes();
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Tax.getTaxById({ id: Number(req.params.id) });
-        res.json(data);
+        const [data, error] = await Tax.getTaxById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -27,9 +27,8 @@ router.post('/', async (req, res, next) => {
         tax_rate: req.body.tax_rate,
     };
     try {
-        const data = await Tax.addNewTax(paramsObj);
-        console.log(data);
-        res.json(data);
+        const [data, error] = await Tax.addNewTax(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -43,17 +42,17 @@ router.put('/', async (req, res, next) => {
         active: req.body.active,
     };
     try {
-        const data = await Tax.updateTaxById(paramsObj);
-        res.json(data);
+        const [data, error] = await Tax.updateTaxById(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Tax.deleteTaxById({ id: Number(req.params.id) });
-        res.json(data);
+        const [data, error] = await Tax.deleteTaxById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }

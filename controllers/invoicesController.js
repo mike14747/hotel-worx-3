@@ -7,35 +7,35 @@ const InvoicePayment = require('../models/invoice_payment');
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Invoice.getAllInvoices();
-        res.json(data);
+        const [data, error] = await Invoice.getAllInvoices();
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Invoice.getInvoiceById({ id: Number(req.params.id) });
-        res.json(data);
+        const [data, error] = await Invoice.getInvoiceById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id/invoice-taxes', async (req, res, next) => {
+router.get('/:id([0-9])/invoice-taxes', async (req, res, next) => {
     try {
-        const data = await InvoiceTax.getTaxesByInvoiceId({ id: Number(req.params.id) });
-        res.json(data);
+        const [data, error] = await InvoiceTax.getTaxesByInvoiceId({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id/invoice-payments', async (req, res, next) => {
+router.get('/:id([0-9])/invoice-payments', async (req, res, next) => {
     try {
-        const data = await InvoicePayment.getPaymentsByInvoiceId({ id: Number(req.params.id) });
-        res.json(data);
+        const [data, error] = await InvoicePayment.getPaymentsByInvoiceId({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -48,17 +48,17 @@ router.post('/', async (req, res, next) => {
         invoicePaymentsArr: req.body.invoicePaymentsArr,
     };
     try {
-        const data = await Invoice.addNewInvoice(paramsObj);
-        res.json(data);
+        const [data, error] = await Invoice.addNewInvoice(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Invoice.deleteInvoiceById({ id: Number(req.params.id) });
-        res.json(data);
+        const [data, error] = await Invoice.deleteInvoiceById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }

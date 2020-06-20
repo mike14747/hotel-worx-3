@@ -5,17 +5,17 @@ const Customer = require('../models/customer');
 
 router.get('/', async (req, res, next) => {
     try {
-        const data = await Customer.getAllCustomers();
-        res.json(data);
+        const [data, error] = await Customer.getAllCustomers();
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Customer.getCustomerById({ id: Number(req.params.id) });
-        res.json(data);
+        const [data, error] = await Customer.getCustomerById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -36,8 +36,8 @@ router.post('/', async (req, res, next) => {
         cc_expiration: req.body.cc_expiration,
     };
     try {
-        const data = await Customer.addNewCustomer(paramsObj);
-        res.json(data);
+        const [data, error] = await Customer.addNewCustomer(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -59,17 +59,17 @@ router.put('/', async (req, res, next) => {
         cc_expiration: req.body.cc_expiration,
     };
     try {
-        const data = await Customer.updateCustomerById(paramsObj);
-        res.json(data);
+        const [data, error] = await Customer.updateCustomerById(paramsObj);
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id([0-9])', async (req, res, next) => {
     try {
-        const data = await Customer.deleteCustomerById({ id: Number(req.params.id) });
-        res.json(data);
+        const [data, error] = await Customer.deleteCustomerById({ id: parseInt(req.params.id) || 0 });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }

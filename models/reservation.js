@@ -1,4 +1,4 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const Reservation = {
     getAllReservations: async () => {
@@ -6,10 +6,9 @@ const Reservation = {
             const queryString = 'SELECT r.reservation_id, r.active, c.first_name, c.last_name, rt.type, rr.res_room_id, DATE_FORMAT(r.created_at, "%b %d, %Y (%h:%i %p)") AS created_at, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date FROM reservations AS r INNER JOIN customers AS c ON r.customer_id=c.customer_id INNER JOIN res_rooms AS rr ON r.reservation_id=rr.reservation_id INNER JOIN room_types AS rt ON rr.room_type_id=rt.room_type_id ORDER BY r.reservation_id ASC, rr.res_room_id ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getReservationById: async (paramsObj) => {
@@ -19,16 +18,17 @@ const Reservation = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
+    // this model was changed to the new "return [results, null]; / return [null, error];" system, but it hasn't been tested
     addNewReservation: async (paramsObj) => {
+        console.log(paramsObj);
         const connection = await pool.getConnection();
         try {
-            const { customerObj, reservationObj, resRoomsArr } = { ...paramsObj };
+            const { customerObj, reservationObj, resRoomsArr } = paramsObj;
             const customerQueryString = 'INSERT INTO customers (first_name, last_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
             const customerParams = [
                 customerObj.first_name,
@@ -71,10 +71,10 @@ const Reservation = {
             })];
             await connection.query(resRoomQueryString, resRoomQueryParams);
             await connection.commit();
-            return reservationResult;
-        } catch (err) {
+            return [reservationResult, null];
+        } catch (error) {
             await connection.rollback();
-            throw err;
+            return [null, error];
         } finally {
             await connection.release();
         }
@@ -91,10 +91,9 @@ const Reservation = {
                 paramsObj.reservation_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

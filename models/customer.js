@@ -1,4 +1,4 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const Customer = {
     getAllCustomers: async () => {
@@ -6,10 +6,9 @@ const Customer = {
             const queryString = 'SELECT c.customer_id, c.first_name, c.last_name, c.address, c.city, c.state, c.zip, c.country, c.email, c.phone, SUBSTRING(c.credit_card_num, -4) AS creditCardLastFour, c.cc_expiration FROM customers AS c;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getCustomerById: async (paramsObj) => {
@@ -19,10 +18,9 @@ const Customer = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addNewCustomer: async (paramsObj) => {
@@ -42,10 +40,9 @@ const Customer = {
                 paramsObj.cc_expiration,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateCustomerById: async (paramsObj) => {
@@ -66,10 +63,9 @@ const Customer = {
                 paramsObj.customer_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     deleteCustomerById: async (paramsObj) => {
@@ -79,10 +75,9 @@ const Customer = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

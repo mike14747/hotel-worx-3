@@ -1,4 +1,4 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const Invoice = {
     getAllInvoices: async () => {
@@ -6,10 +6,9 @@ const Invoice = {
             const queryString = 'SELECT i.invoice_id, i.res_room_id, i.total_due, i.created_at FROM invoices AS i ORDER BY i.invoice_id ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getInvoiceById: async (paramsObj) => {
@@ -19,16 +18,15 @@ const Invoice = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addNewInvoice: async (paramsObj) => {
         const connection = await pool.getConnection();
         try {
-            const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = { ...paramsObj };
+            const { invoiceObj, invoiceTaxesArr, invoicePaymentsArr } = paramsObj;
             const invoiceQueryString = 'INSERT INTO invoices (res_room_id, total_due) VALUES (?, ?);';
             const invoiceParams = [invoiceObj.res_room_id, invoiceObj.total_due];
             const resRoomQueryString = 'UPDATE res_rooms SET checked_out=1 WHERE res_room_id=?;';
@@ -53,11 +51,10 @@ const Invoice = {
             const [roomIdResult] = await connection.query(roomIdString, resRoomParams);
             await connection.query(roomOccupiedString, [roomIdResult[0].room_id]);
             await connection.commit();
-            return invoiceResult;
+            return [invoiceResult, null];
         } catch (error) {
             await connection.rollback();
-            console.log(error);
-            return null;
+            return [null, error];
         } finally {
             await connection.release();
         }
@@ -69,10 +66,9 @@ const Invoice = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

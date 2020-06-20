@@ -1,4 +1,4 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const Tax = {
     getAllTaxes: async () => {
@@ -6,10 +6,9 @@ const Tax = {
             const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate FROM taxes AS t;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getTaxById: async (paramsObj) => {
@@ -19,10 +18,9 @@ const Tax = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addNewTax: async (paramsObj) => {
@@ -33,10 +31,9 @@ const Tax = {
                 paramsObj.tax_rate,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateTaxById: async (paramsObj) => {
@@ -49,10 +46,9 @@ const Tax = {
                 paramsObj.tax_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     deleteTaxById: async (paramsObj) => {
@@ -62,10 +58,9 @@ const Tax = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

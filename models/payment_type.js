@@ -1,4 +1,4 @@
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const PaymentType = {
     getAllPaymentTypes: async () => {
@@ -6,10 +6,9 @@ const PaymentType = {
             const queryString = 'SELECT pt.payment_type_id, pt.payment_type, pt.active FROM payment_types AS pt;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getPaymentTypeById: async (paramsObj) => {
@@ -19,10 +18,9 @@ const PaymentType = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addNewPaymentType: async (paramsObj) => {
@@ -32,10 +30,9 @@ const PaymentType = {
                 paramsObj.payment_type,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updatePaymentTypeById: async (paramsObj) => {
@@ -47,10 +44,9 @@ const PaymentType = {
                 paramsObj.payment_type_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     deletePaymentTypeById: async (paramsObj) => {
@@ -60,10 +56,9 @@ const PaymentType = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };

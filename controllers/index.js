@@ -8,38 +8,27 @@ router.use((req, res, next) => {
     next();
 });
 
-const usersController = require('./usersController');
-router.use('/users', usersController);
+router.use('/users', require('./usersController'));
 
-const customersController = require('./customersController');
-router.use('/customers', customersController);
+router.use('/customers', require('./customersController'));
 
-const roomsController = require('./roomsController');
-router.use('/rooms', roomsController);
+router.use('/rooms', require('./roomsController'));
 
-const roomTypesController = require('./roomTypesController');
-router.use('/room-types', roomTypesController);
+router.use('/room-types', require('./roomTypesController'));
 
-const reservationsController = require('./reservationsController');
-router.use('/reservations', reservationsController);
+router.use('/reservations', require('./reservationsController'));
 
-const taxesController = require('./taxesController');
-router.use('/taxes', taxesController);
+router.use('/taxes', require('./taxesController'));
 
-const invoicesController = require('./invoicesController');
-router.use('/invoices', invoicesController);
+router.use('/invoices', require('./invoicesController'));
 
-const chargesController = require('./chargesController');
-router.use('/charges', chargesController);
+router.use('/charges', require('./chargesController'));
 
-const chargeTypesController = require('./chargeTypesController');
-router.use('/charge-types', chargeTypesController);
+router.use('/charge-types', require('./chargeTypesController'));
 
-const companiesController = require('./companiesController');
-router.use('/companies', companiesController);
+router.use('/companies', require('./companiesController'));
 
-const paymentTypesController = require('./paymentTypesController');
-router.use('/payment-types', paymentTypesController);
+router.use('/payment-types', require('./paymentTypesController'));
 
 router.use((req, res, next) => {
     const error = new Error('API route not found!');

@@ -1,6 +1,6 @@
 // the controller(s) that use this model's addSomeResRooms need to send the resRooms array inside an object as resRooms
 
-const pool = require('../config/pool.js');
+const pool = require('../config/connectionPool.js').getDb();
 
 const ResRoom = {
     getAllResRooms: async () => {
@@ -8,10 +8,9 @@ const ResRoom = {
             const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments, rr.allow_charges, rr.active FROM res_rooms AS rr ORDER BY rr.res_room_id ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getResRoomByResRoomId: async (paramsObj) => {
@@ -21,10 +20,9 @@ const ResRoom = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getResRoomsByReservationId: async (paramsObj) => {
@@ -34,10 +32,9 @@ const ResRoom = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     getMaxCCodeByReservationId: async (paramsObj) => {
@@ -48,10 +45,9 @@ const ResRoom = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     addSomeResRooms: async (paramsObj) => {
@@ -73,10 +69,9 @@ const ResRoom = {
                 }),
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateResRoomInfoById: async (paramsObj) => {
@@ -93,10 +88,9 @@ const ResRoom = {
                 paramsObj.res_room_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateResRoomAssignById: async (paramsObj) => {
@@ -110,10 +104,9 @@ const ResRoom = {
                 paramsObj.res_room_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateResRoomReassignById: async (paramsObj) => {
@@ -126,10 +119,9 @@ const ResRoom = {
                 paramsObj.res_room_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateResRoomActiveByResRoomId: async (paramsObj) => {
@@ -140,10 +132,9 @@ const ResRoom = {
                 paramsObj.res_room_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     updateResRoomActiveByReservationId: async (paramsObj) => {
@@ -154,10 +145,9 @@ const ResRoom = {
                 paramsObj.reservation_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     deleteResRoomByResRoomId: async (paramsObj) => {
@@ -167,10 +157,9 @@ const ResRoom = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
     deleteResRoomsByReservationId: async (paramsObj) => {
@@ -180,10 +169,9 @@ const ResRoom = {
                 paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
-            return result;
+            return [result, null];
         } catch (error) {
-            console.log(error);
-            return null;
+            return [null, error];
         }
     },
 };
