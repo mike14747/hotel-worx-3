@@ -78,8 +78,8 @@
             "warn",
             {
                 "vars": "all",
-                "args": "after-used",
-                "ignoreRestSiblings": false
+                "args": "none",
+                "ignoreRestSiblings": true
             }
         ]
     }
