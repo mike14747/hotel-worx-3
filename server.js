@@ -29,9 +29,9 @@ connectionPool.mysqlConnect()
         app.use('/api', checkAuthenticated, require('./controllers'));
     })
     .catch((error) => {
-        console.error('Failed to connect to the database!\n' + error);
+        console.log('An error occurred connecting to the database!\n', error.message);
         app.get('/api/*', (req, res) => {
-            res.status(500).send('There is no connection to MySQL!');
+            res.status(500).send('There is no connection to the database!');
         });
     })
     .finally(() => {

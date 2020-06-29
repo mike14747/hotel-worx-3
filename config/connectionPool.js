@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 
 let pool;
 
-const mysqlConnect = async () => {
+const mysqlConnect = () => {
     pool = mysql.createPool({
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
@@ -14,7 +14,11 @@ const mysqlConnect = async () => {
         queueLimit: 0,
         multipleStatements: true,
     });
-    return pool;
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT 1', (error, result) => {
+            error ? reject(error) : resolve(result);
+        });
+    });
 };
 
 const getDb = () => pool;
