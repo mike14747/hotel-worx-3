@@ -3,7 +3,7 @@ const pool = require('../config/connectionPool.js').getDb();
 const Tax = {
     getAllTaxes: async () => {
         try {
-            const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate FROM taxes AS t;';
+            const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate, t.active FROM taxes AS t;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];
@@ -13,7 +13,7 @@ const Tax = {
     },
     getTaxById: async (paramsObj) => {
         try {
-            const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate FROM taxes AS t WHERE t.tax_id=?;';
+            const queryString = 'SELECT t.tax_id, t.tax_name, t.tax_rate, t.active FROM taxes AS t WHERE t.tax_id=?;';
             const queryParams = [
                 paramsObj.id,
             ];
