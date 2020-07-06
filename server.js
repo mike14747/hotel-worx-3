@@ -1,13 +1,12 @@
 require('dotenv').config();
-const { PORT, NODE_ENV } = process.env;
+const { NODE_ENV } = process.env;
+const PORT = process.env.PORT || 3001;
 
 const express = require('express');
 const app = express();
 const path = require('path');
 
-const connectionPool = require('./config/connectionPool');
-
-app.use(require('./passport/expressSession'));
+const { mysqlConnect } = require('./config/connectionPool');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -21,8 +20,9 @@ function checkAuthenticated(req, res, next) {
     }
 }
 
-connectionPool.mysqlConnect()
+mysqlConnect()
     .then(() => {
+        app.use(require('./passport/expressSession'));
         const passport = require('./passport/passportFunctions');
         app.use(passport.initialize());
         app.use(passport.session());
@@ -36,19 +36,13 @@ connectionPool.mysqlConnect()
     })
     .finally(() => {
         if (NODE_ENV === 'production') {
-            app.use(express.static('./client/build'));
+            app.use(express.static(path.join(__dirname, 'client/build')));
             app.get('*', (req, res) => {
-                res.sendFile(path.join(__dirname, './client/build/index.html'));
+                res.sendFile(path.join(__dirname, 'client/build/index.html'));
             });
         }
-        app.get('*', (req, res) => {
-            if (process.env.NODE_ENV === 'production') {
-                res.sendFile(path.join(__dirname, '../client/build/index.html'));
-            } else {
-                res.sendFile(path.join(__dirname, 'index.html'));
-            }
-        });
-        app.listen(PORT, () => {
-            console.log('Server is listening on port ' + PORT);
-        });
     });
+
+const server = app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
+
+module.exports = server;

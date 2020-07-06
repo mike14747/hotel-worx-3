@@ -871,7 +871,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     {
 	    "tax_id": 1,
         "tax_name": "County Tax",
-        "tax_rate": "5.000"
+        "tax_rate": "5.000",
+        "active": 1
     },
     {
         ...
@@ -879,8 +880,9 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
 ]
 ```
 
-> ## '/api/taxes'
-> * Takes in a tax_id parameter in the url.
+> ## '/api/taxes/:id([0-9]+)'
+> * Takes in a tax id parameter in the url.
+> * The id must be in numeric form or it will not match this route.
 > * Returns an array containing a single tax object.
 ```
 // sample response from this route
@@ -888,7 +890,8 @@ const queryUrl = '/api/rooms/housekeeping-status?clean=1&occupied=0';
     {
 	    "tax_id": 1,
         "tax_name": "County Tax",
-        "tax_rate": "5.000"
+        "tax_rate": "5.000",
+        "active": 1
     }
 ]
 ```

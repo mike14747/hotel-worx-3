@@ -35,7 +35,11 @@ router.get('/housekeeping-status', async (req, res, next) => {
     try {
         const paramsObj = housekeepingStatus(req.query);
         const [data, error] = await Room.getRoomsHousekeepingStatus(paramsObj);
-        data ? res.json(data) : next(error);
+        if (data) {
+            data.length > 0 ? res.json(data) : res.status(400).json({ message: 'No rooms were found meeting the criteria provided in the query parameters!' });
+        } else {
+            next(error);
+        }
     } catch (error) {
         next(error);
     }
@@ -43,7 +47,7 @@ router.get('/housekeeping-status', async (req, res, next) => {
 
 // this route needs some tinkering to implement "data ? res.json(data) : next(error);"
 router.get('/available-list/:date', async (req, res, next) => {
-    if (!/^[0-9]{4}-(([0]{1}[0-9]{1})|([1]{1}[0-2]{1}))-(([0-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/g.test(req.params.date)) return next(new Error('The query parameter, date, is not in the proper format (YYYY-MM-DD)!'));
+    if (!/^[0-9]{4}-(([0]{1}[0-9]{1})|([1]{1}[0-2]{1}))-(([0-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/g.test(req.params.date)) return res.status(400).json({ message: 'The query parameter, date, is not in the proper format (YYYY-MM-DD)!' });
     try {
         const [data, error] = await Room.getAvailableRoomListByDate({ date: req.params.date });
         data ? res.json(data) : next(error);
@@ -52,10 +56,15 @@ router.get('/available-list/:date', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9]+)', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
+    if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Room.getRoomById({ id: parseInt(req.params.id) });
-        data ? res.json(data) : next(error);
+        if (data) {
+            data.length > 0 ? res.json(data) : res.status(400).json({ message: 'No room was found with that ID!' });
+        } else {
+            next(error);
+        }
     } catch (error) {
         next(error);
     }
