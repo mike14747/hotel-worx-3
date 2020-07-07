@@ -29,20 +29,18 @@ mysqlConnect()
         app.use('/api', checkAuthenticated, require('./controllers'));
     })
     .catch((error) => {
-        console.log('An error occurred connecting to the database!\n', error.message);
+        console.log('An error occurred connecting to the database!', error.message);
         app.get('/api/*', (req, res) => {
             res.status(500).send('There is no connection to the database!');
         });
-    })
-    .finally(() => {
-        if (NODE_ENV === 'production') {
-            app.use(express.static(path.join(__dirname, 'client/build')));
-            app.get('*', (req, res) => {
-                res.sendFile(path.join(__dirname, 'client/build/index.html'));
-            });
-        }
     });
 
-const server = app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
+if (NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'client/build')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client/build/index.html'));
+    });
+}
+app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
 
-module.exports = server;
+module.exports = app;

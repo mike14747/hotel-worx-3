@@ -2,8 +2,6 @@ const router = require('express').Router();
 const Room = require('../models/room');
 const { housekeepingStatus } = require('./utils/roomsFunctions');
 
-// all these routes point to /api/rooms as specified in server.js and controllers/index.js
-
 router.get('/', async (req, res, next) => {
     try {
         const [data, error] = await Room.getAllRooms();
@@ -35,22 +33,19 @@ router.get('/housekeeping-status', async (req, res, next) => {
     try {
         const paramsObj = housekeepingStatus(req.query);
         const [data, error] = await Room.getRoomsHousekeepingStatus(paramsObj);
-        if (data) {
-            data.length > 0 ? res.json(data) : res.status(400).json({ message: 'No rooms were found meeting the criteria provided in the query parameters!' });
-        } else {
-            next(error);
-        }
+        if (error) next(error);
+        data.length > 0 ? res.json(data) : res.status(400).json({ message: 'No rooms were found meeting the criteria provided in the query parameters!' });
     } catch (error) {
         next(error);
     }
 });
 
-// this route needs some tinkering to implement "data ? res.json(data) : next(error);"
 router.get('/available-list/:date', async (req, res, next) => {
     if (!/^[0-9]{4}-(([0]{1}[0-9]{1})|([1]{1}[0-2]{1}))-(([0-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/g.test(req.params.date)) return res.status(400).json({ message: 'The query parameter, date, is not in the proper format (YYYY-MM-DD)!' });
     try {
         const [data, error] = await Room.getAvailableRoomListByDate({ date: req.params.date });
-        data ? res.json(data) : next(error);
+        if (error) next(error);
+        data.length > 0 ? res.json(data) : res.status(400).json({ message: `No available rooms were found for the period starting on ${req.params.date}!` });
     } catch (error) {
         next(error);
     }
@@ -60,27 +55,24 @@ router.get('/:id', async (req, res, next) => {
     if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Room.getRoomById({ id: parseInt(req.params.id) });
-        if (data) {
-            data.length > 0 ? res.json(data) : res.status(400).json({ message: 'No room was found with that ID!' });
-        } else {
-            next(error);
-        }
+        if (error) next(error);
+        data.length > 0 ? res.json(data) : res.status(400).json({ message: `No rooms were found with id ${req.params.id}!` });
     } catch (error) {
         next(error);
     }
 });
 
 router.post('/', async (req, res, next) => {
-    const paramsObj = {
-        room_num: req.body.room_num,
-        room_type_id: req.body.room_type_id,
-        description: req.body.description,
-        num_beds: req.body.num_beds,
-        clean: req.body.clean,
-        occupied: req.body.occupied,
-        active: req.body.active,
-    };
     try {
+        const paramsObj = {
+            room_num: req.body.room_num,
+            room_type_id: req.body.room_type_id,
+            description: req.body.description,
+            num_beds: req.body.num_beds,
+            clean: req.body.clean,
+            occupied: req.body.occupied,
+            active: req.body.active,
+        };
         const [data, error] = await Room.addNewRoom(paramsObj);
         data ? res.json(data) : next(error);
     } catch (error) {
@@ -89,17 +81,17 @@ router.post('/', async (req, res, next) => {
 });
 
 router.put('/', async (req, res, next) => {
-    const paramsObj = {
-        room_id: req.body.room_id,
-        room_num: req.body.room_num,
-        room_type_id: req.body.room_type_id,
-        description: req.body.description,
-        num_beds: req.body.num_beds,
-        clean: req.body.clean,
-        occupied: req.body.occupied,
-        active: req.body.active,
-    };
     try {
+        const paramsObj = {
+            room_id: req.body.room_id,
+            room_num: req.body.room_num,
+            room_type_id: req.body.room_type_id,
+            description: req.body.description,
+            num_beds: req.body.num_beds,
+            clean: req.body.clean,
+            occupied: req.body.occupied,
+            active: req.body.active,
+        };
         const [data, error] = await Room.updateRoomById(paramsObj);
         data ? res.json(data) : next(error);
     } catch (error) {
@@ -108,11 +100,11 @@ router.put('/', async (req, res, next) => {
 });
 
 router.put('/clean-status', async (req, res, next) => {
-    const paramsObj = {
-        room_id: req.body.room_id,
-        clean: req.body.clean,
-    };
     try {
+        const paramsObj = {
+            room_id: req.body.room_id,
+            clean: req.body.clean,
+        };
         const [data, error] = await Room.updateRoomCleanById(paramsObj);
         data ? res.json(data) : next(error);
     } catch (error) {
@@ -121,11 +113,11 @@ router.put('/clean-status', async (req, res, next) => {
 });
 
 router.put('/occupied-status', async (req, res, next) => {
-    const paramsObj = {
-        room_id: req.body.room_id,
-        occupied: req.body.occupied,
-    };
     try {
+        const paramsObj = {
+            room_id: req.body.room_id,
+            occupied: req.body.occupied,
+        };
         const [data, error] = await Room.updateRoomOccupiedById(paramsObj);
         data ? res.json(data) : next(error);
     } catch (error) {
@@ -133,19 +125,23 @@ router.put('/occupied-status', async (req, res, next) => {
     }
 });
 
-router.put('/:id([0-9]+)/checked-out', async (req, res, next) => {
+router.put('/:id/checked-out', async (req, res, next) => {
+    if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Room.updateRoomCheckedOutById({ id: parseInt(req.params.id) });
-        data ? res.json(data) : next(error);
+        if (error) next(error);
+        data.length > 0 ? res.json(data) : res.status(400).json({ message: `No rooms were found with id ${req.params.id}!` });
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id([0-9]+)', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
+    if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Room.deleteRoomById({ id: parseInt(req.params.id) });
-        data ? res.json(data) : next(error);
+        if (error) next(error);
+        data.length > 0 ? res.json(data) : res.status(400).json({ message: `No rooms were found with id ${req.params.id}!` });
     } catch (error) {
         next(error);
     }
