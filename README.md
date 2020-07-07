@@ -18,7 +18,7 @@ SESSION_SECRET=<your-session-secret>
 ```
 3. Install the **npm packages**. From the root directory, run:
 ```
-yarn install
+npm install
 ```
 4. Install the database by using the schema/seeds file (**config/hotel_worx_3_db.sql**).
 
