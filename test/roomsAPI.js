@@ -57,11 +57,12 @@ describe('Rooms API', function () {
             });
     });
 
-    it('should return status 400 since 0 should not match any room ids', function (done) {
+    it('should return status 200 and an empty array since 0 should not match any room ids', function (done) {
         chai.request(server)
             .get('/api/rooms/0')
             .end(function (error, response) {
-                response.should.have.status(400);
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
             });
     });
@@ -107,21 +108,11 @@ describe('Rooms API', function () {
                     element.should.have.property('occupied').and.to.be.a('number').and.oneOf([0, 1]);
                     element.should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                     element.should.have.property('type').and.to.be.a('string');
-                    element.should.have.property('checked_in');
-                    if (element.checked_in === null) element.checked_in = 0;
-                    element.checked_in.should.be.a('number').and.oneOf([0, 1])
-                    element.should.have.property('checked_out');
-                    if (element.checked_out === null) element.checked_out = 0;
-                    element.checked_out.should.be.a('number').and.oneOf([0, 1]);
-                    element.should.have.property('room_id');
-                    if (element.room_id === null) element.room_id = 0;
-                    element.room_id.should.be.a('number');
-                    element.should.have.property('departure');
-                    if (element.departure === null) element.departure = '';
-                    element.departure.should.be.a('string');
-                    element.should.have.property('stayover');
-                    if (element.stayover === null) element.stayover = '';
-                    element.stayover.should.be.a('string');
+                    element.should.have.property('checked_in').and.to.be.a('number').and.oneOf([0, 1]);
+                    element.should.have.property('checked_out').and.to.be.a('number').and.oneOf([0, 1]);
+                    element.should.have.property('room_id').and.to.be.a('number');
+                    element.should.have.property('departure').and.to.be.a('number').and.oneOf([0, 1]);
+                    element.should.have.property('stayover').and.to.be.a('number').and.oneOf([0, 1]);
                 });
                 done();
             });
