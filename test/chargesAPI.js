@@ -38,11 +38,12 @@ describe('Charges API', function () {
             });
     });
 
-    it('should get a status 400 because 0 should not match any charge ids', function (done) {
+    it('should get a status 200 and an empty array because charge id 0 should not match any charges', function (done) {
         chai.request(server)
             .get('/api/charges/0')
             .end(function (error, response) {
-                response.should.have.status(400);
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
             });
     });

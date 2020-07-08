@@ -14,8 +14,7 @@ router.get('/:id', async (req, res, next) => {
     if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Tax.getTaxById({ id: parseInt(req.params.id) || 0 });
-        if (error) next(error);
-        data.length > 0 ? res.json(data) : res.status(400).json({ message: `No taxes were found with id ${req.params.id}!` });
+        data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }

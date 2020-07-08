@@ -42,7 +42,8 @@
 > ## '/api/rooms/:id'
 > * Takes in a room_id parameter in the url.
 > * Returns an array containing a single room object.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no room is found with that id.
+> * It will return status 200 and an empty array if no room was found with that room id..
+> * It will return status 400 (and a json with a message property) if the room id param is not an integer.
 ```
 // sample response from this route
 [
@@ -97,8 +98,8 @@
 > ## '/api/rooms/housekeeping-status'
 > * Takes in a varying number of query parameters in the url... ranging from 0 to 10.
 > * It returns an array of room objects for all rooms meeting the criteria of the query parameters.
-> * It will return status 400 (and a json with a message property) if no rooms are found meeting the query parameters.
 > * Each of the room objects show detailed room status information.
+> * It will return status 200 and an empty array if no rooms are found meeting the query parameters.
 > * Possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved.
 > * Possible options for all parameters are: 0 and 1.
 > * Sample route with query parameters: **/api/rooms/housekeeping-status?clean=1&occupied=0**
@@ -125,7 +126,8 @@
 > ## '/api/rooms/available-list/:date'
 > * Takes in a date parameter in the url (in the 'YYYY-MM-DD' format, eg: /api/rooms/available-list/2019-11-18).
 > * It returns an array of active room objects which are available on the date in the url parameter.
-> * It will return status 400 (and a json with a message property) if either the date param is not in 'YYYY-MM-DD' format or if no available rooms are found for that date.
+> * It will return status 200 and an empty array if no available rooms are found for the days after that starting date.
+> * It will return status 400 (and a json with a message property) if the date param is not in 'YYYY-MM-DD' format.
 > * It includes the date availability ends for each room (or "n/a" if a room has unlimited availability).
 ```
 // sample response from this route
@@ -891,7 +893,8 @@
 > * Takes in a tax id parameter in the url.
 > * The id must be in numeric form or it will not match this route.
 > * Returns an array containing a single tax object.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no tax is found with that id.
+> * It will return status 200 and an empty array if no tax was found with that id.
+> * It will return status 400 (and a json with a message property) if the tax id param is not an integer.
 ```
 // sample response from this route
 [
@@ -937,7 +940,7 @@
 > * Takes in a tax_id parameter in the url.
 > * This will permanently delete a tax.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no tax is found with that id.
+> * It will return status 400 (and a json with a message property) if either the tax id param is not an integer or if no tax is found with that id.
 
 ---
 ---
@@ -966,7 +969,8 @@
 > ## '/api/charges/:id'
 > * Takes in a charge_id parameter in the url.
 > * Returns an array containing a single charge object.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no charge is found with that id.
+> * It will return status 200 and an empty array if no charge was found with that id.
+> * It will return status 400 (and a json with a message property) if the charge id param is not an integer.
 ```
 // sample response from this route
 [
@@ -982,7 +986,8 @@
 > ## '/api/charges/res-rooms/:id'
 > * Takes in a res_room_id parameter in the url.
 > * Returns all charges associated with a res_room in an array of charges objects.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no charge are found for that res_room id.
+> * It will return status 200 and an empty array if no charges were found for that res_room id.
+> * It will return status 400 (and a json with a message property) if the res_room id param is not an integer.
 ```
 // sample response from this route
 [
@@ -1033,13 +1038,13 @@
 > * Takes in a charge_id parameter in the url.
 > * This will permanently delete a single charge.
 > * It returns status code 200 and a 'Charge was successfully deleted!' message if successful.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no charge is found with that id.
+> * It will return status 400 (and a json with a message property) if either the charge id param is not an integer or if no charge is found with that id.
 
 > ## '/api/charges/res-rooms/:id'
 > * Takes in a res_room_id parameter in the url.
 > * This will permanently delete all charges associated with a res_room.
 > * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no charges are found for that res_room id.
+> * It will return status 400 (and a json with a message property) if either the res_room id param is not an integer or if no charges are found for that res_room id.
 
 ---
 ---
