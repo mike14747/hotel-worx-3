@@ -50,7 +50,7 @@ router.get('/available-list/:date', async (req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-    if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
+    if (!/^[0-9]+$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Room.getRoomById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
@@ -123,7 +123,7 @@ router.put('/occupied-status', async (req, res, next) => {
 });
 
 router.put('/:id/checked-out', async (req, res, next) => {
-    if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
+    if (!/^[0-9]+$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Room.updateRoomCheckedOutById({ id: parseInt(req.params.id) });
         if (error) next(error);
@@ -134,7 +134,7 @@ router.put('/:id/checked-out', async (req, res, next) => {
 });
 
 router.delete('/:id', async (req, res, next) => {
-    if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
+    if (!/^[0-9]+$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Room.deleteRoomById({ id: parseInt(req.params.id) });
         if (error) next(error);

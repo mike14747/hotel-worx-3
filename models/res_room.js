@@ -25,6 +25,18 @@ const ResRoom = {
             return [null, error];
         }
     },
+    getActiveResRoomById: async (paramsObj) => {
+        try {
+            const queryString = 'SELECT rr.res_room_id FROM res_rooms AS rr WHERE rr.active=1 && rr.res_room_id=? LIMIT 1;';
+            const queryParams = [
+                paramsObj.id,
+            ];
+            const [result] = await pool.query(queryString, queryParams);
+            return [result, null];
+        } catch (error) {
+            return [null, error];
+        }
+    },
     getResRoomsByReservationId: async (paramsObj) => {
         try {
             const queryString = 'SELECT rr.res_room_id, rr.reservation_id, rr.room_type_id, DATE_FORMAT(rr.check_in_date, "%b %d, %Y") AS check_in_date, DATE_FORMAT(rr.check_out_date, "%b %d, %Y") AS check_out_date, rr.checked_in, rr.checked_out, rr.adults, rr.room_id, rr.rate, rr.confirmation_code, rr.comments, rr.allow_charges, rr.active FROM res_rooms AS rr WHERE rr.reservation_id=?;';

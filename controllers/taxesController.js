@@ -11,7 +11,7 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-    if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
+    if (!/^[0-9]+$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Tax.getTaxById({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);
@@ -49,7 +49,7 @@ router.put('/', async (req, res, next) => {
 });
 
 router.delete('/:id', async (req, res, next) => {
-    if (!/^[0-9]$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
+    if (!/^[0-9]+$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
     try {
         const [data, error] = await Tax.deleteTaxById({ id: parseInt(req.params.id) || 0 });
         if (error) next(error);
