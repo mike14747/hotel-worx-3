@@ -950,12 +950,13 @@
 **GET methods:**
 > ## '/api/charges'
 > * Takes in no parameters.
-> * Returns an array charge objects.
+> * It will return status 200 and an array containing all charge objects... or an empty array if no charges were found.
 ```
 // sample response from this route
 [
     {
         "charge_id": 1,
+        "res_room_id": 1200,
         "charge_type": "Restaurant",
         "charge_amount": "43.12",
         "taxable": 0
@@ -968,14 +969,14 @@
 
 > ## '/api/charges/:id'
 > * Takes in a charge_id parameter in the url.
-> * Returns an array containing a single charge object.
-> * It will return status 200 and an empty array if no charge was found with that id.
-> * It will return status 400 (and a json with a message property) if the charge id param is not an integer.
+> * It will return status 200 and an array containing a single charge object... or an empty array if no charge was found with that id.
+> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample response from this route
 [
     {
         "charge_id": 1,
+        "res_room_id": 1200,
         "charge_type": "Restaurant",
         "charge_amount": "43.12",
         "taxable": 0
@@ -987,12 +988,13 @@
 > * Takes in a res_room_id parameter in the url.
 > * Returns all charges associated with a res_room in an array of charges objects.
 > * It will return status 200 and an empty array if no charges were found for that res_room id.
-> * It will return status 400 (and a json with a message property) if the res_room id param is not an integer.
+> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample response from this route
 [
     {
         "charge_id": 1,
+        "res_room_id": 1200,
         "charge_type": "Restaurant",
         "charge_amount": "43.12",
         "taxable": 0
@@ -1007,7 +1009,8 @@
 > ## '/api/charges'
 > * It adds a new charge associated with a res_room.
 > * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+> * If successful, it returns status code 201 and an object with the insertId of the new document as the only property.
+> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
@@ -1022,11 +1025,13 @@
 > ## '/api/charges'
 > * It is used to edit an existing charge by charge_id.
 > * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+> * If successful, it returns status code 204.
+> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
     "charge_id": 1,
+    "res_room_id": 1200,
     "charge_type_id": 3,
     "charge_amount": 43.12,
     "taxable": 1
@@ -1037,14 +1042,14 @@
 > ## '/api/charges/:id'
 > * Takes in a charge_id parameter in the url.
 > * This will permanently delete a single charge.
-> * It returns status code 200 and a 'Charge was successfully deleted!' message if successful.
-> * It will return status 400 (and a json with a message property) if either the charge id param is not an integer or if no charge is found with that id.
+> * If successful, it returns status code 204.
+> * If unsuccessful, it returns status code 400 and an error object.
 
 > ## '/api/charges/res-rooms/:id'
 > * Takes in a res_room_id parameter in the url.
 > * This will permanently delete all charges associated with a res_room.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * It will return status 400 (and a json with a message property) if either the res_room id param is not an integer or if no charges are found for that res_room id.
+> * If successful, it returns status code 204.
+> * If unsuccessful, it returns status code 400 and an error object.
 
 ---
 ---

@@ -34,10 +34,12 @@ router.get('/res-rooms/:id', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     try {
         const errorArray = [];
-        if (!resRoomExists(req.body.res_room_id)) errorArray.push('res_room_id does not exist or is not active');
-        if (!chargeTypeExists(req.body.charge_type_id)) errorArray.push('charge_type_id does not exist or is not active');
+        const [doesResRoomExist, resRoomErrorMsg] = await resRoomExists(req.body.res_room_id);
+        if (!doesResRoomExist) errorArray.push(resRoomErrorMsg);
+        const [doesChargeTypeExist, chargeTypeErrorMsg] = await chargeTypeExists(req.body.charge_type_id);
+        if (!doesChargeTypeExist) errorArray.push(chargeTypeErrorMsg);
         if (isNaN(parseFloat(req.body.charge_amount))) errorArray.push('charge_amount is not in a valid dollar amount');
-        if (!/^[0-9]$/.test(req.params.taxable)) errorArray.push('taxable parameter is a boolean and should be 0 or 1');
+        if (!/^[0-1]$/.test(req.body.taxable)) errorArray.push('taxable parameter is a boolean and should be 0 or 1');
         if (errorArray.length > 0) {
             return res.status(400).json({
                 message: 'Errors exist in the transmitted request body.',
@@ -51,7 +53,7 @@ router.post('/', async (req, res, next) => {
             taxable: parseInt(req.body.taxable),
         };
         const [data, error] = await Charge.addNewCharge(paramsObj);
-        data ? res.json(data) : next(error);
+        data ? res.status(201).json({ insertId: data.insertId }) : next(error);
     } catch (error) {
         next(error);
     }
@@ -60,10 +62,14 @@ router.post('/', async (req, res, next) => {
 router.put('/', async (req, res, next) => {
     try {
         const errorArray = [];
-        if (!chargeExists(req.body.charge_id)) errorArray.push('charge_id does not exist');
-        if (!chargeTypeExists(req.body.charge_type_id)) errorArray.push('charge_type_id does not exist or is not active');
+        const [doesResRoomExist, resRoomErrorMsg] = await resRoomExists(req.body.res_room_id);
+        if (!doesResRoomExist) errorArray.push(resRoomErrorMsg);
+        const [doesChargeExist, chargeErrorMsg] = await chargeExists(req.body.charge_id);
+        if (!doesChargeExist) errorArray.push(chargeErrorMsg);
+        const [doesChargeTypeExist, chargeTypeErrorMsg] = await chargeTypeExists(req.body.charge_type_id);
+        if (!doesChargeTypeExist) errorArray.push(chargeTypeErrorMsg);
         if (isNaN(parseFloat(req.body.charge_amount))) errorArray.push('charge_amount is not in a valid dollar amount');
-        if (!/^[0-9]$/.test(req.params.taxable)) errorArray.push('taxable parameter is a boolean and should be 0 or 1');
+        if (!/^[0-1]$/.test(req.body.taxable)) errorArray.push('taxable parameter is a boolean and should be 0 or 1');
         if (errorArray.length > 0) {
             return res.status(400).json({
                 message: 'Errors exist in the transmitted request body.',
@@ -71,13 +77,14 @@ router.put('/', async (req, res, next) => {
             });
         }
         const paramsObj = {
+            res_room_id: parseInt(req.body.res_room_id),
             charge_id: parseInt(req.body.charge_id),
             charge_type_id: parseInt(req.body.charge_type_id),
             charge_amount: parseFloat(req.body.charge_amount),
             taxable: parseInt(req.body.taxable),
         };
         const [data, error] = await Charge.updateChargeById(paramsObj);
-        data ? res.json(data) : next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : next(error);
     } catch (error) {
         next(error);
     }
@@ -88,7 +95,7 @@ router.delete('/:id', async (req, res, next) => {
     try {
         const [data, error] = await Charge.deleteChargeById({ id: parseInt(req.params.id) || 0 });
         if (error) next(error);
-        data.length > 0 ? res.json(data) : res.status(400).json({ message: `No charges were found with id ${req.params.id}!` });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: `No charges were found with id ${req.params.id}!` });
     } catch (error) {
         next(error);
     }
@@ -99,7 +106,7 @@ router.delete('/res-rooms/:id', async (req, res, next) => {
     try {
         const [data, error] = await Charge.deleteChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
         if (error) next(error);
-        data.length > 0 ? res.json(data) : res.status(400).json({ message: `No charges for res_rooms were found with id ${req.params.id}!` });
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: `No charges for res_rooms were found with id ${req.params.id}!` });
     } catch (error) {
         next(error);
     }

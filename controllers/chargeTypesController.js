@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const ChargeType = require('../models/charge_type');
+const ChargeType = require('../models/chargeType');
 
 // all these routes point to /api/charge-types as specified in server.js and controllers/index.js
 
