@@ -34,10 +34,12 @@ router.get('/res-rooms/:id', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     try {
         const errorArray = [];
-        if (!resRoomExists(req.body.res_room_id)) errorArray.push('res_room_id does not exist or is not active');
-        if (!chargeTypeExists(req.body.charge_type_id)) errorArray.push('charge_type_id does not exist or is not active');
+        const [doesResRoomExist, resRoomErrorMsg] = await resRoomExists(req.body.res_room_id);
+        if (!doesResRoomExist) errorArray.push(resRoomErrorMsg);
+        const [doesChargeTypeExist, chargeTypeErrorMsg] = await chargeTypeExists(req.body.charge_type_id);
+        if (!doesChargeTypeExist) errorArray.push(chargeTypeErrorMsg);
         if (isNaN(parseFloat(req.body.charge_amount))) errorArray.push('charge_amount is not in a valid dollar amount');
-        if (!/^[0-9]$/.test(req.params.taxable)) errorArray.push('taxable parameter is a boolean and should be 0 or 1');
+        if (!/^[0-1]$/.test(req.body.taxable)) errorArray.push('taxable parameter is a boolean and should be 0 or 1');
         if (errorArray.length > 0) {
             return res.status(400).json({
                 message: 'Errors exist in the transmitted request body.',
@@ -60,10 +62,12 @@ router.post('/', async (req, res, next) => {
 router.put('/', async (req, res, next) => {
     try {
         const errorArray = [];
-        if (!chargeExists(req.body.charge_id)) errorArray.push('charge_id does not exist');
-        if (!chargeTypeExists(req.body.charge_type_id)) errorArray.push('charge_type_id does not exist or is not active');
+        const [doesChargeExist, chargeErrorMsg] = await chargeTypeExists(req.body.charge_id);
+        if (!doesChargeExist) errorArray.push(chargeErrorMsg);
+        const [doesChargeTypeExist, chargeTypeErrorMsg] = await chargeTypeExists(req.body.charge_type_id);
+        if (!doesChargeTypeExist) errorArray.push(chargeTypeErrorMsg);
         if (isNaN(parseFloat(req.body.charge_amount))) errorArray.push('charge_amount is not in a valid dollar amount');
-        if (!/^[0-9]$/.test(req.params.taxable)) errorArray.push('taxable parameter is a boolean and should be 0 or 1');
+        if (!/^[0-1]$/.test(req.body.taxable)) errorArray.push('taxable parameter is a boolean and should be 0 or 1');
         if (errorArray.length > 0) {
             return res.status(400).json({
                 message: 'Errors exist in the transmitted request body.',

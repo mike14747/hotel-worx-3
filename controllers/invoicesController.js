@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Invoice = require('../models/invoice');
 const InvoiceTax = require('../models/invoice_tax');
-const InvoicePayment = require('../models/invoice_payment');
+const InvoicePayment = require('../models/invoicePayment');
 
 // all these routes point to /api/invoices as specified in server.js and controllers/index.js
 

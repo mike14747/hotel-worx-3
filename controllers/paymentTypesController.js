@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const PaymentType = require('../models/payment_type');
+const PaymentType = require('../models/paymentType');
 
 // all these routes point to /api/payment-types as specified in server.js and controllers/index.js
 
