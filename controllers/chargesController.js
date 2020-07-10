@@ -53,7 +53,8 @@ router.post('/', async (req, res, next) => {
             taxable: parseInt(req.body.taxable),
         };
         const [data, error] = await Charge.addNewCharge(paramsObj);
-        data ? res.status(201).json({ insertId: data.insertId }) : next(error);
+        if (error) next(error);
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: 'An error occurred trying to add the new charge!' });
     } catch (error) {
         next(error);
     }
@@ -84,7 +85,8 @@ router.put('/', async (req, res, next) => {
             taxable: parseInt(req.body.taxable),
         };
         const [data, error] = await Charge.updateChargeById(paramsObj);
-        data && data.affectedRows === 1 ? res.status(204).end() : next(error);
+        if (error) next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: `No charge was found with id ${req.params.id}!` });
     } catch (error) {
         next(error);
     }
@@ -95,7 +97,7 @@ router.delete('/:id', async (req, res, next) => {
     try {
         const [data, error] = await Charge.deleteChargeById({ id: parseInt(req.params.id) || 0 });
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: `No charges were found with id ${req.params.id}!` });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: `No charge was found with id ${req.params.id}!` });
     } catch (error) {
         next(error);
     }

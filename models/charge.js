@@ -25,7 +25,7 @@ const Charge = {
     },
     getChargesByResRoomId: async (paramsObj) => {
         try {
-            const queryString = 'SELECT ch.charge_id, ct.charge_type, ch.charge_amount, ch.taxable FROM charges AS ch INNER JOIN charge_types AS ct ON ch.charge_type_id=ct.charge_type_id WHERE res_room_id=?;';
+            const queryString = 'SELECT ch.charge_id, ct.charge_type, ch.res_room_id, ch.charge_amount, ch.taxable FROM charges AS ch INNER JOIN charge_types AS ct ON ch.charge_type_id=ct.charge_type_id WHERE res_room_id=?;';
             const queryParams = [
                 paramsObj.id,
             ];
