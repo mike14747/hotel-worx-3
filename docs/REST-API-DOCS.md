@@ -1059,7 +1059,7 @@
 **GET methods:**
 > ## '/api/charge-types'
 > * Takes in no parameters.
-> * Returns all charge_types in an array of objects... each of which in its own object.
+> * Returns all charge_types in an array of charge_types objects.
 ```
 [
     {
@@ -1075,7 +1075,7 @@
 
 > ## '/api/charge-types/:id'
 > * Takes in a charge_type_id parameter in the url.
-> * Returns an array containing a single charge object.
+> * Returns an array containing a single charge_types object.
 ```
 // sample response from this route
 [
@@ -1091,7 +1091,8 @@
 > ## '/api/charge-types'
 > * It adds a new charge type.
 > * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+> * If successful, it returns status code 201 and an object with the insertId of the new document as the only property.
+> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
@@ -1103,7 +1104,8 @@
 > ## '/api/charge-types'
 > * It is used to edit an existing charge type by charge_type_id.
 > * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+> * If successful, it returns status code 204.
+> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
@@ -1116,8 +1118,9 @@
 **DELETE methods:**
 > ## '/api/charge-types/:id'
 > * Takes in a charge_type_id parameter in the url.
-> * This will permanently delete a charge type.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+> * This will permanently delete a single charge_type.
+> * If successful, it returns status code 204.
+> * If unsuccessful, it returns status code 400 and an error object.
 
 ---
 ---
