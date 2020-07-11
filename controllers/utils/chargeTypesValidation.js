@@ -12,18 +12,6 @@ const chargeTypeExists = async (id) => {
     }
 };
 
-const chargeTypeValid = (str) => {
-    if (typeof (str) !== 'string' || str.length < 1) return [null, 'charge_type should be a string with non-zero length'];
-    return [true, null];
-};
-
-const activeValid = (num) => {
-    if (!/^[0-1]$/.test(num)) return [null, 'active parameter is a boolean and should be 0 or 1'];
-    return [true, null];
-};
-
 module.exports = {
     chargeTypeExists,
-    chargeTypeValid,
-    activeValid,
 };

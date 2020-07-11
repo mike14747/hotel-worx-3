@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const ChargeType = require('../models/chargeType');
-const { chargeTypeExists, chargeTypeValid, activeValid } = require('./utils/chargeTypesValidation');
+const { chargeTypeExists } = require('./utils/chargeTypesValidation');
 
 // all these routes point to /api/charge-types as specified in server.js and controllers/index.js
 
@@ -26,10 +26,8 @@ router.get('/:id', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     try {
         const errorArray = [];
-        const [isChargeTypeValid, chargeTypeValidErrorMsg] = chargeTypeValid(req.body.charge_type);
-        if (!isChargeTypeValid) errorArray.push(chargeTypeValidErrorMsg);
-        const [isActiveValid, activeValidErrorMsg] = activeValid(req.body.active);
-        if (!isActiveValid) errorArray.push(activeValidErrorMsg);
+        if (typeof (req.body.charge_type) !== 'string' || req.body.charge_type.length < 1) errorArray.push('charge_type should be a string with non-zero length');
+        if (!/^[0-1]$/.test(req.body.active)) errorArray.push('active parameter is a boolean and should be 0 or 1');
         if (errorArray.length > 0) {
             return res.status(400).json({
                 message: 'Errors exist in the transmitted request body.',
@@ -42,7 +40,7 @@ router.post('/', async (req, res, next) => {
         };
         const [data, error] = await ChargeType.addNewChargeType(paramsObj);
         if (error) next(error);
-        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: 'An error occurred trying to add the new charge_type!' });
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: 'An error occurred trying to add a new charge_type!' });
     } catch (error) {
         next(error);
     }
@@ -53,10 +51,8 @@ router.put('/', async (req, res, next) => {
         const errorArray = [];
         const [doesChargeTypeExist, chargeTypeErrorMsg] = await chargeTypeExists(req.body.charge_type_id);
         if (!doesChargeTypeExist) errorArray.push(chargeTypeErrorMsg);
-        const [isChargeTypeValid, chargeTypeValidErrorMsg] = chargeTypeValid(req.body.charge_type);
-        if (!isChargeTypeValid) errorArray.push(chargeTypeValidErrorMsg);
-        const [isActiveValid, activeValidErrorMsg] = activeValid(req.body.active);
-        if (!isActiveValid) errorArray.push(activeValidErrorMsg);
+        if (typeof (req.body.charge_type) !== 'string' || req.body.charge_type.length < 1) errorArray.push('charge_type should be a string with non-zero length');
+        if (!/^[0-1]$/.test(req.body.active)) errorArray.push('active parameter is a boolean and should be 0 or 1');
         if (errorArray.length > 0) {
             return res.status(400).json({
                 message: 'Errors exist in the transmitted request body.',
@@ -70,7 +66,7 @@ router.put('/', async (req, res, next) => {
         };
         const [data, error] = await ChargeType.updateChargeTypeById(paramsObj);
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: `No charge_type was found with id ${req.params.id}!` });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred trying to update a charge_type!' });
     } catch (error) {
         next(error);
     }

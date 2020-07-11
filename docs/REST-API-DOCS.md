@@ -5,8 +5,17 @@
    * **/api/auth** is going to be left unprotected because it needs to be accessed while logging in.
 * An access level of 1 (employee) is the default access level for these routes.
 * Some routes will have level 2 or level 3 requirements. They will be denoted as such.
-* All non-existent routes attempting to be accessed are caught by the catch-all route handler in /controllers/index.js and a status code of 404 is passed.
-* If any of these routes are unsuccessful, they pass the error via next(error) to the error handler in /controllers/index.js which returns a status code of 500 and the error.
+
+## Successfully accessing /api routes
+* Successful GET routes will return status 200 and a JSON object.
+* Successful POST routes will return status 201 and an object containing the insertId.
+* Successful PUT and DELETE routes will return only a status 204 and nothing else.
+
+# Unsuccessfully attempts on /api routes
+* Some errors on the /api routes will result in status 400 and an error object being returned. Errors of these kinds are most likely caused by trying to pass invalid parameters.
+* Trying to access a non-existent /api route is handled by the catch-all route handler in /controllers/index.js and a status code of 404 is returned.
+* If there is no connection to the database, all /api routes will return status 500 and an error object indictating such.
+* If any /api routes are unsuccessful for unforeseen reasons or actual server errors, they pass their error via next(error) to the error handler in /controllers/index.js which returns a status code of 500 and the error.
 
 ---
 ---
@@ -1096,7 +1105,8 @@
 ```
 // sample request body for this route
 {
-    "charge_type": "Gift Certificate"
+    "charge_type": "Gift Certificate",
+    "active": 1
 }
 ```
 

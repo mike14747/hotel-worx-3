@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Tax = require('../models/tax');
+const { taxExists } = require('.utils/taxesValidation');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -33,7 +34,25 @@ router.post('/', async (req, res, next) => {
     }
 });
 
+/*
+tax_id
+tax_name
+tax_rate
+active
+*/
+
 router.put('/', async (req, res, next) => {
+    const errorArray = [];
+    const [doesTaxExist, taxErrorMsg] = await taxExists(req.body.tax_id);
+    if (!doesTaxExist) errorArray.push(taxErrorMsg);
+    if (typeof (req.body.tax_name) !== 'string' || req.body.tax_name.length < 1) errorArray.push('tax_name should be a string with non-zero length');
+    if (!/^[0-1]$/.test(req.body.active)) errorArray.push('active parameter is a boolean and should be 0 or 1');
+    if (errorArray.length > 0) {
+        return res.status(400).json({
+            message: 'Errors exist in the transmitted request body.',
+            errorList: errorArray,
+        });
+    }
     try {
         const paramsObj = {
             tax_id: req.body.tax_id,
