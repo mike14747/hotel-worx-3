@@ -77,7 +77,7 @@ router.delete('/:id', async (req, res, next) => {
     try {
         const [data, error] = await ChargeType.deleteChargeTypeById({ id: parseInt(req.params.id) });
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: `No charge_type was found with id ${req.params.id}!` });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred... probably because of a foreign key constraint on that charge type. A better option might be to make this charge type inactive.' });
     } catch (error) {
         next(error);
     }
