@@ -95,7 +95,7 @@ describe('Taxes API', function () {
             });
     });
     
-    it('should FAIL to update the just created new tax and return 3 errors because all 4 parameters are invalid', function (done) {
+    it('should FAIL to update the just created new tax and return 4 errors because all 4 parameters are invalid', function (done) {
         const paramsObj = {
             "tax_id": 0,
             "tax_name": "",
