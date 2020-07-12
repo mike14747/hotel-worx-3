@@ -43,9 +43,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
-        if (!idRegEx.test(req.body.tax_id)) {
-            return res.status(400).json(idErrorObj);
-        }
+        if (!idRegEx.test(req.body.tax_id)) return res.status(400).json(idErrorObj);
         const paramsObj = {
             tax_id: req.body.tax_id,
             tax_name: req.body.tax_name,
