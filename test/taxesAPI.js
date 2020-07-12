@@ -59,6 +59,24 @@ describe('Taxes API', function () {
 
     let insertId = 0;
 
+    it('should FAIL to POST a new tax type and and return 3 errors because all 3 parameters are invalid', function (done) {
+        const paramsObj = {
+            "tax_name": "",
+            "tax_rate": "b1.375",
+            "active": 2
+        };
+        chai.request(server)
+            .post('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
+                done();
+            });
+    });
+
     it('should POST a new tax type and return the insertId', function (done) {
         const paramsObj = {
             "tax_name": "Special Tax",
@@ -76,8 +94,6 @@ describe('Taxes API', function () {
                 done();
             });
     });
-
-    // -----
 
     it('should update the just created new tax with these new parameters', function (done) {
         const paramsObj = {
@@ -109,7 +125,7 @@ describe('Taxes API', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorList').and.to.be.an('array').and.have.lengthOf(4);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
                 done();
             });
     });

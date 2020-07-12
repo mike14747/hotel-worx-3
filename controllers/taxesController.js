@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const Tax = require('../models/tax');
-const { taxExists, isTaxBodyValid } = require('./utils/taxesValidation');
+const { isTaxBodyValid } = require('./utils/taxesValidation');
+
+const idRegEx = /^[0-9]+$/;
+const idErrorObj = { message: 'all id parameters need to be integers' };
 
 router.get('/', async (req, res, next) => {
     try {
@@ -12,7 +15,7 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-    if (!/^[0-9]+$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
+    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
         const [data, error] = await Tax.getTaxById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
@@ -40,6 +43,9 @@ router.post('/', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
+        if (!idRegEx.test(req.body.tax_id)) {
+            return res.status(400).json(idErrorObj);
+        }
         const paramsObj = {
             tax_id: req.body.tax_id,
             tax_name: req.body.tax_name,
@@ -57,7 +63,7 @@ router.put('/', async (req, res, next) => {
 });
 
 router.delete('/:id', async (req, res, next) => {
-    if (!/^[0-9]+$/.test(req.params.id)) return res.status(400).json({ message: 'ID param needs to be an integer!' });
+    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
         const [data, error] = await Tax.deleteTaxById({ id: parseInt(req.params.id) });
         if (error) next(error);
