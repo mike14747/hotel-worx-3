@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const RoomType = require('../models/room_type');
+const RoomType = require('../models/roomType');
 
 // all these routes point to /api/room-types as specified in server.js and controllers/index.js
 
