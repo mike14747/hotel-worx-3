@@ -25,10 +25,11 @@ const Tax = {
     },
     addNewTax: async (paramsObj) => {
         try {
-            const queryString = 'INSERT INTO taxes (tax_name, tax_rate) VALUES (?, ?);';
+            const queryString = 'INSERT INTO taxes (tax_name, tax_rate, active) VALUES (?, ?, ?);';
             const queryParams = [
                 paramsObj.tax_name,
                 paramsObj.tax_rate,
+                paramsObj.active,
             ];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];

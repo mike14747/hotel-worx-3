@@ -56,4 +56,99 @@ describe('Taxes API', function () {
                 done();
             });
     });
+
+    let insertId = 0;
+
+    it('should FAIL to POST a new tax type and and return 3 errors because all 3 parameters are invalid', function (done) {
+        const paramsObj = {
+            "tax_name": "",
+            "tax_rate": "b1.375",
+            "active": 2
+        };
+        chai.request(server)
+            .post('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
+                done();
+            });
+    });
+
+    it('should POST a new tax type and return the insertId', function (done) {
+        const paramsObj = {
+            "tax_name": "Special Tax",
+            "tax_rate": 1.375,
+            "active": 1
+        };
+        chai.request(server)
+            .post('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(201);
+                response.body.should.be.an('object');
+                response.body.should.have.property('insertId').and.to.be.a('number');
+                if (response.body.insertId) insertId = response.body.insertId;
+                done();
+            });
+    });
+
+    it('should update the just created new tax with these new parameters', function (done) {
+        const paramsObj = {
+            "tax_id": insertId,
+            "tax_name": "Special Tax",
+            "tax_rate": 1.250,
+            "active": 0
+        };
+        chai.request(server)
+            .put('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(204);
+                done();
+            });
+    });
+    
+    it('should FAIL to update the just created new tax and return 4 errors because all 4 parameters are invalid', function (done) {
+        const paramsObj = {
+            "tax_id": 0,
+            "tax_name": "",
+            "tax_rate": "a1.375",
+            "active": 2
+        };
+        chai.request(server)
+            .put('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
+                done();
+            });
+    });
+
+    // -----
+
+    it('should FAIL to delete the newly created tax because the tax id is invalid', function (done) {
+        chai.request(server)
+            .delete('/api/taxes/0')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
+    
+    it('should delete the newly created tax using the insertId', function (done) {
+        chai.request(server)
+            .delete('/api/taxes/' + insertId)
+            .end(function (error, response) {
+                response.should.have.status(204);
+                done();
+            });
+    });
 });

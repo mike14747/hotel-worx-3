@@ -103,7 +103,7 @@ describe('Charges API', function () {
     it('should FAIL to POST a new charge and return 4 errors because all 4 parameters are invalid', function (done) {
         const paramsObj = {
             "res_room_id": 0,
-            "charge_type_id": "a1",
+            "charge_type_id": 0,
             "charge_amount": "a43.12",
             "taxable": 2
         };
@@ -114,7 +114,7 @@ describe('Charges API', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorList').and.to.be.an('array').and.have.lengthOf(4);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
                 done();
             });
     });
@@ -139,7 +139,7 @@ describe('Charges API', function () {
     it('should FAIL to update one of the just created new charge and return 5 errors because all 5 parameters are invalid', function (done) {
         const paramsObj = {
             "charge_id": 0,
-            "res_room_id": "a1000",
+            "res_room_id": 0,
             "charge_type_id": 0,
             "charge_amount": "a53.12",
             "taxable": 2
@@ -151,7 +151,7 @@ describe('Charges API', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorList').and.to.be.an('array').and.have.lengthOf(5);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(5);
                 done();
             });
     });
