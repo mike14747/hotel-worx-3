@@ -1,6 +1,5 @@
 const ChargeType = require('../../models/chargeType');
-
-const message = 'Errors exist in the transmitted request body.';
+const { message, activeError, activeRegEx } = require('./generalValidation');
 
 const isChargeTypeValid = async (paramsObj) => {
     const errorArray = [];
@@ -14,7 +13,7 @@ const isChargeTypeValid = async (paramsObj) => {
         }
     }
     if (typeof (paramsObj.charge_type) !== 'string' || paramsObj.charge_type.length < 1) errorArray.push('charge_type should be a string with non-zero length');
-    if (!/^[0-1]$/.test(paramsObj.active)) errorArray.push('active parameter is a boolean and should be 0 or 1');
+    if (!activeRegEx.test(paramsObj.active)) errorArray.push(activeError);
     if (errorArray.length > 0) return [false, { message, errorArray }];
     return [true, null];
 };
