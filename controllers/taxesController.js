@@ -1,9 +1,7 @@
 const router = require('express').Router();
 const Tax = require('../models/tax');
 const { isTaxBodyValid } = require('./utils/taxesValidation');
-
-const idRegEx = /^[0-9]+$/;
-const idErrorObj = { message: 'all id parameters need to be integers' };
+const { idRegEx, idErrorObj } = require('./utils/idValidation');
 
 router.get('/', async (req, res, next) => {
     try {

@@ -86,7 +86,7 @@ describe('Charge Types API', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorList').and.to.be.an('array').and.have.lengthOf(2);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
                 done();
             });
     });
@@ -119,7 +119,7 @@ describe('Charge Types API', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorList').and.to.be.an('array').and.have.lengthOf(3);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
                 done();
             });
     });
