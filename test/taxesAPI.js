@@ -130,6 +130,24 @@ describe('Taxes API', function () {
             });
     });
 
+    it('should FAIL to update the just created new tax and return an error object because tax_id is not an integer', function (done) {
+        const paramsObj = {
+            "tax_id": "e",
+            "tax_name": "City",
+            "tax_rate": 1.375,
+            "active": 1
+        };
+        chai.request(server)
+            .put('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
+
     // -----
 
     it('should FAIL to delete the newly created tax because the tax id is invalid', function (done) {

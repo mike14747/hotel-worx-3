@@ -1,5 +1,5 @@
 const Tax = require('../../models/tax');
-const { message, activeError, activeRegEx } = require('./generalValidation');
+const { message, activeError, boolRegEx } = require('./generalValidation');
 
 const isTaxBodyValid = async (paramsObj) => {
     const errorArray = [];
@@ -14,7 +14,7 @@ const isTaxBodyValid = async (paramsObj) => {
     }
     if (typeof (paramsObj.tax_name) !== 'string' || paramsObj.tax_name.length < 1) errorArray.push('tax_name should be a string with non-zero length');
     if (isNaN(parseFloat(paramsObj.tax_rate))) errorArray.push('tax_rate is not in a valid decimal format');
-    if (!activeRegEx.test(paramsObj.active)) errorArray.push(activeError);
+    if (!boolRegEx.test(paramsObj.active)) errorArray.push(activeError);
     if (errorArray.length > 0) return [false, { message, errorArray }];
     return [true, null];
 };

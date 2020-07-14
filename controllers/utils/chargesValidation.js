@@ -1,7 +1,7 @@
 const Charge = require('../../models/charge');
 const ChargeType = require('../../models/chargeType');
 const ResRoom = require('../../models/resRoom');
-const { message, taxableError } = require('./generalValidation');
+const { message, taxableError, boolRegEx } = require('./generalValidation');
 
 const isChargeBodyValid = async (paramsObj) => {
     const errorArray = [];
@@ -25,7 +25,7 @@ const isChargeBodyValid = async (paramsObj) => {
         if (error) errorArray.push(error);
     }
     if (isNaN(parseFloat(paramsObj.charge_amount))) errorArray.push('charge_amount is not in a valid dollar amount');
-    if (!/^[0-1]$/.test(paramsObj.taxable)) errorArray.push(taxableError);
+    if (!boolRegEx.test(paramsObj.taxable)) errorArray.push(taxableError);
     if (errorArray.length > 0) return [false, { message, errorArray }];
     return [true, null];
 };
