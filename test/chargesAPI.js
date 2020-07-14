@@ -155,6 +155,25 @@ describe('Charges API', function () {
                 done();
             });
     });
+
+    it('should FAIL to update one of the just created new charge and return an error object because id(s) are not integers', function (done) {
+        const paramsObj = {
+            "charge_id": 'a',
+            "res_room_id": 'b',
+            "charge_type_id": 'c',
+            "charge_amount": 53.12,
+            "taxable": 1
+        };
+        chai.request(server)
+            .put('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
     
     it('should FAIL to delete the newly created charge because the charge id is invalid', function (done) {
         chai.request(server)
