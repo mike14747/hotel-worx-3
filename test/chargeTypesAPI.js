@@ -44,7 +44,7 @@ describe('Charge Types API', function () {
             });
     });
     
-    it('should FAIL to get a single charge_type and instead return a status 400 because the charge_type id is invalid', function (done) {
+    it('should FAIL to get a single charge_type and instead return a status 400 because the charge_type id is not an integer', function (done) {
         chai.request(server)
             .get('/api/charge-types/1a')
             .end(function (error, response) {
@@ -74,7 +74,7 @@ describe('Charge Types API', function () {
             });
     });
     
-    it('should FAIL to POST a new charge_type and return an error because parameter was invalid', function (done) {
+    it('should FAIL to POST a new charge_type and return an error because 2 parameters were invalid', function (done) {
         const paramsObj = {
             "charge_type": 0,
             "active": 2

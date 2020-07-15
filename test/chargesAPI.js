@@ -186,7 +186,7 @@ describe('Charges API', function () {
             });
     });
     
-    it('should FAIL to delete all charges associated with a res_room_id because the res_room id is invalid', function (done) {
+    it('should FAIL to delete all charges associated with a res_room_id because the res_room id is not an integer', function (done) {
         chai.request(server)
             .delete('/api/charges/res-rooms/0')
             .end(function (error, response) {
