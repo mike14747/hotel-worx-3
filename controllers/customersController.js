@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const Customer = require('../models/customer');
-const isCustomerBodyValid = require('./utils/customersValidation');
+const { isCustomerBodyValid } = require('./utils/customersValidation');
 const { idRegEx, idErrorObj } = require('./utils/idValidation');
 
 router.get('/', async (req, res, next) => {

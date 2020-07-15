@@ -5,21 +5,6 @@ const server = require('../server');
 chai.should();
 chai.use(chaiHttp);
 
-const paramsObj = {
-    "company_id": 1,
-    "company_name": "Union Sand",
-    "address": "234 Bank St",
-    "city": "Painesville",
-    "state": "Ohio",
-    "zip": "44077",
-    "country": "USA",
-    "email": "u.sand@yahoo.net",
-    "phone": "800-555-1212",
-    "credit_card_num": "1234567890123456",
-    "cc_expiration": "11 / 24",
-    "tax_exempt": 0,
-};
-
 describe('Companies API', function () {
     it('should get all companies', function (done) {
         chai.request(server)
@@ -88,109 +73,154 @@ describe('Companies API', function () {
             });
     });
 
-    // let insertId = 0;
+    let insertId = 0;
 
-    // it('should POST a new charge_type with the provided params body and return the insertId', function (done) {
-    //     const paramsObj = {
-    //         "charge_type": "Some charge type",
-    //         "active": 1
-    //     };
-    //     chai.request(server)
-    //         .post('/api/charge-types')
-    //         .send(paramsObj)
-    //         .end(function (error, response) {
-    //             response.should.have.status(201);
-    //             response.body.should.be.an('object');
-    //             response.body.should.have.property('insertId').and.to.be.a('number');
-    //             if (response.body.insertId) insertId = response.body.insertId;
-    //             done();
-    //         });
-    // });
+    it('should POST a new company with the provided params body and return the insertId', function (done) {
+        const paramsObj = {
+            "company_name": "Union Sand",
+            "address": "234 Bank St",
+            "city": "Painesville",
+            "state": "Ohio",
+            "zip": "44077",
+            "country": "USA",
+            "email": "u.sand@yahoo.net",
+            "phone": "800-555-1212",
+            "credit_card_num": "1234567890123456",
+            "cc_expiration": "11 / 24",
+            "tax_exempt": 0,
+        };
+        chai.request(server)
+            .post('/api/companies')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(201);
+                response.body.should.be.an('object');
+                response.body.should.have.property('insertId').and.to.be.a('number');
+                if (response.body.insertId) insertId = response.body.insertId;
+                done();
+            });
+    });
 
-    // it('should FAIL to POST a new charge_type and return an error because parameter was invalid', function (done) {
-    //     const paramsObj = {
-    //         "charge_type": 0,
-    //         "active": 2
-    //     };
-    //     chai.request(server)
-    //         .post('/api/charge-types')
-    //         .send(paramsObj)
-    //         .end(function (error, response) {
-    //             response.should.have.status(400);
-    //             response.body.should.be.an('object');
-    //             response.body.should.have.property('message').and.to.be.a('string');
-    //             response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
-    //             done();
-    //         });
-    // });
+    it('should FAIL to POST a new company and return 11 errors because all 11 parameters are invalid', function (done) {
+        const paramsObj = {
+            "company_name": "",
+            "address": 111,
+            "city": "",
+            "state": 222,
+            "zip": "",
+            "country": 333,
+            "email": "",
+            "phone": 444,
+            "credit_card_num": "",
+            "cc_expiration": 555,
+            "tax_exempt": 2,
+        };
+        chai.request(server)
+            .post('/api/companies')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(11);
+                done();
+            });
+    });
 
-    // it('should update the just created new charge_type with these new parameters', function (done) {
-    //     const paramsObj = {
-    //         "charge_type_id": insertId,
-    //         "charge_type": "Updated Charge Type",
-    //         "active": 1
-    //     };
-    //     chai.request(server)
-    //         .put('/api/charge-types')
-    //         .send(paramsObj)
-    //         .end(function (error, response) {
-    //             response.should.have.status(204);
-    //             done();
-    //         });
-    // });
+    it('should update the just created new company with these new parameters', function (done) {
+        const paramsObj = {
+            "company_id": insertId,
+            "company_name": "Union Sand",
+            "address": "234 Bank St",
+            "city": "Painesville",
+            "state": "Ohio",
+            "zip": "44077",
+            "country": "USA",
+            "email": "u.sand@yahoo.net",
+            "phone": "800-555-1212",
+            "credit_card_num": "1234567890123456",
+            "cc_expiration": "11 / 24",
+            "tax_exempt": 0,
+        };
+        chai.request(server)
+            .put('/api/companies')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(204);
+                done();
+            });
+    });
 
-    // it('should FAIL to update the just created new charge_type and return 3 errors because all 3 parameters are invalid', function (done) {
-    //     const paramsObj = {
-    //         "charge_type_id": 0,
-    //         "charge_type": "",
-    //         "active": 2
-    //     };
-    //     chai.request(server)
-    //         .put('/api/charge-types')
-    //         .send(paramsObj)
-    //         .end(function (error, response) {
-    //             response.should.have.status(400);
-    //             response.body.should.be.an('object');
-    //             response.body.should.have.property('message').and.to.be.a('string');
-    //             response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
-    //             done();
-    //         });
-    // });
+    it('should FAIL to update the just created new company and return 12 errors because all 12 parameters are invalid', function (done) {
+        const paramsObj = {
+            "company_id": 0,
+            "company_name": "",
+            "address": 111,
+            "city": "",
+            "state": 222,
+            "zip": "",
+            "country": 333,
+            "email": "",
+            "phone": 444,
+            "credit_card_num": "",
+            "cc_expiration": 555,
+            "tax_exempt": 2,
+        };
+        chai.request(server)
+            .put('/api/companies')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(12);
+                done();
+            });
+    });
 
-    // it('should FAIL to update the just created new charge_type and return an error object because charge_type_id is not an interger', function (done) {
-    //     const paramsObj = {
-    //         "charge_type_id": "d",
-    //         "charge_type": "Restaurant",
-    //         "active": 1
-    //     };
-    //     chai.request(server)
-    //         .put('/api/charge-types')
-    //         .send(paramsObj)
-    //         .end(function (error, response) {
-    //             response.should.have.status(400);
-    //             response.body.should.be.an('object');
-    //             response.body.should.have.property('message').and.to.be.a('string');
-    //             done();
-    //         });
-    // });
+    it('should FAIL to update the just created new company and return an error object because company_id is not an interger', function (done) {
+        const paramsObj = {
+            "company_id": "abc",
+            "company_name": "Union Sand",
+            "address": "234 Bank St",
+            "city": "Painesville",
+            "state": "Ohio",
+            "zip": "44077",
+            "country": "USA",
+            "email": "u.sand@yahoo.net",
+            "phone": "800-555-1212",
+            "credit_card_num": "1234567890123456",
+            "cc_expiration": "11 / 24",
+            "tax_exempt": 0,
+        };
+        chai.request(server)
+            .put('/api/companies')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
 
-    // it('should FAIL to delete the newly created charge_type because the charge_type id is invalid', function (done) {
-    //     chai.request(server)
-    //         .delete('/api/charge-types/0')
-    //         .end(function (error, response) {
-    //             response.should.have.status(400);
-    //             response.body.should.be.an('object');
-    //             response.body.should.have.property('message').and.to.be.a('string');
-    //             done();
-    //         });
-    // });
+    it('should FAIL to delete the newly created company because the company id is invalid', function (done) {
+        chai.request(server)
+            .delete('/api/companies/0')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
 
-    // it('should delete the newly created charge_type using the insertId', function (done) {
-    //     chai.request(server)
-    //         .delete('/api/charge-types/' + insertId)
-    //         .end(function (error, response) {
-    //             response.should.have.status(204);
-    //             done();
-    //         });
-    // });
+    it('should delete the newly created company using the insertId', function (done) {
+        chai.request(server)
+            .delete('/api/companies/' + insertId)
+            .end(function (error, response) {
+                response.should.have.status(204);
+                done();
+            });
+    });
 });
