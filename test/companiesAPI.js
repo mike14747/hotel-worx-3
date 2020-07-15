@@ -77,7 +77,7 @@ describe('Companies API', function () {
             });
     });
 
-    it('should FAIL to get a single company and instead return a status 400 because the company id is invalid', function (done) {
+    it('should FAIL to get a single company and instead return a status 400 because the company id is not an integer', function (done) {
         chai.request(server)
             .get('/api/companies/1a')
             .end(function (error, response) {

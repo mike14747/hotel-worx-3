@@ -35,7 +35,7 @@ router.post('/', async (req, res, next) => {
             phone: req.body.phone,
             credit_card_num: req.body.credit_card_num,
             cc_expiration: req.body.cc_expiration,
-            tax_exempt: req.body.tax_exempt,
+            tax_exempt: parseInt(req.body.tax_exempt),
         };
         const [result, errorObj] = await isCompanyBodyValid(paramsObj);
         if (!result) return res.status(400).json(errorObj);
@@ -51,7 +51,7 @@ router.put('/', async (req, res, next) => {
     if (!idRegEx.test(req.body.company_id)) return res.status(400).json(idErrorObj);
     try {
         const paramsObj = {
-            company_id: req.body.company_id,
+            company_id: parseInt(req.body.company_id),
             company_name: req.body.company_name,
             address: req.body.address,
             city: req.body.city,
@@ -62,7 +62,7 @@ router.put('/', async (req, res, next) => {
             phone: req.body.phone,
             credit_card_num: req.body.credit_card_num,
             cc_expiration: req.body.cc_expiration,
-            tax_exempt: req.body.tax_exempt,
+            tax_exempt: parseInt(req.body.tax_exempt),
         };
         const [result, errorObj] = await isCompanyBodyValid(paramsObj);
         if (!result) return res.status(400).json(errorObj);
@@ -79,7 +79,7 @@ router.delete('/:id', async (req, res, next) => {
     try {
         const [data, error] = await Company.deleteCompanyById({ id: parseInt(req.params.id) });
         if (error) next(error);
-        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: 'No company found with that company_id!' });
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred trying to delete that that company_id!' });
     } catch (error) {
         next(error);
     }
