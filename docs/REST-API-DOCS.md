@@ -1,32 +1,33 @@
 # REST API Endpoint Docs for hotel-worx-3
 
 ## General Rules of Thumb for Accessing Routes
-> * These are general rules unless otherwise indicated on specific routes.
+> * These are general guidelines.
+> * Some of the routes on this list have notes specific to that particular route.
 
-### '/api/\<some-endpoint\>/' GET routes
+### **'/api/\<some-endpoint\>/' GET routes**
 > * Takes in no parameters.
 > * Returns status 200 and all items in an array of objects associated with that specific endpoint.
 > * It will return status 200 and an empty array if no items were found.
 
-### '/api/\<some-endpoint\>/:id' GET routes
+### **'/api/\<some-endpoint\>/:id' GET routes**
 > * Takes in an id parameter in the url.
 > * Returns status 200 and an array containing a single object associated with that specific endpoint.
 > * Returns status 200 and an empty array if nothing was found for that id.
 > * It will return status 400 (and a json with a message property) if the id param is not an integer.
 
-### '/api/\<some-endpoint\>/' POST routes
+### **'/api/\<some-endpoint\>/' POST routes**
 > * Adds a new record associated with the specific endpoint.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 201 and an object with the insertId of the new document as the only property.
 > * If unsuccessful, it returns status code 400 and an error object.
 
-### '/api/\<some-endpoint\>/' PUT routes
+### **'/api/\<some-endpoint\>/' PUT routes**
 > * It is used to edit an existing record by that record's id.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 204 and nothing else.
 > * If unsuccessful, it returns status code 400 and an error object.
 
-### '/api/\<some-endpoint\>/:id' DELETE routes
+### **'/api/\<some-endpoint\>/:id' DELETE routes**
 > * Takes in an id parameter in the url.
 > * This will permanently delete a single record associated with the specific endpoint.
 > * If successful, it returns status code 204 and nothing else.
