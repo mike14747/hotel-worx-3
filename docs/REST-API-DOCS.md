@@ -1,17 +1,46 @@
 # REST API Endpoint Docs for hotel-worx-3
 
+## General Rules of Thumb for Accessing Routes
+> * These are general guidelines.
+> * Some of the routes on this list have notes specific to that particular route.
+
+### **'/api/\<some-endpoint\>/' GET routes**
+> * Takes in no parameters.
+> * Returns status 200 and all items in an array of objects associated with that specific endpoint.
+> * It will return status 200 and an empty array if no items were found.
+
+### **'/api/\<some-endpoint\>/:id' GET routes**
+> * Takes in an id parameter in the url.
+> * Returns status 200 and an array containing a single object associated with that specific endpoint.
+> * Returns status 200 and an empty array if nothing was found for that id.
+> * It will return status 400 (and a json with a message property) if the id param is not an integer.
+
+### **'/api/\<some-endpoint\>/' POST routes**
+> * Adds a new record associated with the specific endpoint.
+> * Takes in a list of parameters in the body object.
+> * If successful, it returns status code 201 and an object with the insertId of the new document as the only property.
+> * If unsuccessful, it returns status code 400 and an error object.
+
+### **'/api/\<some-endpoint\>/' PUT routes**
+> * It is used to edit an existing record by that record's id.
+> * Takes in a list of parameters in the body object.
+> * If successful, it returns status code 204 and nothing else.
+> * If unsuccessful, it returns status code 400 and an error object.
+
+### **'/api/\<some-endpoint\>/:id' DELETE routes**
+> * Takes in an id parameter in the url.
+> * This will permanently delete a single record associated with the specific endpoint.
+> * If successful, it returns status code 204 and nothing else.
+> * If unsuccessful, it returns status code 400 and an error object.
+> * **Note:** Some records cannot be deleted if they are part of other records due to MySQL foreign key constraints.
+
 ## Note:
-* All of the **/api** routes except **/api/auth** are going to be protected routes when this app goes to production (you need to be logged in as a valid user)
+* All of the **/api** routes except **/api/auth** are going to be protected routes when this app goes to production (you need to be logged in as a valid user to access them)
    * **/api/auth** is going to be left unprotected because it needs to be accessed while logging in.
 * An access level of 1 (employee) is the default access level for these routes.
 * Some routes will have level 2 or level 3 requirements. They will be denoted as such.
 
-## Successfully accessing /api routes
-* Successful GET routes will return status 200 and a JSON object.
-* Successful POST routes will return status 201 and an object containing the insertId.
-* Successful PUT and DELETE routes will return only a status 204 and nothing else.
-
-# Unsuccessfully attempts on /api routes
+## Unsuccessful attempts on /api routes
 * Some errors on the /api routes will result in status 400 and an error object being returned. Errors of these kinds are most likely caused by trying to pass invalid parameters.
 * Trying to access a non-existent /api route is handled by the catch-all route handler in /controllers/index.js and a status code of 404 is returned.
 * If there is no connection to the database, all /api routes will return status 500 and an error object indictating such.
@@ -22,11 +51,9 @@
 
 ## **/api/rooms**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/rooms'
-> * Takes in no parameters.
-> * Returns all rooms and their details in an array of room objects.
-> * It will return status 200 and an empty array if no rooms were found.
 ```
 // sample response from this route
 [
@@ -49,10 +76,6 @@
 ```
 
 > ## '/api/rooms/:id'
-> * Takes in a room_id parameter in the url.
-> * Returns an array containing a single room object.
-> * It will return status 200 and an empty array if no room was found with that room id..
-> * It will return status 400 (and a json with a message property) if the room id param is not an integer.
 ```
 // sample response from this route
 [
@@ -72,9 +95,7 @@
 ```
 
 > ## '/api/rooms/all-ids-nums'
-> * Takes in no parameters.
-> * Returns all rooms in an array of objects with just each room's room_id and room_num.
-> * It will return status 200 and an empty array if no rooms were found.
+* Returns an array of room objects with just each room's room_id and room_num.
 ```
 // sample response from this route
 [
@@ -89,8 +110,8 @@
 ```
 
 > ## '/api/rooms/house-status'
-> * Takes in no parameters.
-> * Returns detailed house status for the hotel.
+* Takes in no parameters.
+* Returns detailed house status for the hotel.
 ```
 // sample response from this route
 [
@@ -105,13 +126,13 @@
 ```
 
 > ## '/api/rooms/housekeeping-status'
-> * Takes in a varying number of query parameters in the url... ranging from 0 to 10.
-> * It returns an array of room objects for all rooms meeting the criteria of the query parameters.
-> * Each of the room objects show detailed room status information.
-> * It will return status 200 and an empty array if no rooms are found meeting the query parameters.
-> * Possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved.
-> * Possible options for all parameters are: 0 and 1.
-> * Sample route with query parameters: **/api/rooms/housekeeping-status?clean=1&occupied=0**
+* Takes in a varying number of query parameters in the url... ranging from 0 to 10.
+* It returns an array of room objects for all rooms meeting the criteria of the query parameters.
+* Each of the room objects show detailed room status information.
+* It will return status 200 and an empty array if no rooms are found meeting the query parameters.
+* Possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout, notreserved.
+* Possible options for all parameters are: 0 and 1.
+* Sample route with query parameters: **/api/rooms/housekeeping-status?clean=1&occupied=0**
 ```
 [
     {
@@ -133,11 +154,11 @@
 ```
 
 > ## '/api/rooms/available-list/:date'
-> * Takes in a date parameter in the url (in the 'YYYY-MM-DD' format, eg: /api/rooms/available-list/2019-11-18).
-> * It returns an array of active room objects which are available on the date in the url parameter.
-> * It will return status 200 and an empty array if no available rooms are found for the days after that starting date.
-> * It will return status 400 (and a json with a message property) if the date param is not in 'YYYY-MM-DD' format.
-> * It includes the date availability ends for each room (or "n/a" if a room has unlimited availability).
+* Takes in a date parameter in the url (in the 'YYYY-MM-DD' format, eg: /api/rooms/available-list/2019-11-18).
+* It returns status 200 and an array of active room objects which are available on the date in the url parameter.
+* It will return status 200 and an empty array if no available rooms are found for the days after that starting date.
+* It will return status 400 (and a json with a message property) if the date param is not in 'YYYY-MM-DD' format.
+* It includes the date availability ends for each room (or "n/a" if a room has unlimited availability).
 ```
 // sample response from this route
 [
@@ -155,10 +176,9 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/rooms'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -172,10 +192,9 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/rooms'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -190,8 +209,6 @@
 }
 ```
 > ## '/api/rooms/clean-status'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -200,8 +217,6 @@
 }
 ```
 > ## '/api/rooms/occupied-status'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -209,27 +224,24 @@
     "occupied": 1
 }
 ```
+## this route needs to be reworked so the id param is not in the url... it should be in the body
 > ## '/api/rooms/:id/checked-out'
-> * Takes in a room_id parameter in the url.
-> * It sets the room's status to '**clean=0** and **occupied=0**'.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no room is found with that id.
+* Takes in a room_id parameter in the url.
+* It sets the room's status to '**clean=0** and **occupied=0**'.
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/rooms/:id'
-> * Takes in a room_id parameter in the url.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * It will return status 400 (and a json with a message property) if either the id param is not an integer or if no room is found with that id.
 
 ---
 ---
 
 ## **/api/users**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/users'
-> * Takes in no parameters.
-> * Returns all users and their details in an array of user objects (note: passwords are not included).
+* Note: Passwords are not included in the response.
 ```
 // sample response from this route
 [
@@ -246,8 +258,7 @@
 ```
 
 > ## '/api/users/:id'
-> * Takes in a user_id parameter in the url.
-> * Returns an array containing a single user object (note: password is not included).
+* Note: Passwords are not included in the response.
 ```
 // sample response from this route
 [
@@ -263,12 +274,11 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/users'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If the submitted username is already taken, it returns a status code 202 and a "Username is already in use!" response.
-> * If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a "Username and/or Password don't meet length standards!" response.
+* If the submitted username is already taken, it returns a status code 202 and a "Username is already in use!" response.
+* If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a "Username and/or Password don't meet length standards!" response.
 ```
 // sample request body for this route
 {
@@ -279,12 +289,11 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/users'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * If the submitted username is already taken, it returns a status code 202 and a "Username is already in use!" response.
-> * If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a "Username and/or Password don't meet length standards!" response.
+* If the submitted username is already taken, it returns a status code 202 and a "Username is already in use!" response.
+* If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and a "Username and/or Password don't meet length standards!" response.
 ```
 // sample request body for this route
 {
@@ -296,20 +305,18 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/users/:id'
-> * Takes in a user_id parameter in the url.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 
 ---
 ---
 
 ## **/api/customers**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/customers'
-> * Takes in no parameters.
-> * Returns all customers and their details in an array of customer objects.
 ```
 // sample response from this route
 [
@@ -334,8 +341,6 @@
 ```
 
 > ## '/api/customers/:id'
-> * Takes in a customer_id parameter in the url.
-> * Returns an array containing a single customer object.
 ```
 // sample response from this route
 [
@@ -356,10 +361,9 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/customers'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -377,10 +381,9 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/customers'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -399,22 +402,22 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/customers/:id'
-> * Takes in a customer_id parameter in the url.
-> * **Note**: customers cannot be deleted as long as they are still associated with a reservation because of foreign key constraints.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* Customers cannot be deleted if they are part of any existing reservations due to MySQL foreign key constraints.
 
 ---
 ---
 
 ## /api/reservations
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/reservations'
-> * Takes in no parameters.
-> * Returns all reservations (with partial customer and res_room info) in an array of reservation objects.
-> * Each res_room on a reservation is returned on its own row.
+* Takes in no parameters.
+* Returns all reservations (with partial customer and res_room info) in an array of reservation objects.
+* Each res_room on a reservation is returned on its own row.
 ```
 // sample response from this route
 [
@@ -436,9 +439,9 @@
 ```
 
 > ## '/api/reservations/:id'
-> * Takes in a reservation_id parameter in the url.
-> * Returns an array containing a single reservation object.
-> * This route should be used in conjunction with the **/api/reservations/:id/res-rooms** route to get detailed info about all rooms associated with this reservation.
+* Takes in a reservation_id parameter in the url.
+* Returns an array containing a single reservation object.
+* This route should be used in conjunction with the **/api/reservations/:id/res-rooms** route to get detailed info about all rooms associated with this reservation.
 ```
 // sample response from this route
 [
@@ -464,9 +467,9 @@
 ```
 
 > ## '/api/reservations/:id/res-rooms'
-> * Takes in a reservation_id parameter in the url.
-> * Returns an array of all res_rooms (and detailed res_room info) associated with a single reservation as objects.
-> * This route should be used in conjunction with the **/api/reservations/:id** route to get more info about the reservation.
+* Takes in a reservation_id parameter in the url.
+* Returns an array of all res_rooms (and detailed res_room info) associated with a single reservation as objects.
+* This route should be used in conjunction with the **/api/reservations/:id** route to get more info about the reservation.
 ```
 // sample response from this route
 [
@@ -492,13 +495,14 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/reservations'
-> * Takes in a list of parameters in the body object.
-> * This route accesses the reservation model which uses a database transaction that sequentially queries 3 tables (**customers, reservations and res_rooms**)... with either all succeeding/committing or rolling back if any of them fail.
-> * The **resRoomsArr** property of the body is an array that contains an object element for each res_room in the reservation.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * On this endpoint, the "insertId" will be the new reservation_id.
+* Takes in a list of parameters in the body object.
+* This route accesses the reservation model which uses a database transaction that sequentially queries 3 tables (**customers, reservations and res_rooms**)... with either all succeeding/committing or rolling back if any of them fail.
+* The **resRoomsArr** property of the body is an array that contains an object element for each res_room in the reservation.
+* If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* On this endpoint, the "insertId" will be the new reservation_id.
 ```
 // sample request body for this route
 {
@@ -543,11 +547,10 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/reservations'
-> * Takes in a list of parameters in the body object.
-> * This route is used to update information about a reservation, but not the rooms associated with the reservation.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* This route is used to update information about a reservation, but not the rooms associated with the reservation.
 ```
 // sample request body for this route
 {
@@ -561,10 +564,8 @@
 ```
 
 > ## '/api/reservations/res-rooms/assign'
-> * Takes in a list of parameters in the body object.
-> * This route is used for assigning a room number and room type to a res_room.
-> * It will have its confirmation code updated by the reservationsController as needed.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* This route is used for assigning a room number and room type to a res_room.
+* It will have its confirmation code updated by the reservationsController as needed.
 ```
 // sample request body for this route
 {
@@ -578,10 +579,8 @@
 ```
 
 > ## '/api/reservations/res-rooms/reassign'
-> * Takes in a list of parameters in the body object.
-> * This route is used for re-assigning a room number and room type to a res_room.
-> * It will not change the confirmation code associated with the room being reassigned.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* This route is used for re-assigning a room number and room type to a res_room.
+* It will not change the confirmation code associated with the room being reassigned.
 ```
 // sample request body for this route
 {
@@ -594,9 +593,7 @@
 ```
 
 > ## '/api/reservations/res-rooms'
-> * Takes in a list of parameters in the body object.
-> * This route is used for changing information about a res_room.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* This route is used for changing information about a res_room.
 ```
 // sample request body for this route
 {
@@ -611,7 +608,7 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
 
 
 ---
@@ -619,10 +616,9 @@
 
 ## **/api/room-types**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/room-types'
-> * Takes in no parameters.
-> * Returns all room types and their rates in an array of objects.
 ```
 // sample response from this route
 [
@@ -638,8 +634,6 @@
 ```
 
 > ## '/api/room-types/:id'
-> * Takes in a room_type_id parameter in the url.
-> * Returns an array containing a single room type object.
 ```
 // sample response from this route
 [
@@ -651,9 +645,10 @@
 ]
 ```
 
+## this route needs some work to get rid of the data[0] object and it needs a better desciption
 > ## '/api/room-types/availability/:date'
-> * Takes in a date parameter in the url (in the YYYY-MM-DD format).
-> * Returns an array of 14 days worth of availability objects... each of which shows detailed availabilty for that day.
+* Takes in a date parameter in the url (in the YYYY-MM-DD format).
+* Returns an array of 14 days worth of availability objects... each of which shows detailed availabilty for that day.
 ```
 // sample response from this route
 [
@@ -684,11 +679,9 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/room-types'
-> * It adds a new room type.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -697,11 +690,9 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/room-types'
-> * It is used to edit an existing room type by room_type_id.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -711,21 +702,18 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/room-types/:id'
-> * Takes in a room_type_id parameter in the url.
-> * This will permanently delete a room type.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 
 ---
 ---
 
 ## **/api/invoices**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/invoices'
-> * Takes in no parameters.
-> * Returns all invoices in an array of invoice objects.
 ```
 // sample response from this route
 [
@@ -742,8 +730,10 @@
 ```
 
 > ## '/api/invoices/:id'
-> * Takes in an invoice_id parameter in the url.
-> * Returns all the details associated with the invoice (customer, company, reservation, res_room, room, room_type, payments, taxes, charges) in an array containing a single compound object.
+* Takes in an invoice_id parameter in the url.
+* Returns status 200 and all the details associated with the invoice (customer, company, reservation, res_room, room, room_type, payments, taxes, charges) in an array containing a single compound object.
+* Returns status 200 and an empty array if nothing was found for that invoice_id.
+* It will return status 400 (and a json with a message property) if the invoice_id param is not an integer.
 ```
 // sample response from this route
 [
@@ -783,8 +773,10 @@
 ```
 
 > ## '/api/invoices/:id/invoice-taxes'
-> * Takes in an invoice_id parameter in the url.
-> * Returns all taxes associated with this invoice_id in an array of tax objects.
+* Takes in an invoice_id parameter in the url.
+* Returns status 200 and all taxes associated with an invoice_id in an array of tax objects.
+* Returns status 200 and an empty array if no taxes were found for that invoice_id.
+* It will return status 400 (and a json with a message property) if the invoice_id param is not an integer.
 ```
 // sample response from this route
 [
@@ -801,8 +793,10 @@
 ```
 
 > ## '/api/invoices/:id/invoice-payments'
-> * Takes in an invoice_id parameter in the url.
-> * Returns all payments associated with this invoice_id in an array of payment objects.
+* Takes in an invoice_id parameter in the url.
+* Returns status 200 and all payments associated with an invoice_id in an array of payment objects.
+* Returns status 200 and an empty array if no payments were found for that invoice_id.
+* It will return status 400 (and a json with a message property) if the invoice_id param is not an integer.
 ```
 // sample response from this route
 [
@@ -819,16 +813,18 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/invoices'
-> * It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).
-> * This route also does the following:
->   * Marks the res_room of the invoice as "checked_out=1".
->   * Marks the room of the res_room as "occupied=0" and "clean=0".
-> * It does all of the above in the invoice model using a database transaction that sequentially queries 5 tables (**invoices, invoice_taxes, invoice_payments, res_rooms and rooms**)... with either all succeeding/committing or rolling back if any of them fail.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * On this endpoint, the "insertId" will be the new invoice_id.
+* It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).
+* This route also does the following:
+  * Marks the res_room of the invoice as "checked_out=1".
+  * Marks the room of the res_room as "occupied=0" and "clean=0".
+* It does all of the above in the invoice model using a database transaction that sequentially queries 5 tables (**invoices, invoice_taxes, invoice_payments, res_rooms and rooms**)... with either all succeeding/committing or rolling back if any of them fail.
+* Takes in a list of parameters in the body object.
+* If successful, it returns status code 201 and an object with the insertId of the new document as the only property.
+* On this endpoint, the "insertId" will be the new invoice_id.
+* If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
@@ -865,24 +861,25 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
 
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/invoices/:id'
-> * Takes in an invoice_id parameter in the url.
-> * This will permanently delete an invoice, plus any taxes and payments that were associated with that invoice through foreign key cascade on delete.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* Takes in an invoice_id parameter in the url.
+* This will permanently delete an invoice, plus any taxes and payments that were associated with that invoice through foreign key cascade on delete.
+* If successful, it returns status code 204 and nothing else.
+* If unsuccessful, it returns status code 400 and an error object.
 
 ---
 ---
 
 ## **/api/taxes**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/taxes'
-> * Takes in no parameters.
-> * Returns all taxes and their info in an array of tax objects.
 ```
 // sample response from this route
 [
@@ -899,11 +896,6 @@
 ```
 
 > ## '/api/taxes/:id'
-> * Takes in a tax id parameter in the url.
-> * The id must be in numeric form or it will not match this route.
-> * Returns an array containing a single tax object.
-> * It will return status 200 and an empty array if no tax was found with that id.
-> * It will return status 400 (and a json with a message property) if the tax id param is not an integer.
 ```
 // sample response from this route
 [
@@ -916,11 +908,9 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/taxes'
-> * It adds a new tax.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -929,11 +919,9 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/taxes'
-> * It is used to edit an existing tax by tax_id.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -944,22 +932,18 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/taxes/:id'
-> * Takes in a tax_id parameter in the url.
-> * This will permanently delete a tax.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-> * It will return status 400 (and a json with a message property) if either the tax id param is not an integer or if no tax is found with that id.
 
 ---
 ---
 
 ## **/api/charges**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/charges'
-> * Takes in no parameters.
-> * It will return status 200 and an array containing all charge objects... or an empty array if no charges were found.
 ```
 // sample response from this route
 [
@@ -977,9 +961,6 @@
 ```
 
 > ## '/api/charges/:id'
-> * Takes in a charge_id parameter in the url.
-> * It will return status 200 and an array containing a single charge object... or an empty array if no charge was found with that id.
-> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample response from this route
 [
@@ -994,10 +975,11 @@
 ```
 
 > ## '/api/charges/res-rooms/:id'
-> * Takes in a res_room_id parameter in the url.
-> * Returns all charges associated with a res_room in an array of charges objects.
-> * It will return status 200 and an empty array if no charges were found for that res_room id.
-> * If unsuccessful, it returns status code 400 and an error object.
+* Takes in a res_room_id parameter in the url.
+* Returns all charges associated with a res_room in an array of charges objects.
+* It will return status 200 and all charges associated with a res_room in an array of charges objects.
+* It will return status 200 and an empty array if no charges were found for that res_room id.
+* It will return status 400 (and a json with a message property) if the res_room id param is not an integer.
 ```
 // sample response from this route
 [
@@ -1014,12 +996,9 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/charges'
-> * It adds a new charge associated with a res_room.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 201 and an object with the insertId of the new document as the only property.
-> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
@@ -1030,12 +1009,9 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/charges'
-> * It is used to edit an existing charge by charge_id.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 204.
-> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
@@ -1047,28 +1023,25 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/charges/:id'
-> * Takes in a charge_id parameter in the url.
-> * This will permanently delete a single charge.
-> * If successful, it returns status code 204.
-> * If unsuccessful, it returns status code 400 and an error object.
+
 
 > ## '/api/charges/res-rooms/:id'
-> * Takes in a res_room_id parameter in the url.
-> * This will permanently delete all charges associated with a res_room.
-> * If successful, it returns status code 204.
-> * If unsuccessful, it returns status code 400 and an error object.
+* Takes in a res_room_id parameter in the url.
+* This will permanently delete all charges associated with a res_room.
+* If successful, it returns status code 204.
+* If unsuccessful, it returns status code 400 and an error object.
 
 ---
 ---
 
 ## **/api/charge-types**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/charge-types'
-> * Takes in no parameters.
-> * Returns all charge_types in an array of charge_types objects.
 ```
 [
     {
@@ -1083,8 +1056,6 @@
 ```
 
 > ## '/api/charge-types/:id'
-> * Takes in a charge_type_id parameter in the url.
-> * Returns an array containing a single charge_types object.
 ```
 // sample response from this route
 [
@@ -1096,12 +1067,9 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/charge-types'
-> * It adds a new charge type.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 201 and an object with the insertId of the new document as the only property.
-> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
@@ -1110,12 +1078,9 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/charge-types'
-> * It is used to edit an existing charge type by charge_type_id.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 204.
-> * If unsuccessful, it returns status code 400 and an error object.
 ```
 // sample request body for this route
 {
@@ -1125,22 +1090,19 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/charge-types/:id'
-> * Takes in a charge_type_id parameter in the url.
-> * This will permanently delete a single charge_type.
-> * If successful, it returns status code 204.
-> * If unsuccessful, it returns status code 400 and an error object.
+* Charge_types cannot be deleted if they are part of any existing charges due to MySQL foreign key constraints.
 
 ---
 ---
 
 ## **/api/payment-types**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/payment-types'
-> * Takes in no parameters.
-> * Returns all payment types and their details in an array of objects.
 ```
 // sample response from this route
 [
@@ -1156,8 +1118,6 @@
 ```
 
 > ## '/api/payment-types/:id'
-> * Takes in a payment_type_id parameter in the url.
-> * Returns an array containing a single payment type object.
 ```
 // sample response from this route
 [
@@ -1169,11 +1129,9 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/payment-types'
-> * It adds a new payment type.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -1182,11 +1140,9 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/payment-types'
-> * It is used to edit an existing payment type by payment_type_id.
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -1196,21 +1152,19 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/payment-types/:id'
-> * Takes in a payment_type_id parameter in the url.
-> * This will permanently delete a payment type.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* Payment_types cannot be deleted if they are part of any existing payments due to MySQL foreign key constraints.
 
 ---
 ---
 
 ## **/api/companies**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/companies'
-> * Takes in no parameters.
-> * Returns all companies and their details in an array of objects.
 ```
 // sample response from this route
 [
@@ -1235,8 +1189,6 @@
 ```
 
 > ## '/api/companies/:id'
-> * Takes in a company_id parameter in the url.
-> * Returns an array containing a single company object.
 ```
 // sample response from this route
 [
@@ -1257,10 +1209,9 @@
 ]
 ```
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/companies'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -1278,10 +1229,9 @@
 }
 ```
 
-**PUT methods:**
+### **PUT methods:**
+
 > ## '/api/companies'
-> * Takes in a list of parameters in the body object.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
 ```
 // sample request body for this route
 {
@@ -1300,27 +1250,29 @@
 }
 ```
 
-**DELETE methods:**
+### **DELETE methods:**
+
 > ## '/api/companies/:id'
-> * Takes in a company_id parameter in the url.
-> * It will delete a single company.
-> * If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
+* Companies cannot be deleted if they are part of any existing reservations due to MySQL foreign key constraints.
 
 ---
 ---
 
 ## **/api/auth**
 
-**GET methods:**
+### **GET methods:**
+
 > ## '/api/auth'
-> * Takes in no parameters.
-> * It outputs status code 200 and a message from the /api/auth route root.
+* Takes in no parameters.
+* It outputs status code 200 and a message from the /api/auth route root.
 
 > ## '/api/auth/logout'
-> * Takes in no parameters.
-> * It is used by Passport JS to log out a user.
-> * It calls: **req.logout();**, then sets the req.user object to that of a guest.
+* Takes in no parameters.
+* It is used by Passport JS to log out a user.
+* It calls: **req.logout();**, then sets the req.user object to that of a guest.
 
-**POST methods:**
+### **POST methods:**
+
 > ## '/api/auth/login'
-> * Takes in a list of parameters in the body object.
+* It is used by Passport JS to log in a user.
+* Takes in 2 parameters in the body object (username and passowrd).
