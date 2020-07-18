@@ -77,7 +77,7 @@ router.put('/res-rooms/assign', async (req, res, next) => {
             res_room_id: req.body.res_room_id,
             room_type_id: req.body.room_type_id,
             room_id: req.body.room_id,
-            rate: req.body.rate,
+            room_rate: req.body.room_rate,
             confirmation_code: newConfirmationCode,
         };
         const [data, error] = await ResRoom.updateResRoomAssignById(paramsObj);
@@ -92,7 +92,7 @@ router.put('/res-rooms/reassign', async (req, res, next) => {
         res_room_id: req.body.res_room_id,
         room_type_id: req.body.room_type_id,
         room_id: req.body.room_id,
-        rate: req.body.rate,
+        room_rate: req.body.room_rate,
     };
     try {
         const [data, error] = await ResRoom.updateResRoomReassignById(paramsObj);
@@ -108,7 +108,7 @@ router.put('/res-rooms', async (req, res, next) => {
         check_in_date: req.body.check_in_date,
         check_out_date: req.body.check_out_date,
         adults: req.body.adults,
-        rate: req.body.rate,
+        room_rate: req.body.room_rate,
         comments: req.body.comments,
         allow_charges: req.body.allow_charges,
         res_room_id: req.body.res_room_id,

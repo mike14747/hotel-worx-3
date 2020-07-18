@@ -68,13 +68,13 @@ export default function AxiosTest() {
                 <li>Res Room ID: {invoice.res_room_id}</li>
                 <li>Number of Nights: {invoice.num_nights}</li>
                 <li>Room Type ID: {invoice.room_type_id}</li>
-                <li>Room Type: {invoice.type}</li>
+                <li>Room Type: {invoice.room_type}</li>
                 <li>Check-in Date: {invoice.check_in_date}</li>
                 <li>Check-out Date: {invoice.check_out_date}</li>
                 <li>Adults: {invoice.adults}</li>
                 <li>Room ID: {invoice.room_id}</li>
                 <li>Room Number: {invoice.room_num}</li>
-                <li>Room Rate: {invoice.rate}</li>
+                <li>Room Rate: {invoice.room_rate}</li>
                 <li>Confirmation Code: {invoice.confirmation_code}</li>
                 <li>Res Room Comments: {invoice.res_room_comments || 'n/a'}</li>
             </ul>

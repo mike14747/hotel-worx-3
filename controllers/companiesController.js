@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const Company = require('../models/company');
-const { isCompanyBodyValid } = require('./utils/companiesValidation');
-const { idRegEx, idErrorObj } = require('./utils/idValidation');
+const { isCompanyBodyValid } = require('./validation/companiesValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
+const { postError, putError, deleteError } = require('./validation/generalValidation');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -41,7 +42,7 @@ router.post('/', async (req, res, next) => {
         if (!result) return res.status(400).json(errorObj);
         const [data, error] = await Company.addNewCompany(paramsObj);
         if (error) next(error);
-        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: 'An error occurred trying to add the new company!' });
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
     } catch (error) {
         next(error);
     }
@@ -68,7 +69,7 @@ router.put('/', async (req, res, next) => {
         if (!result) return res.status(400).json(errorObj);
         const [data, error] = await Company.updateCompanyById(paramsObj);
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred trying to update the company!' });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
     } catch (error) {
         next(error);
     }
@@ -79,7 +80,7 @@ router.delete('/:id', async (req, res, next) => {
     try {
         const [data, error] = await Company.deleteCompanyById({ id: parseInt(req.params.id) });
         if (error) next(error);
-        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred trying to delete that that company_id!' });
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: deleteError });
     } catch (error) {
         next(error);
     }

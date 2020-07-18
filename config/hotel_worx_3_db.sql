@@ -44,8 +44,8 @@ CREATE TABLE rooms (
 
 CREATE TABLE room_types (
     room_type_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    type varchar(30) NOT NULL,
-    rate decimal(6,2) NOT NULL,
+    room_type varchar(30) NOT NULL,
+    room_rate decimal(6,2) NOT NULL,
     PRIMARY KEY (room_type_id)
 );
 
@@ -116,7 +116,7 @@ CREATE TABLE res_rooms (
     adults int(11) UNSIGNED NOT NULL,
     room_id int(11) UNSIGNED NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    rate decimal(6,2) NULL,
+    room_rate decimal(6,2) NULL,
     confirmation_code varchar(20) NULL,
     comments varchar(255) NOT NULL,
     allow_charges boolean DEFAULT 1,
@@ -610,7 +610,7 @@ INSERT INTO rooms (room_id, room_num, room_type_id, description, num_beds, clean
 
 TRUNCATE TABLE room_types;
 
-INSERT INTO room_types (room_type_id, type, rate) VALUES
+INSERT INTO room_types (room_type_id, room_type, room_rate) VALUES
 (1, '2 Queens', 109.99),
 (2, 'King', 119.99),
 (3, 'Suite', 129.99),
@@ -836,7 +836,7 @@ INSERT INTO reservations (reservation_id, customer_id, company_id, user_id, comm
 TRUNCATE TABLE res_rooms;
 ALTER TABLE res_rooms AUTO_INCREMENT = 1001;
 
-INSERT INTO res_rooms (res_room_id, reservation_id, room_type_id, check_in_date, check_out_date, checked_in, checked_out, adults, room_id, rate, confirmation_code, comments, allow_charges) VALUES
+INSERT INTO res_rooms (res_room_id, reservation_id, room_type_id, check_in_date, check_out_date, checked_in, checked_out, adults, room_id, room_rate, confirmation_code, comments, allow_charges) VALUES
 (1001, 1001, 1, DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 1 DAY), 1, 0, 1, 9, '109.99', '190501001001', 'needs a late checkout time', 1),
 (1002, 1002, 2, DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 1 DAY), 1, 0, 2, 4, '119.99', '190503002001', '', 1),
 (1003, 1003, 1, DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 1 DAY), 1, 0, 2, 11, '109.99', '190503003001', '', 1),

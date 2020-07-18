@@ -20,19 +20,6 @@ describe('Charge Types API', function () {
                 done();
             });
     });
-    
-    it('should get a single charge_type by id', function (done) {
-        chai.request(server)
-            .get('/api/charge-types/1')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.property('charge_type_id').and.to.be.a('number');
-                response.body[0].should.have.property('charge_type').and.to.be.a('string');
-                response.body[0].should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
-                done();
-            });
-    });
 
     it('should get a status 200 and an empty array because charge_type id 0 should not match any charges', function (done) {
         chai.request(server)
@@ -70,6 +57,19 @@ describe('Charge Types API', function () {
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
                 if (response.body.insertId) insertId = response.body.insertId;
+                done();
+            });
+    });
+
+    it('should get the newly created single charge_type by id', function (done) {
+        chai.request(server)
+            .get('/api/charge-types/' + insertId)
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(1);
+                response.body[0].should.have.property('charge_type_id').and.to.be.a('number');
+                response.body[0].should.have.property('charge_type').and.to.be.a('string');
+                response.body[0].should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                 done();
             });
     });

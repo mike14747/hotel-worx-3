@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const Charge = require('../models/charge');
-const { isChargeBodyValid } = require('./utils/chargesValidation');
-const { idRegEx, idErrorObj } = require('./utils/idValidation');
+const { isChargeBodyValid } = require('./validation/chargesValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
+const { postError, putError, deleteError } = require('./validation/generalValidation');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -45,7 +46,7 @@ router.post('/', async (req, res, next) => {
         if (!result) return res.status(400).json(errorObj);
         const [data, error] = await Charge.addNewCharge(paramsObj);
         if (error) next(error);
-        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: 'An error occurred trying to add the new charge!' });
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
     } catch (error) {
         next(error);
     }
@@ -65,7 +66,7 @@ router.put('/', async (req, res, next) => {
         if (!result) return res.status(400).json(errorObj);
         const [data, error] = await Charge.updateChargeById(paramsObj);
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred trying to update the charge!' });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
     } catch (error) {
         next(error);
     }
@@ -76,7 +77,7 @@ router.delete('/:id', async (req, res, next) => {
     try {
         const [data, error] = await Charge.deleteChargeById({ id: parseInt(req.params.id) });
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'No charge was found with that charge_id!' });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: deleteError });
     } catch (error) {
         next(error);
     }
@@ -87,7 +88,7 @@ router.delete('/res-rooms/:id', async (req, res, next) => {
     try {
         const [data, error] = await Charge.deleteChargesByResRoomId({ id: parseInt(req.params.id) });
         if (error) next(error);
-        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: 'No charges were found with that res_room_id!' });
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: deleteError });
     } catch (error) {
         next(error);
     }

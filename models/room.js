@@ -3,7 +3,7 @@ const pool = require('../config/connectionPool.js').getDb();
 const Room = {
     getAllRooms: async () => {
         try {
-            const queryString = 'SELECT rm.room_id, rm.room_num, rm.description, rm.num_beds, rm.clean, rm.occupied, rm.active, rt.room_type_id, rt.type, rt.rate FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id ORDER BY rm.room_num ASC;';
+            const queryString = 'SELECT rm.room_id, rm.room_num, rm.description, rm.num_beds, rm.clean, rm.occupied, rm.active, rt.room_type_id, rt.room_type, rt.room_rate FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id ORDER BY rm.room_num ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];
@@ -13,7 +13,7 @@ const Room = {
     },
     getRoomById: async (paramsObj) => {
         try {
-            const queryString = 'SELECT rm.room_id, rm.room_num, rm.description, rm.num_beds, rm.clean, rm.occupied, rm.active, rt.room_type_id, rt.type, rt.rate FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id WHERE rm.room_id=? ORDER BY rm.room_num ASC LIMIT 1;';
+            const queryString = 'SELECT rm.room_id, rm.room_num, rm.description, rm.num_beds, rm.clean, rm.occupied, rm.active, rt.room_type_id, rt.room_type, rt.room_rate FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id WHERE rm.room_id=? ORDER BY rm.room_num ASC LIMIT 1;';
             const queryParams = [
                 paramsObj.id,
             ];
@@ -144,7 +144,7 @@ const Room = {
     },
     getRoomsHousekeepingStatus: async (paramsObj) => {
         try {
-            const queryString = 'SELECT rm.room_num, rm.clean, rm.occupied, rm.active, rt.type, IFNULL(rr.checked_in, 0) AS checked_in, IFNULL(rr.checked_out, 0) AS checked_out, CAST(IFNULL(rr.room_id, 0) AS UNSIGNED) AS room_id, CASE WHEN rr.check_out_date=CURDATE() THEN 1 ELSE 0 END AS departure, CASE WHEN rr.check_in_date<CURDATE() && rr.check_out_date>CURDATE() THEN 1 ELSE 0 END AS stayover FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id LEFT JOIN res_rooms AS rr ON rm.room_id=rr.room_id && rr.active=1 WHERE (rm.active=? || rm.active=?) && (rm.clean=? || rm.clean=?) && (rm.occupied=? || rm.occupied=?)' + paramsObj.extraConditions + ' ORDER BY rm.room_id ASC;';
+            const queryString = 'SELECT rm.room_num, rm.clean, rm.occupied, rm.active, rt.room_type, IFNULL(rr.checked_in, 0) AS checked_in, IFNULL(rr.checked_out, 0) AS checked_out, CAST(IFNULL(rr.room_id, 0) AS UNSIGNED) AS room_id, CASE WHEN rr.check_out_date=CURDATE() THEN 1 ELSE 0 END AS departure, CASE WHEN rr.check_in_date<CURDATE() && rr.check_out_date>CURDATE() THEN 1 ELSE 0 END AS stayover FROM rooms AS rm INNER JOIN room_types AS rt ON rm.room_type_id=rt.room_type_id LEFT JOIN res_rooms AS rr ON rm.room_id=rr.room_id && rr.active=1 WHERE (rm.active=? || rm.active=?) && (rm.clean=? || rm.clean=?) && (rm.occupied=? || rm.occupied=?)' + paramsObj.extraConditions + ' ORDER BY rm.room_id ASC;';
             const queryParams = [
                 paramsObj.active,
                 paramsObj.active2,

@@ -22,23 +22,7 @@ describe('Charges API', function () {
                 });
                 done();
             });
-    });
-
-    it('should get a single charge by id with its id/names/taxable', function (done) {
-        chai.request(server)
-            .get('/api/charges/1')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.all.keys('charge_id', 'charge_type', 'res_room_id', 'charge_amount', 'taxable');
-                response.body[0].charge_id.should.be.a('number');
-                response.body[0].charge_type.should.be.a('string');
-                response.body[0].res_room_id.should.be.a('number');
-                Number(response.body[0].charge_amount).should.be.a('number');
-                response.body[0].taxable.should.be.a('number').and.oneOf([0, 1]);
-                done();
-            });
-    });
+    })
 
     it('should get a status 200 and an empty array because charge id 0 should not match any charges', function (done) {
         chai.request(server)
@@ -78,6 +62,22 @@ describe('Charges API', function () {
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
                 if (response.body.insertId) insertId = response.body.insertId;
+                done();
+            });
+    });
+
+    it('should get the newly created single charge by id', function (done) {
+        chai.request(server)
+            .get('/api/charges/' + insertId)
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(1);
+                response.body[0].should.have.all.keys('charge_id', 'charge_type', 'res_room_id', 'charge_amount', 'taxable');
+                response.body[0].charge_id.should.be.a('number');
+                response.body[0].charge_type.should.be.a('string');
+                response.body[0].res_room_id.should.be.a('number');
+                Number(response.body[0].charge_amount).should.be.a('number');
+                response.body[0].taxable.should.be.a('number').and.oneOf([0, 1]);
                 done();
             });
     });

@@ -21,8 +21,9 @@ describe('Rooms API', function () {
                     element.should.have.property('occupied').and.to.be.a('number').and.oneOf([0, 1]);
                     element.should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                     element.should.have.property('room_type_id').and.to.be.a('number');
-                    element.should.have.property('type').and.to.be.a('string');
-                    Number(element.rate).should.be.a('number');
+                    element.should.have.property('room_type').and.to.be.a('string');
+                    element.should.have.property('room_rate');
+                    Number(element.room_rate).should.be.a('number');
                 });
                 done();
             });
@@ -42,8 +43,9 @@ describe('Rooms API', function () {
                 response.body[0].should.have.property('occupied').and.to.be.a('number').and.oneOf([0, 1]);
                 response.body[0].should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                 response.body[0].should.have.property('room_type_id').and.to.be.a('number');
-                response.body[0].should.have.property('type').and.to.be.a('string');
-                Number(response.body[0].rate).should.be.a('number');
+                response.body[0].should.have.property('room_type').and.to.be.a('string');
+                response.body[0].should.have.property('room_rate');
+                Number(response.body[0].room_rate).should.be.a('number');
                 done();
             });
     });
@@ -107,7 +109,7 @@ describe('Rooms API', function () {
                     element.should.have.property('clean').and.to.be.a('number').and.oneOf([0, 1]);
                     element.should.have.property('occupied').and.to.be.a('number').and.oneOf([0, 1]);
                     element.should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
-                    element.should.have.property('type').and.to.be.a('string');
+                    element.should.have.property('room_type').and.to.be.a('string');
                     element.should.have.property('checked_in').and.to.be.a('number').and.oneOf([0, 1]);
                     element.should.have.property('checked_out').and.to.be.a('number').and.oneOf([0, 1]);
                     element.should.have.property('room_id').and.to.be.a('number');
