@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const PaymentType = require('../models/paymentType');
+const { isPaymentTypeValid } = require('./validation/paymentTypesValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
 
 // all these routes point to /api/payment-types as specified in server.js and controllers/index.js
 
@@ -12,9 +14,10 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9]+)', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
+    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
-        const [data, error] = await PaymentType.getPaymentTypeById({ id: parseInt(req.params.id) || 0 });
+        const [data, error] = await PaymentType.getPaymentTypeById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
@@ -22,36 +25,45 @@ router.get('/:id([0-9]+)', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    const paramsObj = {
-        payment_type: req.body.payment_type,
-        active: req.body.active,
-    };
     try {
+        const paramsObj = {
+            payment_type: req.body.payment_type,
+            active: parseInt(req.body.active),
+        };
+        const [result, errorObj] = await isPaymentTypeValid(paramsObj);
+        if (!result) return res.status(400).json(errorObj);
         const [data, error] = await PaymentType.addNewPaymentType(paramsObj);
-        data ? res.json(data) : next(error);
+        if (error) next(error);
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: 'An error occurred trying to add a new payment_type!' });
     } catch (error) {
         next(error);
     }
 });
 
 router.put('/', async (req, res, next) => {
-    const paramsObj = {
-        payment_type_id: req.body.payment_type_id,
-        payment_type: req.body.payment_type,
-        active: req.body.active,
-    };
     try {
+        if (!idRegEx.test(req.body.payment_type_id)) return res.status(400).json(idErrorObj);
+        const paramsObj = {
+            payment_type_id: parseInt(req.body.payment_type_id),
+            payment_type: req.body.payment_type,
+            active: parseInt(req.body.active),
+        };
+        const [result, errorObj] = await isPaymentTypeValid(paramsObj);
+        if (!result) return res.status(400).json(errorObj);
         const [data, error] = await PaymentType.updatePaymentTypeById(paramsObj);
-        data ? res.json(data) : next(error);
+        if (error) next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred trying to update a payment_type!' });
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id([0-9]+)', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
+    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
-        const [data, error] = await PaymentType.deletePaymentTypeById({ id: parseInt(req.params.id) || 0 });
-        data ? res.json(data) : next(error);
+        const [data, error] = await PaymentType.deletePaymentTypeById({ id: parseInt(req.params.id) });
+        if (error) next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred... probably because of a foreign key constraint on that payment type. A better option might be to make this payment type inactive.' });
     } catch (error) {
         next(error);
     }
