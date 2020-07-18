@@ -28,29 +28,7 @@ describe('Customers API', function () {
                 });
                 done();
             });
-    });
-
-    it('should get a single customer by id', function (done) {
-        chai.request(server)
-            .get('/api/customers/1')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.property('customer_id').and.to.be.a('number');
-                response.body[0].should.have.property('first_name').and.to.be.a('string');
-                response.body[0].should.have.property('last_name').and.to.be.a('string');
-                response.body[0].should.have.property('address').and.to.be.a('string');
-                response.body[0].should.have.property('city').and.to.be.a('string');
-                response.body[0].should.have.property('state').and.to.be.a('string');
-                response.body[0].should.have.property('zip').and.to.be.a('string');
-                response.body[0].should.have.property('country').and.to.be.a('string');
-                response.body[0].should.have.property('email').and.to.be.a('string');
-                response.body[0].should.have.property('phone').and.to.be.a('string');
-                response.body[0].should.have.property('creditCardLastFour').and.to.be.a('string');
-                response.body[0].should.have.property('cc_expiration').and.to.be.a('string');
-                done();
-            });
-    });
+    })
 
     it('should get a status 200 and an empty array because customer id 0 should not match any customers', function (done) {
         chai.request(server)
@@ -97,6 +75,28 @@ describe('Customers API', function () {
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
                 if (response.body.insertId) insertId = response.body.insertId;
+                done();
+            });
+    });
+
+    it('should get the newly created single customer by id', function (done) {
+        chai.request(server)
+            .get('/api/customers/' + insertId)
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(1);
+                response.body[0].should.have.property('customer_id').and.to.be.a('number');
+                response.body[0].should.have.property('first_name').and.to.be.a('string');
+                response.body[0].should.have.property('last_name').and.to.be.a('string');
+                response.body[0].should.have.property('address').and.to.be.a('string');
+                response.body[0].should.have.property('city').and.to.be.a('string');
+                response.body[0].should.have.property('state').and.to.be.a('string');
+                response.body[0].should.have.property('zip').and.to.be.a('string');
+                response.body[0].should.have.property('country').and.to.be.a('string');
+                response.body[0].should.have.property('email').and.to.be.a('string');
+                response.body[0].should.have.property('phone').and.to.be.a('string');
+                response.body[0].should.have.property('creditCardLastFour').and.to.be.a('string');
+                response.body[0].should.have.property('cc_expiration').and.to.be.a('string');
                 done();
             });
     });

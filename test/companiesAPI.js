@@ -28,29 +28,7 @@ describe('Companies API', function () {
                 });
                 done();
             });
-    });
-
-    it('should get a single company by id', function (done) {
-        chai.request(server)
-            .get('/api/companies/1')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.property('company_id').and.to.be.a('number');
-                response.body[0].should.have.property('company_name').and.to.be.a('string');
-                response.body[0].should.have.property('address').and.to.be.a('string');
-                response.body[0].should.have.property('city').and.to.be.a('string');
-                response.body[0].should.have.property('state').and.to.be.a('string');
-                response.body[0].should.have.property('zip').and.to.be.a('string');
-                response.body[0].should.have.property('country').and.to.be.a('string');
-                response.body[0].should.have.property('email').and.to.be.a('string');
-                response.body[0].should.have.property('phone').and.to.be.a('string');
-                response.body[0].should.have.property('credit_card_num').and.to.be.a('string');
-                response.body[0].should.have.property('cc_expiration').and.to.be.a('string');
-                response.body[0].should.have.property('tax_exempt').and.to.be.a('number').and.oneOf([0, 1]);
-                done();
-            });
-    });
+    })
 
     it('should get a status 200 and an empty array because company id 0 should not match any companies', function (done) {
         chai.request(server)
@@ -97,6 +75,28 @@ describe('Companies API', function () {
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
                 if (response.body.insertId) insertId = response.body.insertId;
+                done();
+            });
+    });
+
+    it('should get the newly created single company by id', function (done) {
+        chai.request(server)
+            .get('/api/companies/' + insertId)
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(1);
+                response.body[0].should.have.property('company_id').and.to.be.a('number');
+                response.body[0].should.have.property('company_name').and.to.be.a('string');
+                response.body[0].should.have.property('address').and.to.be.a('string');
+                response.body[0].should.have.property('city').and.to.be.a('string');
+                response.body[0].should.have.property('state').and.to.be.a('string');
+                response.body[0].should.have.property('zip').and.to.be.a('string');
+                response.body[0].should.have.property('country').and.to.be.a('string');
+                response.body[0].should.have.property('email').and.to.be.a('string');
+                response.body[0].should.have.property('phone').and.to.be.a('string');
+                response.body[0].should.have.property('credit_card_num').and.to.be.a('string');
+                response.body[0].should.have.property('cc_expiration').and.to.be.a('string');
+                response.body[0].should.have.property('tax_exempt').and.to.be.a('number').and.oneOf([0, 1]);
                 done();
             });
     });

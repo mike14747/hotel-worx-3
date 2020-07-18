@@ -21,22 +21,7 @@ describe('Taxes API', function () {
                 });
                 done();
             });
-    });
-
-    it('should get a single tax by id with its id/names/ratesactive', function (done) {
-        chai.request(server)
-            .get('/api/taxes/1')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.all.keys('tax_id', 'tax_name', 'tax_rate', 'active');
-                response.body[0].tax_id.should.be.a('number');
-                response.body[0].tax_name.should.be.a('string');
-                Number(response.body[0].tax_rate).should.be.a('number');
-                response.body[0].active.should.be.a('number').and.oneOf([0, 1]);
-                done();
-            });
-    });
+    })
 
     it('should get a status 200 and an empty array because tax id 0 should not match any taxes', function (done) {
         chai.request(server)
@@ -57,25 +42,7 @@ describe('Taxes API', function () {
             });
     });
 
-    let insertId = 0;
-
-    it('should FAIL to POST a new tax type and and return 3 errors because all 3 parameters are invalid', function (done) {
-        const paramsObj = {
-            "tax_name": "",
-            "tax_rate": "b1.375",
-            "active": 2
-        };
-        chai.request(server)
-            .post('/api/taxes')
-            .send(paramsObj)
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
-                done();
-            });
-    });
+    let insertId = 0
 
     it('should POST a new tax type and return the insertId', function (done) {
         const paramsObj = {
@@ -91,6 +58,39 @@ describe('Taxes API', function () {
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
                 if (response.body.insertId) insertId = response.body.insertId;
+                done();
+            });
+    });
+
+    it('should get the newly created single tax by id with its id/names/ratesactive', function (done) {
+        chai.request(server)
+            .get('/api/taxes/' + insertId)
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(1);
+                response.body[0].should.have.all.keys('tax_id', 'tax_name', 'tax_rate', 'active');
+                response.body[0].tax_id.should.be.a('number');
+                response.body[0].tax_name.should.be.a('string');
+                Number(response.body[0].tax_rate).should.be.a('number');
+                response.body[0].active.should.be.a('number').and.oneOf([0, 1]);
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new tax type and and return 3 errors because all 3 parameters are invalid', function (done) {
+        const paramsObj = {
+            "tax_name": "",
+            "tax_rate": "b1.375",
+            "active": 2
+        };
+        chai.request(server)
+            .post('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
                 done();
             });
     });
