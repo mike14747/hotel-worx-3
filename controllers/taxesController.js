@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Tax = require('../models/tax');
 const { isTaxBodyValid } = require('./validation/taxesValidation');
 const { idRegEx, idErrorObj } = require('./validation/idValidation');
+const { postError, putError, deleteError } = require('./validation/generalValidation');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -33,7 +34,7 @@ router.post('/', async (req, res, next) => {
         if (!result) return res.status(400).json(errorObj);
         const [data, error] = await Tax.addNewTax(paramsObj);
         if (error) next(error);
-        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: 'An error occurred trying to add a new tax!' });
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
     } catch (error) {
         next(error);
     }
@@ -52,7 +53,7 @@ router.put('/', async (req, res, next) => {
         if (!result) return res.status(400).json(errorObj);
         const [data, error] = await Tax.updateTaxById(paramsObj);
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred trying to update a tax!' });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
     } catch (error) {
         next(error);
     }
@@ -63,7 +64,7 @@ router.delete('/:id', async (req, res, next) => {
     try {
         const [data, error] = await Tax.deleteTaxById({ id: parseInt(req.params.id) });
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred... either it does not exist or there is a foreign key constraint.' });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: deleteError });
     } catch (error) {
         next(error);
     }

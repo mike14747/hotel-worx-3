@@ -2,6 +2,7 @@ const router = require('express').Router();
 const PaymentType = require('../models/paymentType');
 const { isPaymentTypeValid } = require('./validation/paymentTypesValidation');
 const { idRegEx, idErrorObj } = require('./validation/idValidation');
+const { postError, putError, deleteError } = require('./validation/generalValidation');
 
 // all these routes point to /api/payment-types as specified in server.js and controllers/index.js
 
@@ -34,7 +35,7 @@ router.post('/', async (req, res, next) => {
         if (!result) return res.status(400).json(errorObj);
         const [data, error] = await PaymentType.addNewPaymentType(paramsObj);
         if (error) next(error);
-        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: 'An error occurred trying to add a new payment_type!' });
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
     } catch (error) {
         next(error);
     }
@@ -52,7 +53,7 @@ router.put('/', async (req, res, next) => {
         if (!result) return res.status(400).json(errorObj);
         const [data, error] = await PaymentType.updatePaymentTypeById(paramsObj);
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred trying to update a payment_type!' });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
     } catch (error) {
         next(error);
     }
@@ -63,7 +64,7 @@ router.delete('/:id', async (req, res, next) => {
     try {
         const [data, error] = await PaymentType.deletePaymentTypeById({ id: parseInt(req.params.id) });
         if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: 'An error occurred... probably because of a foreign key constraint on that payment type. A better option might be to make this payment type inactive.' });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: deleteError });
     } catch (error) {
         next(error);
     }
