@@ -14,9 +14,9 @@ describe('Room Types API', function () {
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
                     element.should.have.property('room_type_id').and.to.be.a('number');
-                    element.should.have.property('type').and.to.be.a('string');
-                    element.should.have.property('rate');
-                    Number(element.rate).should.be.a('number');
+                    element.should.have.property('room_type').and.to.be.a('string');
+                    element.should.have.property('room_rate');
+                    Number(element.room_rate).should.be.a('number');
                 });
                 done();
             });
@@ -47,8 +47,8 @@ describe('Room Types API', function () {
     
     it('should POST a new room_type with the provided params body and return the insertId', function (done) {
         const paramsObj = {
-            "type": "Some room type",
-            "rate": 119.99
+            "room_type": "Some room type",
+            "room_rate": 119.99
         };
         chai.request(server)
             .post('/api/room-types')
@@ -69,17 +69,17 @@ describe('Room Types API', function () {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
                 response.body[0].should.have.property('room_type_id').and.to.be.a('number');
-                response.body[0].should.have.property('type').and.to.be.a('string');
-                response.body[0].should.have.property('rate');
-                Number(response.body[0].rate).should.be.a('number');
+                response.body[0].should.have.property('room_type').and.to.be.a('string');
+                response.body[0].should.have.property('room_rate');
+                Number(response.body[0].room_rate).should.be.a('number');
                 done();
             });
     });
     
     it('should FAIL to POST a new room_type and return an error because 2 parameters were invalid', function (done) {
         const paramsObj = {
-            "type": 0,
-            "rate": "abc"
+            "room_type": 0,
+            "room_rate": "abc"
         };
         chai.request(server)
             .post('/api/room-types')
@@ -96,8 +96,8 @@ describe('Room Types API', function () {
     it('should update the just created new room_type with these new parameters', function (done) {
         const paramsObj = {
             "room_type_id": insertId,
-            "type": "Updated room Type",
-            "rate": 129.99
+            "room_type": "Updated room Type",
+            "room_rate": 129.99
         };
         chai.request(server)
             .put('/api/room-types')
@@ -111,8 +111,8 @@ describe('Room Types API', function () {
     it('should FAIL to update the just created new room_type and return 3 errors because all 3 parameters are invalid', function (done) {
         const paramsObj = {
             "room_type_id": 0,
-            "type": "",
-            "rate": "abc"
+            "room_type": "",
+            "room_rate": "abc"
         };
         chai.request(server)
             .put('/api/room-types')
@@ -129,8 +129,8 @@ describe('Room Types API', function () {
     it('should FAIL to update the just created new room_type and return an error object because room_type_id is not an interger', function (done) {
         const paramsObj = {
             "room_type_id": "d",
-            "type": "Restaurant",
-            "rate": 119.99
+            "room_type": "Restaurant",
+            "room_rate": 119.99
         };
         chai.request(server)
             .put('/api/room-types')

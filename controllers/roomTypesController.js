@@ -4,8 +4,6 @@ const { isRoomTypeValid } = require('./validation/roomTypesValidation');
 const { idRegEx, idErrorObj } = require('./validation/idValidation');
 const { postError, putError, deleteError } = require('./validation/generalValidation');
 
-// all these routes point to /api/room-types as specified in server.js and controllers/index.js
-
 router.get('/', async (req, res, next) => {
     try {
         const [data, error] = await RoomType.getAllRoomTypes();
@@ -40,8 +38,8 @@ router.get('/availability/:date', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     try {
         const paramsObj = {
-            type: req.body.type,
-            rate: parseFloat(req.body.rate),
+            room_type: req.body.room_type,
+            room_rate: parseFloat(req.body.room_rate),
         };
         const [result, errorObj] = await isRoomTypeValid(paramsObj);
         if (!result) return res.status(400).json(errorObj);
@@ -58,8 +56,8 @@ router.put('/', async (req, res, next) => {
         if (!idRegEx.test(req.body.room_type_id)) return res.status(400).json(idErrorObj);
         const paramsObj = {
             room_type_id: req.body.room_type_id,
-            type: req.body.type,
-            rate: parseFloat(req.body.rate),
+            room_type: req.body.room_type,
+            room_rate: parseFloat(req.body.room_rate),
         };
         const [result, errorObj] = await isRoomTypeValid(paramsObj);
         if (!result) return res.status(400).json(errorObj);

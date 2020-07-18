@@ -12,8 +12,8 @@ const isRoomTypeValid = async (paramsObj) => {
             if (error) errorArray.push(error);
         }
     }
-    if (typeof (paramsObj.type) !== 'string' || paramsObj.type.length < 1) errorArray.push('room type should be a string with non-zero length');
-    if (isNaN(parseFloat(paramsObj.rate))) errorArray.push('room rate is not in a valid dollar amount');
+    if (typeof (paramsObj.room_type) !== 'string' || paramsObj.room_type.length < 1) errorArray.push('room type should be a string with non-zero length');
+    if (isNaN(parseFloat(paramsObj.room_rate))) errorArray.push('room rate is not in a valid dollar amount');
     if (errorArray.length > 0) return [false, { message, errorArray }];
     return [true, null];
 };

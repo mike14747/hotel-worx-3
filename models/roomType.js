@@ -3,7 +3,7 @@ const pool = require('../config/connectionPool.js').getDb();
 const RoomType = {
     getAllRoomTypes: async () => {
         try {
-            const queryString = 'SELECT rt.room_type_id, rt.type, rt.rate FROM room_types AS rt ORDER BY rt.room_type_id ASC;';
+            const queryString = 'SELECT rt.room_type_id, rt.room_type, rt.room_rate FROM room_types AS rt ORDER BY rt.room_type_id ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];
@@ -13,7 +13,7 @@ const RoomType = {
     },
     getRoomTypeById: async (paramsObj) => {
         try {
-            const queryString = 'SELECT rt.room_type_id, rt.type, rt.rate FROM room_types AS rt WHERE rt.room_type_id=?;';
+            const queryString = 'SELECT rt.room_type_id, rt.room_type, rt.room_rate FROM room_types AS rt WHERE rt.room_type_id=?;';
             const queryParams = [
                 paramsObj.id,
             ];
@@ -43,10 +43,10 @@ const RoomType = {
     },
     addNewRoomType: async (paramsObj) => {
         try {
-            const queryString = 'INSERT INTO room_types (type, rate) VALUES (?, ?);';
+            const queryString = 'INSERT INTO room_types (room_type, room_rate) VALUES (?, ?);';
             const queryParams = [
-                paramsObj.type,
-                paramsObj.rate,
+                paramsObj.room_type,
+                paramsObj.room_rate,
             ];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];
@@ -56,10 +56,10 @@ const RoomType = {
     },
     updateRoomTypeById: async (paramsObj) => {
         try {
-            const queryString = 'UPDATE room_types SET type=?, rate=? WHERE room_type_id=?;';
+            const queryString = 'UPDATE room_types SET room_type=?, room_rate=? WHERE room_type_id=?;';
             const queryParams = [
-                paramsObj.type,
-                paramsObj.rate,
+                paramsObj.room_type,
+                paramsObj.room_rate,
                 paramsObj.room_type_id,
             ];
             const [result] = await pool.query(queryString, queryParams);
