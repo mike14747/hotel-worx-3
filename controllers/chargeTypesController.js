@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ChargeType = require('../models/chargeType');
-const { isChargeTypeValid } = require('./utils/chargeTypesValidation');
-const { idRegEx, idErrorObj } = require('./utils/idValidation');
+const { isChargeTypeValid } = require('./validation/chargeTypesValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
 
 // all these routes point to /api/charge-types as specified in server.js and controllers/index.js
 

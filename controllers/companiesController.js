@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Company = require('../models/company');
-const { isCompanyBodyValid } = require('./utils/companiesValidation');
-const { idRegEx, idErrorObj } = require('./utils/idValidation');
+const { isCompanyBodyValid } = require('./validation/companiesValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
 
 router.get('/', async (req, res, next) => {
     try {

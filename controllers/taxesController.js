@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Tax = require('../models/tax');
-const { isTaxBodyValid } = require('./utils/taxesValidation');
-const { idRegEx, idErrorObj } = require('./utils/idValidation');
+const { isTaxBodyValid } = require('./validation/taxesValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
 
 router.get('/', async (req, res, next) => {
     try {
