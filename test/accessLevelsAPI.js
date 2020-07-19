@@ -93,61 +93,55 @@ describe('Access Levels API', function () {
             });
     });
     
-    // it('should update one of the just created new charge with these new parameters', function (done) {
-    //     const paramsObj = {
-    //         "charge_id": insertId,
-    //         "res_room_id": 1200,
-    //         "charge_type_id": 2,
-    //         "charge_amount": 53.12,
-    //         "taxable": 1
-    //     };
-    //     chai.request(server)
-    //         .put('/api/charges')
-    //         .send(paramsObj)
-    //         .end(function (error, response) {
-    //             response.should.have.status(204);
-    //             done();
-    //         });
-    // });
+    it('should update the just created new access_level with these new parameters', function (done) {
+        const paramsObj = {
+            "access_id": insertId,
+            "access_level": 50,
+            "access_type": "new access type"
+        };
+        chai.request(server)
+            .put('/api/access-levels')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(204);
+                done();
+            });
+    });
     
-    // it('should FAIL to update one of the just created new charge and return 5 errors because all 5 parameters are invalid', function (done) {
-    //     const paramsObj = {
-    //         "charge_id": 0,
-    //         "res_room_id": 0,
-    //         "charge_type_id": 0,
-    //         "charge_amount": "a53.12",
-    //         "taxable": 2
-    //     };
-    //     chai.request(server)
-    //         .put('/api/charges')
-    //         .send(paramsObj)
-    //         .end(function (error, response) {
-    //             response.should.have.status(400);
-    //             response.body.should.be.an('object');
-    //             response.body.should.have.property('message').and.to.be.a('string');
-    //             response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(5);
-    //             done();
-    //         });
-    // });
+    it('should FAIL to update the just created new access_level and return 3 errors because all 3 parameters are invalid', function (done) {
+        const paramsObj = {
+            "access_id": 0,
+            "access_level": "a50",
+            "access_type": ""
+        };
+        chai.request(server)
+            .put('/api/access-levels')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
+                done();
+            });
+    });
 
-    // it('should FAIL to update one of the just created new charge and return an error object because id(s) are not integers', function (done) {
-    //     const paramsObj = {
-    //         "charge_id": 'a',
-    //         "res_room_id": 'b',
-    //         "charge_type_id": 'c',
-    //         "charge_amount": 53.12,
-    //         "taxable": 1
-    //     };
-    //     chai.request(server)
-    //         .put('/api/charges')
-    //         .send(paramsObj)
-    //         .end(function (error, response) {
-    //             response.should.have.status(400);
-    //             response.body.should.be.an('object');
-    //             response.body.should.have.property('message').and.to.be.a('string');
-    //             done();
-    //         });
-    // });
+    it('should FAIL to update the just created new access_level and return an error object because the access_id not an integer', function (done) {
+        const paramsObj = {
+            "access_id": "insertId",
+            "access_level": 50,
+            "access_type": "new access type"
+        };
+        chai.request(server)
+            .put('/api/access-levels')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
     
     it('should FAIL to delete the newly created access_level because the access_id is invalid', function (done) {
         chai.request(server)
