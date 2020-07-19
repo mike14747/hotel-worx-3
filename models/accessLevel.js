@@ -50,7 +50,7 @@ const AccessLevel = {
             return [null, error];
         }
     },
-    deleteAccessLevel: async (paramsObj) => {
+    deleteAccessLevelById: async (paramsObj) => {
         try {
             const queryString = 'DELETE FROM access_levels WHERE access_id=?;';
             const queryParams = [

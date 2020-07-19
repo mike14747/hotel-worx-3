@@ -66,7 +66,7 @@ router.put('/', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
     if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
-        const [data, error] = await User.deleteUserById({ id: Number(req.params.id) });
+        const [data, error] = await User.deleteUserById({ id: parseInt(req.params.id) });
         if (error) next(error);
         data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: deleteError });
     } catch (error) {
