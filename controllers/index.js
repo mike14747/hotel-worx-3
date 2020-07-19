@@ -30,6 +30,8 @@ router.use('/companies', require('./companiesController'));
 
 router.use('/payment-types', require('./paymentTypesController'));
 
+router.use('/access-levels', require('./accessLevelsController'));
+
 router.use((req, res, next) => {
     const error = new Error('API route not found!');
     error.status = 404;

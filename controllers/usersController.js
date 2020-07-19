@@ -1,10 +1,8 @@
 const router = require('express').Router();
 const User = require('../models/user');
-
-const bcrypt = require('bcryptjs');
-const saltRounds = 10;
-
-// all these routes point to /api/users as specified in server.js and controllers/index.js
+const { isUserBodyValid } = require('./validation/usersValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
+const { postError, putError, deleteError } = require('./validation/generalValidation');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -15,7 +13,8 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9]+)', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
+    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
         const [data, error] = await User.getUserById({ id: parseInt(req.params.id) || 0 });
         data ? res.json(data) : next(error);
@@ -25,66 +24,51 @@ router.get('/:id([0-9]+)', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    // input validation is needed here for the username and password
-    if (req.body.username.length < 6 || req.body.password.length < 6) {
-        res.status(406).send('Username and/or Password don\'t meet length standards!');
-    } else {
-        try {
-            const existingUser = await User.checkExistingUsername({ username: req.body.username });
-            if (existingUser.length === 0) {
-                bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
-                    if (err) throw err;
-                    const paramsObj = {
-                        username: req.body.username,
-                        password: hash,
-                        access_id: req.body.access_id,
-                        active: req.body.active,
-                    };
-                    const [data, error] = await User.addNewUser(paramsObj);
-                    data ? res.json(data) : next(error);
-                });
-            } else {
-                res.status(202).send('Username is already in use!');
-            }
-        } catch (error) {
-            next(error);
-        }
+    try {
+        const paramsObj = {
+            username: req.body.username,
+            password: req.body.password,
+            access_id: req.body.access_id,
+            active: req.body.active,
+        };
+        const [result, errorObj] = await isUserBodyValid(paramsObj);
+        if (!result) return res.status(400).json(errorObj);
+        paramsObj.password = result;
+        const [data, error] = await User.addNewUser(paramsObj);
+        if (error) next(error);
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
+    } catch (error) {
+        next(error);
     }
 });
 
 router.put('/', async (req, res, next) => {
-    // input validation is needed here for the username and password
-    if (req.body.username.length < 6 || req.body.password.length < 6) {
-        res.status(406).send('Username and/or Password don\'t meet length standards!');
-    } else {
+    try {
+        if (!idRegEx.test(req.body.user_id) || !idRegEx.test(req.body.access_id)) return res.status(400).json(idErrorObj);
         const paramsObj = {
             user_id: req.body.user_id,
             username: req.body.username,
+            password: req.body.password,
+            access_id: req.body.access_id,
+            active: req.body.active,
         };
-        try {
-            const confirmUser = await User.checkUsernameForUpdate(paramsObj);
-            if (confirmUser.length === 0) {
-                bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
-                    if (err) throw err;
-                    paramsObj.password = hash;
-                    paramsObj.access_id = req.body.access_id;
-                    paramsObj.active = req.body.active;
-                    const [data, error] = await User.updateUserById(paramsObj);
-                    data ? res.json(data) : next(error);
-                });
-            } else {
-                res.status(202).send('Username is already in use!');
-            }
-        } catch (error) {
-            next(error);
-        }
+        const [result, errorObj] = await isUserBodyValid(paramsObj);
+        if (!result) return res.status(400).json(errorObj);
+        paramsObj.password = result;
+        const [data, error] = await User.updateUserById(paramsObj);
+        if (error) next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
+    } catch (error) {
+        next(error);
     }
 });
 
-router.delete('/:id([0-9]+)', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
+    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
         const [data, error] = await User.deleteUserById({ id: Number(req.params.id) });
-        data ? res.json(data) : next(error);
+        if (error) next(error);
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: deleteError });
     } catch (error) {
         next(error);
     }

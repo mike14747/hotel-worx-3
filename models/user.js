@@ -1,9 +1,9 @@
 const pool = require('../config/connectionPool.js').getDb();
 
 const User = {
-	getAllUsers: async () => {
+    getAllUsers: async () => {
         try {
-            const queryString = 'SELECT u.user_id, u.username, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id;';
+            const queryString = 'SELECT u.user_id, u.username, a.access_id, a.access_level, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id ORDER BY u.user_id ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];
@@ -13,7 +13,7 @@ const User = {
     },
     getUserById: async (paramsObj) => {
         try {
-            const queryString = 'SELECT u.user_id, u.username, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id WHERE u.user_id=? LIMIT 1;';
+            const queryString = 'SELECT u.user_id, u.username, a.access_id, a.access_level, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id WHERE u.user_id=? LIMIT 1;';
             const queryParams = [
                 paramsObj.id,
             ];
@@ -24,18 +24,6 @@ const User = {
         }
     },
     checkExistingUsername: async (paramsObj) => {
-        try {
-            const queryString = 'SELECT u.username FROM users AS u WHERE username=? LIMIT 1;';
-            const queryParams = [
-                paramsObj.username,
-            ];
-            const [result] = await pool.query(queryString, queryParams);
-            return [result, null];
-        } catch (error) {
-            return [null, error];
-        }
-    },
-    checkUsernameForUpdate: async (paramsObj) => {
         try {
             const queryString = 'SELECT u.username FROM users AS u WHERE username=? && user_id!=? LIMIT 1;';
             const queryParams = [

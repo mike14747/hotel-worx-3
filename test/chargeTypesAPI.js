@@ -21,7 +21,7 @@ describe('Charge Types API', function () {
             });
     });
 
-    it('should get a status 200 and an empty array because charge_type id 0 should not match any charges', function (done) {
+    it('should get a status 200 and an empty array because charge_type id 0 should not match any charge types', function (done) {
         chai.request(server)
             .get('/api/charge-types/0')
             .end(function (error, response) {
