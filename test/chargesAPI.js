@@ -188,7 +188,7 @@ describe('Charges API', function () {
     
     it('should FAIL to delete all charges associated with a res_room_id because the res_room id is not an integer', function (done) {
         chai.request(server)
-            .delete('/api/charges/res-rooms/0')
+            .delete('/api/charges/res-rooms/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
