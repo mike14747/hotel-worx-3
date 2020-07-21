@@ -5,46 +5,7 @@ const server = require('../server');
 chai.should();
 chai.use(chaiHttp);
 
-describe('Charges API', function () {
-    it('should get all the charges with their ids/names/rates/taxable', function (done) {
-        chai.request(server)
-            .get('/api/charges')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf.at.least(1);
-                response.body.forEach(function (element) {
-                    element.should.have.all.keys('charge_id', 'charge_type', 'res_room_id', 'charge_amount', 'taxable');
-                    element.charge_id.should.be.a('number');
-                    element.charge_type.should.be.a('string');
-                    element.res_room_id.should.be.a('number');
-                    Number(element.charge_amount).should.be.a('number');
-                    element.taxable.should.be.a('number').and.oneOf([0, 1]);
-                });
-                done();
-            });
-    })
-
-    it('should get a status 200 and an empty array because charge id 0 should not match any charges', function (done) {
-        chai.request(server)
-            .get('/api/charges/0')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(0);
-                done();
-            });
-    });
-
-    it('should FAIL to get a charge and instead return a status 400 because the charge id param is not an integer', function (done) {
-        chai.request(server)
-            .get('/api/charges/1a')
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                done();
-            });
-    });
-    
+describe('Charges API (/api/charges)', function () {
     let insertId = 0;
     
     it('should POST a new charge with the provided params body and return the insertId', function (done) {
@@ -66,7 +27,7 @@ describe('Charges API', function () {
             });
     });
 
-    it('should get the newly created single charge by id', function (done) {
+    it('should GET the newly created charge by id', function (done) {
         chai.request(server)
             .get('/api/charges/' + insertId)
             .end(function (error, response) {
@@ -78,6 +39,45 @@ describe('Charges API', function () {
                 response.body[0].res_room_id.should.be.a('number');
                 Number(response.body[0].charge_amount).should.be.a('number');
                 response.body[0].taxable.should.be.a('number').and.oneOf([0, 1]);
+                done();
+            });
+    });
+
+    it('should GET all the charges', function (done) {
+        chai.request(server)
+            .get('/api/charges')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf.at.least(1);
+                response.body.forEach(function (element) {
+                    element.should.have.all.keys('charge_id', 'charge_type', 'res_room_id', 'charge_amount', 'taxable');
+                    element.charge_id.should.be.a('number');
+                    element.charge_type.should.be.a('string');
+                    element.res_room_id.should.be.a('number');
+                    Number(element.charge_amount).should.be.a('number');
+                    element.taxable.should.be.a('number').and.oneOf([0, 1]);
+                });
+                done();
+            });
+    })
+
+    it('should GET a status 200 and an empty array because charge_id 0 should not match any charges', function (done) {
+        chai.request(server)
+            .get('/api/charges/0')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(0);
+                done();
+            });
+    });
+
+    it('should FAIL to GET a charge and instead return a status 400 because the charge_id param is not an integer', function (done) {
+        chai.request(server)
+            .get('/api/charges/1a')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
                 done();
             });
     });
@@ -119,7 +119,7 @@ describe('Charges API', function () {
             });
     });
     
-    it('should update one of the just created new charge with these new parameters', function (done) {
+    it('should update, via PUT, one of the newly created charge with these new parameters', function (done) {
         const paramsObj = {
             "charge_id": insertId,
             "res_room_id": 1200,
@@ -136,7 +136,7 @@ describe('Charges API', function () {
             });
     });
     
-    it('should FAIL to update one of the just created new charge and return 5 errors because all 5 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, one of the newly created charges and return 5 errors because all 5 parameters are invalid', function (done) {
         const paramsObj = {
             "charge_id": 0,
             "res_room_id": 0,
@@ -156,7 +156,7 @@ describe('Charges API', function () {
             });
     });
 
-    it('should FAIL to update one of the just created new charge and return an error object because id(s) are not integers', function (done) {
+    it('should FAIL to update, via PUT, one of the newly created charges and return an error object because one or more ids are not integers', function (done) {
         const paramsObj = {
             "charge_id": 'a',
             "res_room_id": 'b',
@@ -175,7 +175,7 @@ describe('Charges API', function () {
             });
     });
     
-    it('should FAIL to delete the newly created charge because the charge id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created charge because the charge_id is invalid', function (done) {
         chai.request(server)
             .delete('/api/charges/0')
             .end(function (error, response) {
@@ -186,7 +186,7 @@ describe('Charges API', function () {
             });
     });
     
-    it('should FAIL to delete all charges associated with a res_room_id because the res_room id is not an integer', function (done) {
+    it('should FAIL to DELETE all charges associated with a res_room_id because the res_room id is not an integer', function (done) {
         chai.request(server)
             .delete('/api/charges/res-rooms/abc')
             .end(function (error, response) {
@@ -197,7 +197,7 @@ describe('Charges API', function () {
             });
     });
     
-    it('should delete the newly created charge using the insertId', function (done) {
+    it('should DELETE the newly created charge using the insertId', function (done) {
         chai.request(server)
             .delete('/api/charges/' + insertId)
             .end(function (error, response) {
@@ -206,7 +206,7 @@ describe('Charges API', function () {
             });
     });
     
-    it('should delete all charges associated with a res_room_id', function (done) {
+    it('should DELETE all charges associated with a res_room_id', function (done) {
         chai.request(server)
             .delete('/api/charges/res-rooms/1100')
             .end(function (error, response) {

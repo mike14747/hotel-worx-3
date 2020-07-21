@@ -5,52 +5,7 @@ const server = require('../server');
 chai.should();
 chai.use(chaiHttp);
 
-describe('Companies API', function () {
-    it('should get all companies', function (done) {
-        chai.request(server)
-            .get('/api/companies')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf.at.least(1);
-                response.body.forEach(function (element) {
-                    element.should.have.property('company_id').and.to.be.a('number');
-                    element.should.have.property('company_name').and.to.be.a('string');
-                    element.should.have.property('address').and.to.be.a('string');
-                    element.should.have.property('city').and.to.be.a('string');
-                    element.should.have.property('state').and.to.be.a('string');
-                    element.should.have.property('zip').and.to.be.a('string');
-                    element.should.have.property('country').and.to.be.a('string');
-                    element.should.have.property('email').and.to.be.a('string');
-                    element.should.have.property('phone').and.to.be.a('string');
-                    element.should.have.property('credit_card_num').and.to.be.a('string');
-                    element.should.have.property('cc_expiration').and.to.be.a('string');
-                    element.should.have.property('tax_exempt').and.to.be.a('number').and.oneOf([0, 1]);
-                });
-                done();
-            });
-    })
-
-    it('should get a status 200 and an empty array because company id 0 should not match any companies', function (done) {
-        chai.request(server)
-            .get('/api/companies/0')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(0);
-                done();
-            });
-    });
-
-    it('should FAIL to get a single company and instead return a status 400 because the company id is not an integer', function (done) {
-        chai.request(server)
-            .get('/api/companies/1a')
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                done();
-            });
-    });
-
+describe('Companies API (/api/companies)', function () {
     let insertId = 0;
 
     it('should POST a new company with the provided params body and return the insertId', function (done) {
@@ -79,7 +34,7 @@ describe('Companies API', function () {
             });
     });
 
-    it('should get the newly created single company by id', function (done) {
+    it('should GET the newly created company by id', function (done) {
         chai.request(server)
             .get('/api/companies/' + insertId)
             .end(function (error, response) {
@@ -97,6 +52,51 @@ describe('Companies API', function () {
                 response.body[0].should.have.property('credit_card_num').and.to.be.a('string');
                 response.body[0].should.have.property('cc_expiration').and.to.be.a('string');
                 response.body[0].should.have.property('tax_exempt').and.to.be.a('number').and.oneOf([0, 1]);
+                done();
+            });
+    });
+
+    it('should GET all companies', function (done) {
+        chai.request(server)
+            .get('/api/companies')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf.at.least(1);
+                response.body.forEach(function (element) {
+                    element.should.have.property('company_id').and.to.be.a('number');
+                    element.should.have.property('company_name').and.to.be.a('string');
+                    element.should.have.property('address').and.to.be.a('string');
+                    element.should.have.property('city').and.to.be.a('string');
+                    element.should.have.property('state').and.to.be.a('string');
+                    element.should.have.property('zip').and.to.be.a('string');
+                    element.should.have.property('country').and.to.be.a('string');
+                    element.should.have.property('email').and.to.be.a('string');
+                    element.should.have.property('phone').and.to.be.a('string');
+                    element.should.have.property('credit_card_num').and.to.be.a('string');
+                    element.should.have.property('cc_expiration').and.to.be.a('string');
+                    element.should.have.property('tax_exempt').and.to.be.a('number').and.oneOf([0, 1]);
+                });
+                done();
+            });
+    })
+
+    it('should GET a status 200 and an empty array because company_id 0 should not match any companies', function (done) {
+        chai.request(server)
+            .get('/api/companies/0')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(0);
+                done();
+            });
+    });
+
+    it('should FAIL to GET a single company and instead return a status 400 because the company_id is not an integer', function (done) {
+        chai.request(server)
+            .get('/api/companies/1a')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
                 done();
             });
     });
@@ -127,7 +127,7 @@ describe('Companies API', function () {
             });
     });
 
-    it('should update the just created new company with these new parameters', function (done) {
+    it('should update, via PUT, the newly created company with these new parameters', function (done) {
         const paramsObj = {
             "company_id": insertId,
             "company_name": "Union Sand",
@@ -151,7 +151,7 @@ describe('Companies API', function () {
             });
     });
 
-    it('should FAIL to update the just created new company and return 12 errors because all 12 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created company and return 12 errors because all 12 parameters are invalid', function (done) {
         const paramsObj = {
             "company_id": 0,
             "company_name": "",
@@ -178,7 +178,7 @@ describe('Companies API', function () {
             });
     });
 
-    it('should FAIL to update the just created new company and return an error object because company_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, the newly created company and return an error object because the company_id is not an interger', function (done) {
         const paramsObj = {
             "company_id": "abc",
             "company_name": "Union Sand",
@@ -204,7 +204,7 @@ describe('Companies API', function () {
             });
     });
 
-    it('should FAIL to delete the newly created company because the company id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created company because the company_id is invalid', function (done) {
         chai.request(server)
             .delete('/api/companies/0')
             .end(function (error, response) {
@@ -215,7 +215,18 @@ describe('Companies API', function () {
             });
     });
 
-    it('should delete the newly created company using the insertId', function (done) {
+    it('should FAIL to DELETE the newly created company because the company_id is not an integer', function (done) {
+        chai.request(server)
+            .delete('/api/companies/abc')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should DELETE the newly created company using the insertId', function (done) {
         chai.request(server)
             .delete('/api/companies/' + insertId)
             .end(function (error, response) {

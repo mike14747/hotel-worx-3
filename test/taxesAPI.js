@@ -5,46 +5,10 @@ const server = require('../server');
 chai.should();
 chai.use(chaiHttp);
 
-describe('Taxes API', function () {
-    it('should get all the taxes with their ids/names/rates/active', function (done) {
-        chai.request(server)
-            .get('/api/taxes')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf.at.least(1);
-                response.body.forEach(function (element) {
-                    element.should.have.all.keys('tax_id', 'tax_name', 'tax_rate', 'active');
-                    element.tax_id.should.be.a('number');
-                    element.tax_name.should.be.a('string');
-                    Number(element.tax_rate).should.be.a('number');
-                    element.active.should.be.a('number').and.oneOf([0, 1]);
-                });
-                done();
-            });
-    })
-
-    it('should get a status 200 and an empty array because tax id 0 should not match any taxes', function (done) {
-        chai.request(server)
-            .get('/api/taxes/0')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(0);
-                done();
-            });
-    });
-
-    it('should get a status 400 because the tax id param is not an integer', function (done) {
-        chai.request(server)
-            .get('/api/taxes/1a')
-            .end(function (error, response) {
-                response.should.have.status(400);
-                done();
-            });
-    });
-
+describe('Taxes API (/api/taxes)', function () {
     let insertId = 0
 
-    it('should POST a new tax type and return the insertId', function (done) {
+    it('should POST a new tax and return the insertId', function (done) {
         const paramsObj = {
             "tax_name": "Special Tax",
             "tax_rate": 1.375,
@@ -62,7 +26,7 @@ describe('Taxes API', function () {
             });
     });
 
-    it('should get the newly created single tax by id with its id/names/ratesactive', function (done) {
+    it('should GET the newly created tax by id', function (done) {
         chai.request(server)
             .get('/api/taxes/' + insertId)
             .end(function (error, response) {
@@ -77,7 +41,43 @@ describe('Taxes API', function () {
             });
     });
 
-    it('should FAIL to POST a new tax type and and return 3 errors because all 3 parameters are invalid', function (done) {
+    it('should GET all the taxes', function (done) {
+        chai.request(server)
+            .get('/api/taxes')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf.at.least(1);
+                response.body.forEach(function (element) {
+                    element.should.have.all.keys('tax_id', 'tax_name', 'tax_rate', 'active');
+                    element.tax_id.should.be.a('number');
+                    element.tax_name.should.be.a('string');
+                    Number(element.tax_rate).should.be.a('number');
+                    element.active.should.be.a('number').and.oneOf([0, 1]);
+                });
+                done();
+            });
+    })
+
+    it('should GET a status 200 and an empty array because tax_id 0 should not match any taxes', function (done) {
+        chai.request(server)
+            .get('/api/taxes/0')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(0);
+                done();
+            });
+    });
+
+    it('should GET a status 400 because the tax_id param is not an integer', function (done) {
+        chai.request(server)
+            .get('/api/taxes/1a')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new tax and and return 3 errors because all 3 parameters are invalid', function (done) {
         const paramsObj = {
             "tax_name": "",
             "tax_rate": "b1.375",
@@ -95,7 +95,7 @@ describe('Taxes API', function () {
             });
     });
 
-    it('should update the just created new tax with these new parameters', function (done) {
+    it('should update, via PUT, the newly created tax with these new parameters', function (done) {
         const paramsObj = {
             "tax_id": insertId,
             "tax_name": "Special Tax",
@@ -111,7 +111,7 @@ describe('Taxes API', function () {
             });
     });
     
-    it('should FAIL to update the just created new tax and return 4 errors because all 4 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created tax and return 4 errors because all 4 parameters are invalid', function (done) {
         const paramsObj = {
             "tax_id": 0,
             "tax_name": "",
@@ -130,7 +130,7 @@ describe('Taxes API', function () {
             });
     });
 
-    it('should FAIL to update the just created new tax and return an error object because tax_id is not an integer', function (done) {
+    it('should FAIL to update, via PUT, the newly created tax and return an error object because the tax_id is not an integer', function (done) {
         const paramsObj = {
             "tax_id": "e",
             "tax_name": "City",
@@ -148,9 +148,7 @@ describe('Taxes API', function () {
             });
     });
 
-    // -----
-
-    it('should FAIL to delete the newly created tax because the tax id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created tax because the tax_id is invalid', function (done) {
         chai.request(server)
             .delete('/api/taxes/0')
             .end(function (error, response) {
@@ -160,8 +158,19 @@ describe('Taxes API', function () {
                 done();
             });
     });
+
+    it('should FAIL to DELETE the newly created tax because the tax_id is not an integer', function (done) {
+        chai.request(server)
+            .delete('/api/taxes/abc')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
     
-    it('should delete the newly created tax using the insertId', function (done) {
+    it('should DELETE the newly created tax using the insertId', function (done) {
         chai.request(server)
             .delete('/api/taxes/' + insertId)
             .end(function (error, response) {

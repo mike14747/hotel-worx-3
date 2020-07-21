@@ -5,18 +5,18 @@ const server = require('../server');
 chai.should();
 chai.use(chaiHttp);
 
-describe('Access Levels API (/api/access-levels)', function () {
-    before(done => setTimeout(done, 1000));
-
+describe('Users API (/api/users)', function () {
     let insertId = 0;
-    
-    it('should POST a new access_level with the provided params body and return the insertId', function (done) {
+
+    it('should POST a new user with the provided params body and return the insertId', function (done) {
         const paramsObj = {
-            "access_level": 40,
-            "access_type": "Supreme"
+            "username": "some_username",
+            "password": "some_password",
+            "access_id": 20,
+            "active": 1
         };
         chai.request(server)
-            .post('/api/access-levels')
+            .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(201);
@@ -27,39 +27,39 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
 
-    it('should GET the newly created access_level by id', function (done) {
+    it('should GET the newly created user by id', function (done) {
         chai.request(server)
-            .get('/api/access-levels/' + insertId)
+            .get('/api/users/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.all.keys('access_id', 'access_level', 'access_type');
-                response.body[0].access_id.should.be.a('number');
-                response.body[0].access_level.should.be.a('number');
-                response.body[0].access_type.should.be.a('string');
+                response.body[0].should.have.property('user_id').and.to.be.a('number');
+                response.body[0].should.have.property('username').and.to.be.a('string');
+                response.body[0].should.have.property('access_id').and.to.be.a('number');
+                response.body[0].should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                 done();
             });
     });
 
-    it('should GET all access_levels', function (done) {
+    it('should GET all users', function (done) {
         chai.request(server)
-            .get('/api/access-levels')
+            .get('/api/users')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
-                    element.should.have.all.keys('access_id', 'access_level', 'access_type');
-                    element.access_id.should.be.a('number');
-                    element.access_level.should.be.a('number');
-                    element.access_type.should.be.a('string');
+                    element.should.have.property('user_id').and.to.be.a('number');
+                    element.should.have.property('username').and.to.be.a('string');
+                    element.should.have.property('access_id').and.to.be.a('number');
+                    element.should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                 });
                 done();
             });
-    })
+    });
 
-    it('should GET a status 200 and an empty array because access_id 0 should not match any access_levels', function (done) {
+    it('should GET a status 200 and an empty array because user_id 0 should not match any users', function (done) {
         chai.request(server)
-            .get('/api/access-levels/0')
+            .get('/api/users/0')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
@@ -67,9 +67,9 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
 
-    it('should FAIL to GET an access_level and instead return a status 400 because the access_id param is not an integer', function (done) {
+    it('should FAIL to GET a single user and instead return a status 400 because the user_id is not an integer', function (done) {
         chai.request(server)
-            .get('/api/access-levels/1a')
+            .get('/api/users/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -77,65 +77,73 @@ describe('Access Levels API (/api/access-levels)', function () {
                 done();
             });
     });
-    
-    it('should FAIL to POST a new access_level and return 2 errors because both parameters are invalid', function (done) {
+
+    it('should FAIL to POST a new user and return an error because 4 parameters were invalid', function (done) {
         const paramsObj = {
-            "access_level": "a40",
-            "access_type": 2
+            "username": 0,
+            "password": "",
+            "access_id": "",
+            "active": 2
         };
         chai.request(server)
-            .post('/api/access-levels')
+            .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
                 done();
             });
     });
-    
-    it('should update, via PUT, the newly created access_level with these new parameters', function (done) {
+
+    it('should update, via PUT, the newly created user with these new parameters', function (done) {
         const paramsObj = {
-            "access_id": insertId,
-            "access_level": 50,
-            "access_type": "new access type"
+            "user_id": insertId,
+            "username": "new_username",
+            "password": "new_password",
+            "access_level": 30,
+            "active": 1
         };
         chai.request(server)
-            .put('/api/access-levels')
+            .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(204);
                 done();
             });
     });
-    
-    it('should FAIL to update, via PUT, the newly created access_level and return 3 errors because all 3 parameters are invalid', function (done) {
+
+    it('should FAIL to update, via PUT, the newly created user and return 5 errors because all 5 parameters are invalid', function (done) {
         const paramsObj = {
-            "access_id": 0,
-            "access_level": "a50",
-            "access_type": ""
+            "user_id": 0,
+            "username": "",
+            "password": 0,
+            "access_level": 0,
+            "active": 2
         };
         chai.request(server)
-            .put('/api/access-levels')
+            .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(5);
                 done();
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created access_level and return an error object because the access_id not an integer', function (done) {
+    it('should FAIL to update, via PUT, the newly created user and return an error object because user_id is not an interger', function (done) {
         const paramsObj = {
-            "access_id": "insertId",
-            "access_level": 50,
-            "access_type": "new access type"
+            "user_id": "abc",
+            "username": "new_username",
+            "password": "new_password",
+            "access_level": 30,
+            "active": 1
         };
         chai.request(server)
-            .put('/api/access-levels')
+            .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -144,10 +152,10 @@ describe('Access Levels API (/api/access-levels)', function () {
                 done();
             });
     });
-    
-    it('should FAIL to DELETE the newly created access_level because the access_id is invalid', function (done) {
+
+    it('should FAIL to DELETE the newly created user because the user_id is invalid', function (done) {
         chai.request(server)
-            .delete('/api/access-levels/0')
+            .delete('/api/users/0')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -155,10 +163,10 @@ describe('Access Levels API (/api/access-levels)', function () {
                 done();
             });
     });
-    
-    it('should FAIL to DELETE the newly created access_level because the access_id is not an integer', function (done) {
+
+    it('should FAIL to DELETE the newly created user because the user_id is not an integer', function (done) {
         chai.request(server)
-            .delete('/api/access-levels/abc')
+            .delete('/api/users/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -166,10 +174,10 @@ describe('Access Levels API (/api/access-levels)', function () {
                 done();
             });
     });
-    
-    it('should DELETE the newly created access_level using the insertId', function (done) {
+
+    it('should DELETE the newly created user using the insertId', function (done) {
         chai.request(server)
-            .delete('/api/access-levels/' + insertId)
+            .delete('/api/users/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);
                 done();
