@@ -12,7 +12,7 @@ describe('Users API (/api/users)', function () {
         const paramsObj = {
             "username": "some_username",
             "password": "some_password",
-            "access_id": 20,
+            "access_id": 2,
             "active": 1
         };
         chai.request(server)
@@ -78,11 +78,49 @@ describe('Users API (/api/users)', function () {
             });
     });
 
-    it('should FAIL to POST a new user and return an error because 4 parameters were invalid', function (done) {
+    it('should FAIL to POST a new user and return an error because the username and/or password parameters were invalid', function (done) {
         const paramsObj = {
-            "username": 0,
+            "username": "",
             "password": "",
-            "access_id": "",
+            "access_id": 1,
+            "active": 1
+        };
+        chai.request(server)
+            .post('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(1);
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new user and return an error because the username already exists', function (done) {
+        const paramsObj = {
+            "username": "some_username",
+            "password": "some_password",
+            "access_id": 1,
+            "active": 1
+        };
+        chai.request(server)
+            .post('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(1);
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new user and return 2 errors because 2 of the parameters were invalid', function (done) {
+        const paramsObj = {
+            "username": "another_username",
+            "password": "some_password",
+            "access_id": 0,
             "active": 2
         };
         chai.request(server)
@@ -92,7 +130,7 @@ describe('Users API (/api/users)', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
                 done();
             });
     });
@@ -102,7 +140,7 @@ describe('Users API (/api/users)', function () {
             "user_id": insertId,
             "username": "new_username",
             "password": "new_password",
-            "access_level": 30,
+            "access_id": 2,
             "active": 1
         };
         chai.request(server)
@@ -114,12 +152,12 @@ describe('Users API (/api/users)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created user and return 5 errors because all 5 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created user and return 2 errors because 2 of the parameters are invalid', function (done) {
         const paramsObj = {
-            "user_id": 0,
-            "username": "",
-            "password": 0,
-            "access_level": 0,
+            "user_id": insertId,
+            "username": "another_username",
+            "password": "some_password",
+            "access_id": 0,
             "active": 2
         };
         chai.request(server)
@@ -129,7 +167,7 @@ describe('Users API (/api/users)', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(5);
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
                 done();
             });
     });
@@ -139,7 +177,7 @@ describe('Users API (/api/users)', function () {
             "user_id": "abc",
             "username": "new_username",
             "password": "new_password",
-            "access_level": 30,
+            "access_id": 2,
             "active": 1
         };
         chai.request(server)
