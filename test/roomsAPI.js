@@ -5,8 +5,8 @@ const server = require('../server');
 chai.should();
 chai.use(chaiHttp);
 
-describe('Rooms API', function () {
-    it('should get all rooms and their data', function (done) {
+describe('Rooms API (/api/room)', function () {
+    it('should GET all rooms', function (done) {
         chai.request(server)
             .get('/api/rooms')
             .end(function (error, response) {
@@ -29,7 +29,7 @@ describe('Rooms API', function () {
             });
     });
     
-    it('should get a single room by id and its data', function (done) {
+    it('should GET a single room by id', function (done) {
         chai.request(server)
             .get('/api/rooms/1')
             .end(function (error, response) {
@@ -50,21 +50,21 @@ describe('Rooms API', function () {
             });
     });
 
-    it('should get a status 400 since the room id param is not an integer', function (done) {
-        chai.request(server)
-            .get('/api/rooms/1a')
-            .end(function (error, response) {
-                response.should.have.status(400);
-                done();
-            });
-    });
-
-    it('should return status 200 and an empty array since 0 should not match any room ids', function (done) {
+    it('should return status 200 and an empty array since room_id 0 should not match any rooms', function (done) {
         chai.request(server)
             .get('/api/rooms/0')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
+                done();
+            });
+    });
+
+    it('should GET a status 400 since the room_id param is not an integer', function (done) {
+        chai.request(server)
+            .get('/api/rooms/1a')
+            .end(function (error, response) {
+                response.should.have.status(400);
                 done();
             });
     });
@@ -83,7 +83,7 @@ describe('Rooms API', function () {
             });
     });
 
-    it('should get cumulative totals for hotel-wide house status', function (done) {
+    it('should GET cumulative totals for hotel-wide house status', function (done) {
         chai.request(server)
             .get('/api/rooms/house-status')
             .end(function (error, response) {
@@ -98,7 +98,7 @@ describe('Rooms API', function () {
             });
     });
 
-    it('should get all rooms that meet the query params and their housekeeping status data', function (done) {
+    it('should GET all rooms that meet the query params and their housekeeping status data', function (done) {
         chai.request(server)
             .get('/api/rooms/housekeeping-status')
             .end(function (error, response) {
@@ -119,4 +119,6 @@ describe('Rooms API', function () {
                 done();
             });
     });
+
+    /// POST, PUT and DELETE method tests still needed
 });

@@ -5,52 +5,7 @@ const server = require('../server');
 chai.should();
 chai.use(chaiHttp);
 
-describe('Customers API', function () {
-    it('should get all customers', function (done) {
-        chai.request(server)
-            .get('/api/customers')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf.at.least(1);
-                response.body.forEach(function (element) {
-                    element.should.have.property('customer_id').and.to.be.a('number');
-                    element.should.have.property('first_name').and.to.be.a('string');
-                    element.should.have.property('last_name').and.to.be.a('string');
-                    element.should.have.property('address').and.to.be.a('string');
-                    element.should.have.property('city').and.to.be.a('string');
-                    element.should.have.property('state').and.to.be.a('string');
-                    element.should.have.property('zip').and.to.be.a('string');
-                    element.should.have.property('country').and.to.be.a('string');
-                    element.should.have.property('email').and.to.be.a('string');
-                    element.should.have.property('phone').and.to.be.a('string');
-                    element.should.have.property('creditCardLastFour').and.to.be.a('string');
-                    element.should.have.property('cc_expiration').and.to.be.a('string');
-                });
-                done();
-            });
-    })
-
-    it('should get a status 200 and an empty array because customer id 0 should not match any customers', function (done) {
-        chai.request(server)
-            .get('/api/customers/0')
-            .end(function (error, response) {
-                response.should.have.status(200);
-                response.body.should.be.an('array').and.have.lengthOf(0);
-                done();
-            });
-    });
-
-    it('should FAIL to get a single customer and instead return a status 400 because the customer id is not an integer', function (done) {
-        chai.request(server)
-            .get('/api/customers/1a')
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                done();
-            });
-    });
-
+describe('Customers API (/api/customers)', function () {
     let insertId = 0;
 
     it('should POST a new customer with the provided params body and return the insertId', function (done) {
@@ -79,7 +34,7 @@ describe('Customers API', function () {
             });
     });
 
-    it('should get the newly created single customer by id', function (done) {
+    it('should GET the newly created customer by id', function (done) {
         chai.request(server)
             .get('/api/customers/' + insertId)
             .end(function (error, response) {
@@ -97,6 +52,51 @@ describe('Customers API', function () {
                 response.body[0].should.have.property('phone').and.to.be.a('string');
                 response.body[0].should.have.property('creditCardLastFour').and.to.be.a('string');
                 response.body[0].should.have.property('cc_expiration').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should GET all customers', function (done) {
+        chai.request(server)
+            .get('/api/customers')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf.at.least(1);
+                response.body.forEach(function (element) {
+                    element.should.have.property('customer_id').and.to.be.a('number');
+                    element.should.have.property('first_name').and.to.be.a('string');
+                    element.should.have.property('last_name').and.to.be.a('string');
+                    element.should.have.property('address').and.to.be.a('string');
+                    element.should.have.property('city').and.to.be.a('string');
+                    element.should.have.property('state').and.to.be.a('string');
+                    element.should.have.property('zip').and.to.be.a('string');
+                    element.should.have.property('country').and.to.be.a('string');
+                    element.should.have.property('email').and.to.be.a('string');
+                    element.should.have.property('phone').and.to.be.a('string');
+                    element.should.have.property('creditCardLastFour').and.to.be.a('string');
+                    element.should.have.property('cc_expiration').and.to.be.a('string');
+                });
+                done();
+            });
+    })
+
+    it('should GET a status 200 and an empty array because customer_id 0 should not match any customers', function (done) {
+        chai.request(server)
+            .get('/api/customers/0')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.body.should.be.an('array').and.have.lengthOf(0);
+                done();
+            });
+    });
+
+    it('should FAIL to GET a single customer and instead return a status 400 because the customer_id is not an integer', function (done) {
+        chai.request(server)
+            .get('/api/customers/1a')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
                 done();
             });
     });
@@ -127,7 +127,7 @@ describe('Customers API', function () {
             });
     });
 
-    it('should update the just created new customer with these new parameters', function (done) {
+    it('should update, via PUT, the newly created customer with these new parameters', function (done) {
         const paramsObj = {
             "customer_id": insertId,
             "first_name": "Jamar",
@@ -151,7 +151,7 @@ describe('Customers API', function () {
             });
     });
 
-    it('should FAIL to update the just created new customer and return 12 errors because all 12 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created customer and return 12 errors because all 12 parameters are invalid', function (done) {
         const paramsObj = {
             "customer_id": 0,
             "first_name": "",
@@ -178,7 +178,7 @@ describe('Customers API', function () {
             });
     });
 
-    it('should FAIL to update the just created new customer and return an error object because customer_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, the newly created customer and return an error object because the customer_id is not an interger', function (done) {
         const paramsObj = {
             "customer_id": "abc",
             "first_name": "Jamar",
@@ -204,7 +204,7 @@ describe('Customers API', function () {
             });
     });
 
-    it('should FAIL to delete the newly created customer because the customer id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created customer because the customer_id is invalid', function (done) {
         chai.request(server)
             .delete('/api/customers/0')
             .end(function (error, response) {
@@ -215,7 +215,18 @@ describe('Customers API', function () {
             });
     });
 
-    it('should delete the newly created customer using the insertId', function (done) {
+    it('should FAIL to DELETE the newly created customer because the customer_id is not an integer', function (done) {
+        chai.request(server)
+            .delete('/api/customers/abc')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should DELETE the newly created customer using the insertId', function (done) {
         chai.request(server)
             .delete('/api/customers/' + insertId)
             .end(function (error, response) {
