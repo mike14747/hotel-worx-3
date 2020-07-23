@@ -2,6 +2,14 @@ const mysql = require('mysql2/promise');
 
 let pool;
 
+const dbTest = () => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT 1', (error, result) => {
+            error ? reject(error) : resolve(result);
+        });
+    });
+};
+
 const mysqlConnect = () => {
     pool = mysql.createPool({
         host: process.env.DB_HOST,
@@ -14,13 +22,9 @@ const mysqlConnect = () => {
         queueLimit: 0,
         multipleStatements: true,
     });
-    return new Promise((resolve, reject) => {
-        pool.query('SELECT 1', (error, result) => {
-            error ? reject(error) : resolve(result);
-        });
-    });
+    return dbTest();
 };
 
 const getDb = () => pool;
 
-module.exports = { mysqlConnect, getDb };
+module.exports = { mysqlConnect, getDb, dbTest };
