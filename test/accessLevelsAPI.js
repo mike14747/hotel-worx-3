@@ -55,7 +55,7 @@ describe('Access Levels API (/api/access-levels)', function () {
                 });
                 done();
             });
-    })
+    });
 
     it('should GET a status 200 and an empty array because access_id 0 should not match any access_levels', function (done) {
         chai.request(server)
