@@ -33,14 +33,17 @@ mysqlConnect()
         app.get('/api/*', (req, res) => {
             res.status(500).json({ message: 'There is no connection to the database!' });
         });
+    })
+    .finally(() => {
+        if (NODE_ENV === 'production') {
+            app.use(express.static(path.join(__dirname, 'client/build')));
+            app.get('*', (req, res) => {
+                res.sendFile(path.join(__dirname, 'client/build/index.html'));
+            });
+        }
+        app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
     });
 
-if (NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'client/build')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'client/build/index.html'));
-    });
-}
-app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
+const server = app;
 
-module.exports = app;
+module.exports = server;
