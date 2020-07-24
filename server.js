@@ -26,6 +26,7 @@ mysqlConnect()
         const passport = require('./passport/passportFunctions');
         app.use(passport.initialize());
         app.use(passport.session());
+        app.get('/api/test', (req, res) => res.status(200).end());
         app.use('/api', checkAuthenticated, require('./controllers'));
     })
     .catch((error) => {
@@ -33,17 +34,15 @@ mysqlConnect()
         app.get('/api/*', (req, res) => {
             res.status(500).json({ message: 'There is no connection to the database!' });
         });
-    })
-    .finally(() => {
-        if (NODE_ENV === 'production') {
-            app.use(express.static(path.join(__dirname, 'client/build')));
-            app.get('*', (req, res) => {
-                res.sendFile(path.join(__dirname, 'client/build/index.html'));
-            });
-        }
-        app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
     });
 
-const server = app;
+if (NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'client/build')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client/build/index.html'));
+    });
+}
+
+const server = app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
 
 module.exports = server;

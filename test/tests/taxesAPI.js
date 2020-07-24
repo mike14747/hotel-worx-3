@@ -1,20 +1,21 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../server');
+const server = require('../../server');
 
 chai.should();
 chai.use(chaiHttp);
 
-describe('Room Types API (/api/room_types)', function () {
-    let insertId = 0;
-    
-    it('should POST a new room_type with the provided params body and return the insertId', function (done) {
+describe('Taxes API (/api/taxes)', function () {
+    let insertId = 0
+
+    it('should POST a new tax and return the insertId', function (done) {
         const paramsObj = {
-            "room_type": "Some room type",
-            "room_rate": 119.99
+            "tax_name": "Special Tax",
+            "tax_rate": 1.375,
+            "active": 1
         };
         chai.request(server)
-            .post('/api/room-types')
+            .post('/api/taxes')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(201);
@@ -25,97 +26,65 @@ describe('Room Types API (/api/room_types)', function () {
             });
     });
 
-    it('should GET the newly created room_type by id', function (done) {
+    it('should GET the newly created tax by id', function (done) {
         chai.request(server)
-            .get('/api/room-types/' + insertId)
+            .get('/api/taxes/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.property('room_type_id').and.to.be.a('number');
-                response.body[0].should.have.property('room_type').and.to.be.a('string');
-                response.body[0].should.have.property('room_rate');
-                Number(response.body[0].room_rate).should.be.a('number');
+                response.body[0].should.have.all.keys('tax_id', 'tax_name', 'tax_rate', 'active');
+                response.body[0].tax_id.should.be.a('number');
+                response.body[0].tax_name.should.be.a('string');
+                Number(response.body[0].tax_rate).should.be.a('number');
+                response.body[0].active.should.be.a('number').and.oneOf([0, 1]);
                 done();
             });
     });
 
-    it('should GET all room_types', function (done) {
+    it('should GET all the taxes', function (done) {
         chai.request(server)
-            .get('/api/room-types')
+            .get('/api/taxes')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
-                    element.should.have.property('room_type_id').and.to.be.a('number');
-                    element.should.have.property('room_type').and.to.be.a('string');
-                    element.should.have.property('room_rate');
-                    Number(element.room_rate).should.be.a('number');
+                    element.should.have.all.keys('tax_id', 'tax_name', 'tax_rate', 'active');
+                    element.tax_id.should.be.a('number');
+                    element.tax_name.should.be.a('string');
+                    Number(element.tax_rate).should.be.a('number');
+                    element.active.should.be.a('number').and.oneOf([0, 1]);
                 });
                 done();
             });
-    });
+    })
 
-    it('should GET a status 200 and an empty array because room_type_id 0 should not match any room_types', function (done) {
+    it('should GET a status 200 and an empty array because tax_id 0 should not match any taxes', function (done) {
         chai.request(server)
-            .get('/api/room-types/0')
+            .get('/api/taxes/0')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
             });
     });
-    
-    it('should FAIL to GET a single room_type and instead return a status 400 because the room_type_id is not an integer', function (done) {
+
+    it('should GET a status 400 because the tax_id param is not an integer', function (done) {
         chai.request(server)
-            .get('/api/room-types/1a')
+            .get('/api/taxes/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
                 done();
             });
     });
-    
-    it('should FAIL to POST a new room_type and return 2 errors because both parameters were invalid', function (done) {
+
+    it('should FAIL to POST a new tax and and return 3 errors because all 3 parameters are invalid', function (done) {
         const paramsObj = {
-            "room_type": 0,
-            "room_rate": "abc"
+            "tax_name": "",
+            "tax_rate": "b1.375",
+            "active": 2
         };
         chai.request(server)
-            .post('/api/room-types')
-            .send(paramsObj)
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
-                done();
-            });
-    });
-    
-    it('should update, via PUT, the newly created room_type with these new parameters', function (done) {
-        const paramsObj = {
-            "room_type_id": insertId,
-            "room_type": "Updated room Type",
-            "room_rate": 129.99
-        };
-        chai.request(server)
-            .put('/api/room-types')
-            .send(paramsObj)
-            .end(function (error, response) {
-                response.should.have.status(204);
-                done();
-            });
-    });
-    
-    it('should FAIL to update, via PUT, the newly created room_type and return 3 errors because all 3 parameters are invalid', function (done) {
-        const paramsObj = {
-            "room_type_id": 0,
-            "room_type": "",
-            "room_rate": "abc"
-        };
-        chai.request(server)
-            .put('/api/room-types')
+            .post('/api/taxes')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -126,14 +95,50 @@ describe('Room Types API (/api/room_types)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created room_type and return an error object because the room_type_id is not an interger', function (done) {
+    it('should update, via PUT, the newly created tax with these new parameters', function (done) {
         const paramsObj = {
-            "room_type_id": "d",
-            "room_type": "Restaurant",
-            "room_rate": 119.99
+            "tax_id": insertId,
+            "tax_name": "Special Tax",
+            "tax_rate": 1.250,
+            "active": 0
         };
         chai.request(server)
-            .put('/api/room-types')
+            .put('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(204);
+                done();
+            });
+    });
+    
+    it('should FAIL to update, via PUT, the newly created tax and return 4 errors because all 4 parameters are invalid', function (done) {
+        const paramsObj = {
+            "tax_id": 0,
+            "tax_name": "",
+            "tax_rate": "a1.375",
+            "active": 2
+        };
+        chai.request(server)
+            .put('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, the newly created tax and return an error object because the tax_id is not an integer', function (done) {
+        const paramsObj = {
+            "tax_id": "e",
+            "tax_name": "City",
+            "tax_rate": 1.375,
+            "active": 1
+        };
+        chai.request(server)
+            .put('/api/taxes')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -142,10 +147,10 @@ describe('Room Types API (/api/room_types)', function () {
                 done();
             });
     });
-    
-    it('should FAIL to DELETE the newly created room_type because the room_type_id is invalid', function (done) {
+
+    it('should FAIL to DELETE the newly created tax because the tax_id is invalid', function (done) {
         chai.request(server)
-            .delete('/api/room-types/0')
+            .delete('/api/taxes/0')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -154,9 +159,9 @@ describe('Room Types API (/api/room_types)', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created room_type because the room_type_id is not an integer', function (done) {
+    it('should FAIL to DELETE the newly created tax because the tax_id is not an integer', function (done) {
         chai.request(server)
-            .delete('/api/room-types/abc')
+            .delete('/api/taxes/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -165,9 +170,9 @@ describe('Room Types API (/api/room_types)', function () {
             });
     });
     
-    it('should DELETE the newly created room_type using the insertId', function (done) {
+    it('should DELETE the newly created tax using the insertId', function (done) {
         chai.request(server)
-            .delete('/api/room-types/' + insertId)
+            .delete('/api/taxes/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);
                 done();

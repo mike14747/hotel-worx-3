@@ -1,22 +1,20 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../server');
+const server = require('../../server');
 
 chai.should();
 chai.use(chaiHttp);
 
-describe('Access Levels API (/api/access-levels)', function () {
-    before(done => setTimeout(done, 1000));
-
+describe('Charge Types API (/api/charge-types))', function () {
     let insertId = 0;
     
-    it('should POST a new access_level with the provided params body and return the insertId', function (done) {
+    it('should POST a new charge_type with the provided params body and return the insertId', function (done) {
         const paramsObj = {
-            "access_level": 40,
-            "access_type": "Supreme"
+            "charge_type": "Some charge type",
+            "active": 1
         };
         chai.request(server)
-            .post('/api/access-levels')
+            .post('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(201);
@@ -27,49 +25,47 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
 
-    it('should GET the newly created access_level by id', function (done) {
+    it('should GET the newly created charge_type by id', function (done) {
         chai.request(server)
-            .get('/api/access-levels/' + insertId)
+            .get('/api/charge-types/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.all.keys('access_id', 'access_level', 'access_type');
-                response.body[0].access_id.should.be.a('number');
-                response.body[0].access_level.should.be.a('number');
-                response.body[0].access_type.should.be.a('string');
+                response.body[0].should.have.property('charge_type_id').and.to.be.a('number');
+                response.body[0].should.have.property('charge_type').and.to.be.a('string');
+                response.body[0].should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                 done();
             });
     });
 
-    it('should GET all access_levels', function (done) {
+    it('should GET all charge_types', function (done) {
         chai.request(server)
-            .get('/api/access-levels')
+            .get('/api/charge-types')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
-                    element.should.have.all.keys('access_id', 'access_level', 'access_type');
-                    element.access_id.should.be.a('number');
-                    element.access_level.should.be.a('number');
-                    element.access_type.should.be.a('string');
+                    element.should.have.property('charge_type_id').and.to.be.a('number');
+                    element.should.have.property('charge_type').and.to.be.a('string');
+                    element.should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                 });
                 done();
             });
     });
 
-    it('should GET a status 200 and an empty array because access_id 0 should not match any access_levels', function (done) {
+    it('should GET a status 200 and an empty array because charge_type_id 0 should not match any charge_types', function (done) {
         chai.request(server)
-            .get('/api/access-levels/0')
+            .get('/api/charge-types/0')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
             });
     });
-
-    it('should FAIL to GET an access_level and instead return a status 400 because the access_id param is not an integer', function (done) {
+    
+    it('should FAIL to GET a single charge_type and instead return a status 400 because the charge_type_id is not an integer', function (done) {
         chai.request(server)
-            .get('/api/access-levels/1a')
+            .get('/api/charge-types/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -78,13 +74,13 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
     
-    it('should FAIL to POST a new access_level and return 2 errors because both parameters are invalid', function (done) {
+    it('should FAIL to POST a new charge_type and return 2 errors because both parameters are invalid', function (done) {
         const paramsObj = {
-            "access_level": "a40",
-            "access_type": 2
+            "charge_type": 0,
+            "active": 2
         };
         chai.request(server)
-            .post('/api/access-levels')
+            .post('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -95,14 +91,14 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
     
-    it('should update, via PUT, the newly created access_level with these new parameters', function (done) {
+    it('should update, via PUT, the newly created charge_type with these new parameters', function (done) {
         const paramsObj = {
-            "access_id": insertId,
-            "access_level": 50,
-            "access_type": "new access type"
+            "charge_type_id": insertId,
+            "charge_type": "Updated Charge Type",
+            "active": 1
         };
         chai.request(server)
-            .put('/api/access-levels')
+            .put('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(204);
@@ -110,14 +106,14 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, the newly created access_level and return 3 errors because all 3 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created charge_type and return 3 errors because all 3 parameters are invalid', function (done) {
         const paramsObj = {
-            "access_id": 0,
-            "access_level": "a50",
-            "access_type": ""
+            "charge_type_id": 0,
+            "charge_type": "",
+            "active": 2
         };
         chai.request(server)
-            .put('/api/access-levels')
+            .put('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -128,14 +124,14 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created access_level and return an error object because the access_id not an integer', function (done) {
+    it('should FAIL to update, via PUT, the newly created charge_type and return an error object because the charge_type_id is not an interger', function (done) {
         const paramsObj = {
-            "access_id": "insertId",
-            "access_level": 50,
-            "access_type": "new access type"
+            "charge_type_id": "d",
+            "charge_type": "Restaurant",
+            "active": 1
         };
         chai.request(server)
-            .put('/api/access-levels')
+            .put('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -145,9 +141,20 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
     
-    it('should FAIL to DELETE the newly created access_level because the access_id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created charge_type because the charge_type_id is invalid', function (done) {
         chai.request(server)
-            .delete('/api/access-levels/0')
+            .delete('/api/charge-types/0')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE the newly created charge_type because the charge_type_id is not an integer', function (done) {
+        chai.request(server)
+            .delete('/api/charge-types/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -156,20 +163,9 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
     
-    it('should FAIL to DELETE the newly created access_level because the access_id is not an integer', function (done) {
+    it('should DELETE the newly created charge_type using the insertId', function (done) {
         chai.request(server)
-            .delete('/api/access-levels/abc')
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                done();
-            });
-    });
-    
-    it('should DELETE the newly created access_level using the insertId', function (done) {
-        chai.request(server)
-            .delete('/api/access-levels/' + insertId)
+            .delete('/api/charge-types/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);
                 done();

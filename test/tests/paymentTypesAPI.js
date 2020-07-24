@@ -1,20 +1,20 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../server');
+const server = require('../../server');
 
 chai.should();
 chai.use(chaiHttp);
 
-describe('Charge Types API (/api/charge-types))', function () {
+describe('Payment Types API (/api/payment-types)', function () {
     let insertId = 0;
     
-    it('should POST a new charge_type with the provided params body and return the insertId', function (done) {
+    it('should POST a new payment_type with the provided params body and return the insertId', function (done) {
         const paramsObj = {
-            "charge_type": "Some charge type",
+            "payment_type": "Some payment type",
             "active": 1
         };
         chai.request(server)
-            .post('/api/charge-types')
+            .post('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(201);
@@ -25,37 +25,37 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
 
-    it('should GET the newly created charge_type by id', function (done) {
+    it('should GET the newly created payment_type by id', function (done) {
         chai.request(server)
-            .get('/api/charge-types/' + insertId)
+            .get('/api/payment-types/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.property('charge_type_id').and.to.be.a('number');
-                response.body[0].should.have.property('charge_type').and.to.be.a('string');
+                response.body[0].should.have.property('payment_type_id').and.to.be.a('number');
+                response.body[0].should.have.property('payment_type').and.to.be.a('string');
                 response.body[0].should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                 done();
             });
     });
 
-    it('should GET all charge_types', function (done) {
+    it('should GET all payment_types', function (done) {
         chai.request(server)
-            .get('/api/charge-types')
+            .get('/api/payment-types')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
-                    element.should.have.property('charge_type_id').and.to.be.a('number');
-                    element.should.have.property('charge_type').and.to.be.a('string');
+                    element.should.have.property('payment_type_id').and.to.be.a('number');
+                    element.should.have.property('payment_type').and.to.be.a('string');
                     element.should.have.property('active').and.to.be.a('number').and.oneOf([0, 1]);
                 });
                 done();
             });
     });
 
-    it('should GET a status 200 and an empty array because charge_type_id 0 should not match any charge_types', function (done) {
+    it('should GET a status 200 and an empty array because payment_type_id 0 should not match any payment types', function (done) {
         chai.request(server)
-            .get('/api/charge-types/0')
+            .get('/api/payment-types/0')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
@@ -63,9 +63,9 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should FAIL to GET a single charge_type and instead return a status 400 because the charge_type_id is not an integer', function (done) {
+    it('should FAIL to GET a single payment_type and instead return a status 400 because the payment_type_id is not an integer', function (done) {
         chai.request(server)
-            .get('/api/charge-types/1a')
+            .get('/api/payment-types/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -74,13 +74,13 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should FAIL to POST a new charge_type and return 2 errors because both parameters are invalid', function (done) {
+    it('should FAIL to POST a new payment_type and return 2 errors because both parameters are invalid', function (done) {
         const paramsObj = {
-            "charge_type": 0,
+            "payment_type": 0,
             "active": 2
         };
         chai.request(server)
-            .post('/api/charge-types')
+            .post('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -91,14 +91,14 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should update, via PUT, the newly created charge_type with these new parameters', function (done) {
+    it('should update, via PUT, the newly created payment_type with these new parameters', function (done) {
         const paramsObj = {
-            "charge_type_id": insertId,
-            "charge_type": "Updated Charge Type",
+            "payment_type_id": insertId,
+            "payment_type": "Updated Payment Type",
             "active": 1
         };
         chai.request(server)
-            .put('/api/charge-types')
+            .put('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(204);
@@ -106,14 +106,14 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, the newly created charge_type and return 3 errors because all 3 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created payment_type and return 3 errors because all 3 parameters are invalid', function (done) {
         const paramsObj = {
-            "charge_type_id": 0,
-            "charge_type": "",
+            "payment_type_id": 0,
+            "payment_type": "",
             "active": 2
         };
         chai.request(server)
-            .put('/api/charge-types')
+            .put('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -124,14 +124,14 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created charge_type and return an error object because the charge_type_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, the newly created payment_type and return an error object because the payment_type_id is not an interger', function (done) {
         const paramsObj = {
-            "charge_type_id": "d",
-            "charge_type": "Restaurant",
+            "payment_type_id": "d",
+            "payment_type": "Updated Payment Type",
             "active": 1
         };
         chai.request(server)
-            .put('/api/charge-types')
+            .put('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -141,9 +141,9 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should FAIL to DELETE the newly created charge_type because the charge_type_id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created payment_type because the payment_type_id is invalid', function (done) {
         chai.request(server)
-            .delete('/api/charge-types/0')
+            .delete('/api/payment-types/0')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -152,9 +152,9 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created charge_type because the charge_type_id is not an integer', function (done) {
+    it('should FAIL to DELETE the newly created payment_type because the payment_type_id is not an integer', function (done) {
         chai.request(server)
-            .delete('/api/charge-types/abc')
+            .delete('/api/payment-types/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -163,9 +163,9 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should DELETE the newly created charge_type using the insertId', function (done) {
+    it('should DELETE the newly created payment_type using the insertId', function (done) {
         chai.request(server)
-            .delete('/api/charge-types/' + insertId)
+            .delete('/api/payment-types/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);
                 done();
