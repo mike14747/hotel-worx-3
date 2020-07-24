@@ -1,21 +1,20 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../server');
+const server = require('../../server');
 
 chai.should();
 chai.use(chaiHttp);
 
-describe('Taxes API (/api/taxes)', function () {
-    let insertId = 0
-
-    it('should POST a new tax and return the insertId', function (done) {
+describe('Access Levels API (/api/access-levels)', function () {
+    let insertId = 0;
+    
+    it('should POST a new access_level with the provided params body and return the insertId', function (done) {
         const paramsObj = {
-            "tax_name": "Special Tax",
-            "tax_rate": 1.375,
-            "active": 1
+            "access_level": 40,
+            "access_type": "Supreme"
         };
         chai.request(server)
-            .post('/api/taxes')
+            .post('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(201);
@@ -26,41 +25,39 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should GET the newly created tax by id', function (done) {
+    it('should GET the newly created access_level by id', function (done) {
         chai.request(server)
-            .get('/api/taxes/' + insertId)
+            .get('/api/access-levels/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.all.keys('tax_id', 'tax_name', 'tax_rate', 'active');
-                response.body[0].tax_id.should.be.a('number');
-                response.body[0].tax_name.should.be.a('string');
-                Number(response.body[0].tax_rate).should.be.a('number');
-                response.body[0].active.should.be.a('number').and.oneOf([0, 1]);
+                response.body[0].should.have.all.keys('access_id', 'access_level', 'access_type');
+                response.body[0].access_id.should.be.a('number');
+                response.body[0].access_level.should.be.a('number');
+                response.body[0].access_type.should.be.a('string');
                 done();
             });
     });
 
-    it('should GET all the taxes', function (done) {
+    it('should GET all access_levels', function (done) {
         chai.request(server)
-            .get('/api/taxes')
+            .get('/api/access-levels')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
-                    element.should.have.all.keys('tax_id', 'tax_name', 'tax_rate', 'active');
-                    element.tax_id.should.be.a('number');
-                    element.tax_name.should.be.a('string');
-                    Number(element.tax_rate).should.be.a('number');
-                    element.active.should.be.a('number').and.oneOf([0, 1]);
+                    element.should.have.all.keys('access_id', 'access_level', 'access_type');
+                    element.access_id.should.be.a('number');
+                    element.access_level.should.be.a('number');
+                    element.access_type.should.be.a('string');
                 });
                 done();
             });
-    })
+    });
 
-    it('should GET a status 200 and an empty array because tax_id 0 should not match any taxes', function (done) {
+    it('should GET a status 200 and an empty array because access_id 0 should not match any access_levels', function (done) {
         chai.request(server)
-            .get('/api/taxes/0')
+            .get('/api/access-levels/0')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
@@ -68,23 +65,57 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should GET a status 400 because the tax_id param is not an integer', function (done) {
+    it('should FAIL to GET an access_level and instead return a status 400 because the access_id param is not an integer', function (done) {
         chai.request(server)
-            .get('/api/taxes/1a')
+            .get('/api/access-levels/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
                 done();
             });
     });
-
-    it('should FAIL to POST a new tax and and return 3 errors because all 3 parameters are invalid', function (done) {
+    
+    it('should FAIL to POST a new access_level and return 2 errors because both parameters are invalid', function (done) {
         const paramsObj = {
-            "tax_name": "",
-            "tax_rate": "b1.375",
-            "active": 2
+            "access_level": "a40",
+            "access_type": 2
         };
         chai.request(server)
-            .post('/api/taxes')
+            .post('/api/access-levels')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+                done();
+            });
+    });
+    
+    it('should update, via PUT, the newly created access_level with these new parameters', function (done) {
+        const paramsObj = {
+            "access_id": insertId,
+            "access_level": 50,
+            "access_type": "new access type"
+        };
+        chai.request(server)
+            .put('/api/access-levels')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(204);
+                done();
+            });
+    });
+    
+    it('should FAIL to update, via PUT, the newly created access_level and return 3 errors because all 3 parameters are invalid', function (done) {
+        const paramsObj = {
+            "access_id": 0,
+            "access_level": "a50",
+            "access_type": ""
+        };
+        chai.request(server)
+            .put('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -95,73 +126,15 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should update, via PUT, the newly created tax with these new parameters', function (done) {
+    it('should FAIL to update, via PUT, the newly created access_level and return an error object because the access_id not an integer', function (done) {
         const paramsObj = {
-            "tax_id": insertId,
-            "tax_name": "Special Tax",
-            "tax_rate": 1.250,
-            "active": 0
+            "access_id": "insertId",
+            "access_level": 50,
+            "access_type": "new access type"
         };
         chai.request(server)
-            .put('/api/taxes')
+            .put('/api/access-levels')
             .send(paramsObj)
-            .end(function (error, response) {
-                response.should.have.status(204);
-                done();
-            });
-    });
-    
-    it('should FAIL to update, via PUT, the newly created tax and return 4 errors because all 4 parameters are invalid', function (done) {
-        const paramsObj = {
-            "tax_id": 0,
-            "tax_name": "",
-            "tax_rate": "a1.375",
-            "active": 2
-        };
-        chai.request(server)
-            .put('/api/taxes')
-            .send(paramsObj)
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
-                done();
-            });
-    });
-
-    it('should FAIL to update, via PUT, the newly created tax and return an error object because the tax_id is not an integer', function (done) {
-        const paramsObj = {
-            "tax_id": "e",
-            "tax_name": "City",
-            "tax_rate": 1.375,
-            "active": 1
-        };
-        chai.request(server)
-            .put('/api/taxes')
-            .send(paramsObj)
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                done();
-            });
-    });
-
-    it('should FAIL to DELETE the newly created tax because the tax_id is invalid', function (done) {
-        chai.request(server)
-            .delete('/api/taxes/0')
-            .end(function (error, response) {
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                done();
-            });
-    });
-
-    it('should FAIL to DELETE the newly created tax because the tax_id is not an integer', function (done) {
-        chai.request(server)
-            .delete('/api/taxes/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -170,9 +143,31 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
     
-    it('should DELETE the newly created tax using the insertId', function (done) {
+    it('should FAIL to DELETE the newly created access_level because the access_id is invalid', function (done) {
         chai.request(server)
-            .delete('/api/taxes/' + insertId)
+            .delete('/api/access-levels/0')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
+    
+    it('should FAIL to DELETE the newly created access_level because the access_id is not an integer', function (done) {
+        chai.request(server)
+            .delete('/api/access-levels/abc')
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('message').and.to.be.a('string');
+                done();
+            });
+    });
+    
+    it('should DELETE the newly created access_level using the insertId', function (done) {
+        chai.request(server)
+            .delete('/api/access-levels/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);
                 done();

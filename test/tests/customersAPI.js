@@ -1,29 +1,29 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../server');
+const server = require('../../server');
 
 chai.should();
 chai.use(chaiHttp);
 
-describe('Companies API (/api/companies)', function () {
+describe('Customers API (/api/customers)', function () {
     let insertId = 0;
 
-    it('should POST a new company with the provided params body and return the insertId', function (done) {
+    it('should POST a new customer with the provided params body and return the insertId', function (done) {
         const paramsObj = {
-            "company_name": "Union Sand",
-            "address": "234 Bank St",
-            "city": "Painesville",
-            "state": "Ohio",
-            "zip": "44077",
+            "first_name": "Jamar",
+            "last_name": "Wilkerson",
+            "address": "7193 Valley St",
+            "city": "Lexington",
+            "state": "NC",
+            "zip": "27292",
             "country": "USA",
-            "email": "u.sand@yahoo.net",
-            "phone": "800-555-1212",
-            "credit_card_num": "1234567890123456",
-            "cc_expiration": "11 / 24",
-            "tax_exempt": 0,
+            "email": "rgiersig@yahoo.com",
+            "phone": "806-427-8083",
+            "credit_card_num": "4444111122223333",
+            "cc_expiration": "10 / 22"
         };
         chai.request(server)
-            .post('/api/companies')
+            .post('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(201);
@@ -34,14 +34,15 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should GET the newly created company by id', function (done) {
+    it('should GET the newly created customer by id', function (done) {
         chai.request(server)
-            .get('/api/companies/' + insertId)
+            .get('/api/customers/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
-                response.body[0].should.have.property('company_id').and.to.be.a('number');
-                response.body[0].should.have.property('company_name').and.to.be.a('string');
+                response.body[0].should.have.property('customer_id').and.to.be.a('number');
+                response.body[0].should.have.property('first_name').and.to.be.a('string');
+                response.body[0].should.have.property('last_name').and.to.be.a('string');
                 response.body[0].should.have.property('address').and.to.be.a('string');
                 response.body[0].should.have.property('city').and.to.be.a('string');
                 response.body[0].should.have.property('state').and.to.be.a('string');
@@ -49,22 +50,22 @@ describe('Companies API (/api/companies)', function () {
                 response.body[0].should.have.property('country').and.to.be.a('string');
                 response.body[0].should.have.property('email').and.to.be.a('string');
                 response.body[0].should.have.property('phone').and.to.be.a('string');
-                response.body[0].should.have.property('credit_card_num').and.to.be.a('string');
+                response.body[0].should.have.property('creditCardLastFour').and.to.be.a('string');
                 response.body[0].should.have.property('cc_expiration').and.to.be.a('string');
-                response.body[0].should.have.property('tax_exempt').and.to.be.a('number').and.oneOf([0, 1]);
                 done();
             });
     });
 
-    it('should GET all companies', function (done) {
+    it('should GET all customers', function (done) {
         chai.request(server)
-            .get('/api/companies')
+            .get('/api/customers')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
-                    element.should.have.property('company_id').and.to.be.a('number');
-                    element.should.have.property('company_name').and.to.be.a('string');
+                    element.should.have.property('customer_id').and.to.be.a('number');
+                    element.should.have.property('first_name').and.to.be.a('string');
+                    element.should.have.property('last_name').and.to.be.a('string');
                     element.should.have.property('address').and.to.be.a('string');
                     element.should.have.property('city').and.to.be.a('string');
                     element.should.have.property('state').and.to.be.a('string');
@@ -72,17 +73,16 @@ describe('Companies API (/api/companies)', function () {
                     element.should.have.property('country').and.to.be.a('string');
                     element.should.have.property('email').and.to.be.a('string');
                     element.should.have.property('phone').and.to.be.a('string');
-                    element.should.have.property('credit_card_num').and.to.be.a('string');
+                    element.should.have.property('creditCardLastFour').and.to.be.a('string');
                     element.should.have.property('cc_expiration').and.to.be.a('string');
-                    element.should.have.property('tax_exempt').and.to.be.a('number').and.oneOf([0, 1]);
                 });
                 done();
             });
     })
 
-    it('should GET a status 200 and an empty array because company_id 0 should not match any companies', function (done) {
+    it('should GET a status 200 and an empty array because customer_id 0 should not match any customers', function (done) {
         chai.request(server)
-            .get('/api/companies/0')
+            .get('/api/customers/0')
             .end(function (error, response) {
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
@@ -90,9 +90,9 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should FAIL to GET a single company and instead return a status 400 because the company_id is not an integer', function (done) {
+    it('should FAIL to GET a single customer and instead return a status 400 because the customer_id is not an integer', function (done) {
         chai.request(server)
-            .get('/api/companies/1a')
+            .get('/api/customers/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -101,22 +101,22 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should FAIL to POST a new company and return 11 errors because all 11 parameters are invalid', function (done) {
+    it('should FAIL to POST a new customer and return 11 errors because all 11 parameters are invalid', function (done) {
         const paramsObj = {
-            "company_name": "",
-            "address": 111,
-            "city": "",
-            "state": 222,
-            "zip": "",
-            "country": 333,
-            "email": "",
-            "phone": 444,
-            "credit_card_num": "",
-            "cc_expiration": 555,
-            "tax_exempt": 2,
+            "first_name": "",
+            "last_name": 111,
+            "address": "",
+            "city": 222,
+            "state": "",
+            "zip": 333,
+            "country": "",
+            "email": 444,
+            "phone": "",
+            "credit_card_num": 555,
+            "cc_expiration": ""
         };
         chai.request(server)
-            .post('/api/companies')
+            .post('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -127,23 +127,23 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should update, via PUT, the newly created company with these new parameters', function (done) {
+    it('should update, via PUT, the newly created customer with these new parameters', function (done) {
         const paramsObj = {
-            "company_id": insertId,
-            "company_name": "Union Sand",
-            "address": "234 Bank St",
-            "city": "Painesville",
-            "state": "Ohio",
-            "zip": "44077",
+            "customer_id": insertId,
+            "first_name": "Jamar",
+            "last_name": "Wilkerson",
+            "address": "7193 Valley St",
+            "city": "Lexington",
+            "state": "NC",
+            "zip": "27292",
             "country": "USA",
-            "email": "u.sand@yahoo.net",
-            "phone": "800-555-1212",
-            "credit_card_num": "1234567890123456",
-            "cc_expiration": "11 / 24",
-            "tax_exempt": 0,
+            "email": "rgiersig@yahoo.com",
+            "phone": "806-427-8083",
+            "credit_card_num": "4444111122223333",
+            "cc_expiration": "10 / 22"
         };
         chai.request(server)
-            .put('/api/companies')
+            .put('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(204);
@@ -151,23 +151,23 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created company and return 12 errors because all 12 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created customer and return 12 errors because all 12 parameters are invalid', function (done) {
         const paramsObj = {
-            "company_id": 0,
-            "company_name": "",
-            "address": 111,
-            "city": "",
-            "state": 222,
-            "zip": "",
-            "country": 333,
-            "email": "",
-            "phone": 444,
-            "credit_card_num": "",
-            "cc_expiration": 555,
-            "tax_exempt": 2,
+            "customer_id": 0,
+            "first_name": "",
+            "last_name": 111,
+            "address": "",
+            "city": 222,
+            "state": "",
+            "zip": 333,
+            "country": "",
+            "email": 444,
+            "phone": "",
+            "credit_card_num": 555,
+            "cc_expiration": ""
         };
         chai.request(server)
-            .put('/api/companies')
+            .put('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -178,23 +178,23 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created company and return an error object because the company_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, the newly created customer and return an error object because the customer_id is not an interger', function (done) {
         const paramsObj = {
-            "company_id": "abc",
-            "company_name": "Union Sand",
-            "address": "234 Bank St",
-            "city": "Painesville",
-            "state": "Ohio",
-            "zip": "44077",
+            "customer_id": "abc",
+            "first_name": "Jamar",
+            "last_name": "Wilkerson",
+            "address": "7193 Valley St",
+            "city": "Lexington",
+            "state": "NC",
+            "zip": "27292",
             "country": "USA",
-            "email": "u.sand@yahoo.net",
-            "phone": "800-555-1212",
-            "credit_card_num": "1234567890123456",
-            "cc_expiration": "11 / 24",
-            "tax_exempt": 0,
+            "email": "rgiersig@yahoo.com",
+            "phone": "806-427-8083",
+            "credit_card_num": "4444111122223333",
+            "cc_expiration": "10 / 22"
         };
         chai.request(server)
-            .put('/api/companies')
+            .put('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -204,9 +204,9 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created company because the company_id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created customer because the customer_id is invalid', function (done) {
         chai.request(server)
-            .delete('/api/companies/0')
+            .delete('/api/customers/0')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -215,9 +215,9 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created company because the company_id is not an integer', function (done) {
+    it('should FAIL to DELETE the newly created customer because the customer_id is not an integer', function (done) {
         chai.request(server)
-            .delete('/api/companies/abc')
+            .delete('/api/customers/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
@@ -226,9 +226,9 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should DELETE the newly created company using the insertId', function (done) {
+    it('should DELETE the newly created customer using the insertId', function (done) {
         chai.request(server)
-            .delete('/api/companies/' + insertId)
+            .delete('/api/customers/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);
                 done();
