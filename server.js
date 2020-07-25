@@ -44,6 +44,6 @@ if (NODE_ENV === 'production') {
     });
 }
 
-app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
+const server = app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
 
-module.exports = app;
+module.exports = server;
