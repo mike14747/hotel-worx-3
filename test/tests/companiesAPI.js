@@ -1,9 +1,4 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Companies API (/api/companies)', function () {
     let insertId = 0;
@@ -22,7 +17,7 @@ describe('Companies API (/api/companies)', function () {
             "cc_expiration": "11 / 24",
             "tax_exempt": 0,
         };
-        chai.request(server)
+        agent
             .post('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
@@ -35,7 +30,7 @@ describe('Companies API (/api/companies)', function () {
     });
 
     it('should GET the newly created company by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/companies/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -57,7 +52,7 @@ describe('Companies API (/api/companies)', function () {
     });
 
     it('should GET all companies', function (done) {
-        chai.request(server)
+        agent
             .get('/api/companies')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -81,7 +76,7 @@ describe('Companies API (/api/companies)', function () {
     })
 
     it('should GET a status 200 and an empty array because company_id 0 should not match any companies', function (done) {
-        chai.request(server)
+        agent
             .get('/api/companies/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -91,7 +86,7 @@ describe('Companies API (/api/companies)', function () {
     });
 
     it('should FAIL to GET a single company and instead return a status 400 because the company_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/companies/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -115,7 +110,7 @@ describe('Companies API (/api/companies)', function () {
             "cc_expiration": 555,
             "tax_exempt": 2,
         };
-        chai.request(server)
+        agent
             .post('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
@@ -142,7 +137,7 @@ describe('Companies API (/api/companies)', function () {
             "cc_expiration": "11 / 24",
             "tax_exempt": 0,
         };
-        chai.request(server)
+        agent
             .put('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
@@ -166,7 +161,7 @@ describe('Companies API (/api/companies)', function () {
             "cc_expiration": 555,
             "tax_exempt": 2,
         };
-        chai.request(server)
+        agent
             .put('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
@@ -193,7 +188,7 @@ describe('Companies API (/api/companies)', function () {
             "cc_expiration": "11 / 24",
             "tax_exempt": 0,
         };
-        chai.request(server)
+        agent
             .put('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
@@ -205,7 +200,7 @@ describe('Companies API (/api/companies)', function () {
     });
 
     it('should FAIL to DELETE the newly created company because the company_id is invalid', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/companies/0')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -216,7 +211,7 @@ describe('Companies API (/api/companies)', function () {
     });
 
     it('should FAIL to DELETE the newly created company because the company_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/companies/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -227,7 +222,7 @@ describe('Companies API (/api/companies)', function () {
     });
 
     it('should DELETE the newly created company using the insertId', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/companies/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);

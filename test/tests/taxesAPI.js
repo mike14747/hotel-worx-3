@@ -1,9 +1,4 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Taxes API (/api/taxes)', function () {
     let insertId = 0
@@ -14,7 +9,7 @@ describe('Taxes API (/api/taxes)', function () {
             "tax_rate": 1.375,
             "active": 1
         };
-        chai.request(server)
+        agent
             .post('/api/taxes')
             .send(paramsObj)
             .end(function (error, response) {
@@ -27,7 +22,7 @@ describe('Taxes API (/api/taxes)', function () {
     });
 
     it('should GET the newly created tax by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/taxes/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -42,7 +37,7 @@ describe('Taxes API (/api/taxes)', function () {
     });
 
     it('should GET all the taxes', function (done) {
-        chai.request(server)
+        agent
             .get('/api/taxes')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -59,7 +54,7 @@ describe('Taxes API (/api/taxes)', function () {
     })
 
     it('should GET a status 200 and an empty array because tax_id 0 should not match any taxes', function (done) {
-        chai.request(server)
+        agent
             .get('/api/taxes/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -69,7 +64,7 @@ describe('Taxes API (/api/taxes)', function () {
     });
 
     it('should GET a status 400 because the tax_id param is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/taxes/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -83,7 +78,7 @@ describe('Taxes API (/api/taxes)', function () {
             "tax_rate": "b1.375",
             "active": 2
         };
-        chai.request(server)
+        agent
             .post('/api/taxes')
             .send(paramsObj)
             .end(function (error, response) {
@@ -102,7 +97,7 @@ describe('Taxes API (/api/taxes)', function () {
             "tax_rate": 1.250,
             "active": 0
         };
-        chai.request(server)
+        agent
             .put('/api/taxes')
             .send(paramsObj)
             .end(function (error, response) {
@@ -118,7 +113,7 @@ describe('Taxes API (/api/taxes)', function () {
             "tax_rate": "a1.375",
             "active": 2
         };
-        chai.request(server)
+        agent
             .put('/api/taxes')
             .send(paramsObj)
             .end(function (error, response) {
@@ -137,7 +132,7 @@ describe('Taxes API (/api/taxes)', function () {
             "tax_rate": 1.375,
             "active": 1
         };
-        chai.request(server)
+        agent
             .put('/api/taxes')
             .send(paramsObj)
             .end(function (error, response) {
@@ -149,7 +144,7 @@ describe('Taxes API (/api/taxes)', function () {
     });
 
     it('should FAIL to DELETE the newly created tax because the tax_id is invalid', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/taxes/0')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -160,7 +155,7 @@ describe('Taxes API (/api/taxes)', function () {
     });
 
     it('should FAIL to DELETE the newly created tax because the tax_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/taxes/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -171,7 +166,7 @@ describe('Taxes API (/api/taxes)', function () {
     });
     
     it('should DELETE the newly created tax using the insertId', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/taxes/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);

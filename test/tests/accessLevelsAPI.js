@@ -1,9 +1,4 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Access Levels API (/api/access-levels)', function () {
     let insertId = 0;
@@ -13,7 +8,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             "access_level": 40,
             "access_type": "Supreme"
         };
-        chai.request(server)
+        agent
             .post('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
@@ -26,7 +21,7 @@ describe('Access Levels API (/api/access-levels)', function () {
     });
 
     it('should GET the newly created access_level by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/access-levels/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -40,7 +35,7 @@ describe('Access Levels API (/api/access-levels)', function () {
     });
 
     it('should GET all access_levels', function (done) {
-        chai.request(server)
+        agent
             .get('/api/access-levels')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -56,7 +51,7 @@ describe('Access Levels API (/api/access-levels)', function () {
     });
 
     it('should GET a status 200 and an empty array because access_id 0 should not match any access_levels', function (done) {
-        chai.request(server)
+        agent
             .get('/api/access-levels/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -66,7 +61,7 @@ describe('Access Levels API (/api/access-levels)', function () {
     });
 
     it('should FAIL to GET an access_level and instead return a status 400 because the access_id param is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/access-levels/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -81,7 +76,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             "access_level": "a40",
             "access_type": 2
         };
-        chai.request(server)
+        agent
             .post('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
@@ -99,7 +94,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             "access_level": 50,
             "access_type": "new access type"
         };
-        chai.request(server)
+        agent
             .put('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
@@ -114,7 +109,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             "access_level": "a50",
             "access_type": ""
         };
-        chai.request(server)
+        agent
             .put('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
@@ -132,7 +127,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             "access_level": 50,
             "access_type": "new access type"
         };
-        chai.request(server)
+        agent
             .put('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
@@ -144,7 +139,7 @@ describe('Access Levels API (/api/access-levels)', function () {
     });
     
     it('should FAIL to DELETE the newly created access_level because the access_id is invalid', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/access-levels/0')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -155,7 +150,7 @@ describe('Access Levels API (/api/access-levels)', function () {
     });
     
     it('should FAIL to DELETE the newly created access_level because the access_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/access-levels/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -166,7 +161,7 @@ describe('Access Levels API (/api/access-levels)', function () {
     });
     
     it('should DELETE the newly created access_level using the insertId', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/access-levels/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);

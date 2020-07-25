@@ -1,9 +1,4 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Payment Types API (/api/payment-types)', function () {
     let insertId = 0;
@@ -13,7 +8,7 @@ describe('Payment Types API (/api/payment-types)', function () {
             "payment_type": "Some payment type",
             "active": 1
         };
-        chai.request(server)
+        agent
             .post('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -26,7 +21,7 @@ describe('Payment Types API (/api/payment-types)', function () {
     });
 
     it('should GET the newly created payment_type by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/payment-types/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -39,7 +34,7 @@ describe('Payment Types API (/api/payment-types)', function () {
     });
 
     it('should GET all payment_types', function (done) {
-        chai.request(server)
+        agent
             .get('/api/payment-types')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -54,7 +49,7 @@ describe('Payment Types API (/api/payment-types)', function () {
     });
 
     it('should GET a status 200 and an empty array because payment_type_id 0 should not match any payment types', function (done) {
-        chai.request(server)
+        agent
             .get('/api/payment-types/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -64,7 +59,7 @@ describe('Payment Types API (/api/payment-types)', function () {
     });
     
     it('should FAIL to GET a single payment_type and instead return a status 400 because the payment_type_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/payment-types/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -79,7 +74,7 @@ describe('Payment Types API (/api/payment-types)', function () {
             "payment_type": 0,
             "active": 2
         };
-        chai.request(server)
+        agent
             .post('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -97,7 +92,7 @@ describe('Payment Types API (/api/payment-types)', function () {
             "payment_type": "Updated Payment Type",
             "active": 1
         };
-        chai.request(server)
+        agent
             .put('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -112,7 +107,7 @@ describe('Payment Types API (/api/payment-types)', function () {
             "payment_type": "",
             "active": 2
         };
-        chai.request(server)
+        agent
             .put('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -130,7 +125,7 @@ describe('Payment Types API (/api/payment-types)', function () {
             "payment_type": "Updated Payment Type",
             "active": 1
         };
-        chai.request(server)
+        agent
             .put('/api/payment-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -142,7 +137,7 @@ describe('Payment Types API (/api/payment-types)', function () {
     });
     
     it('should FAIL to DELETE the newly created payment_type because the payment_type_id is invalid', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/payment-types/0')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -153,7 +148,7 @@ describe('Payment Types API (/api/payment-types)', function () {
     });
 
     it('should FAIL to DELETE the newly created payment_type because the payment_type_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/payment-types/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -164,7 +159,7 @@ describe('Payment Types API (/api/payment-types)', function () {
     });
     
     it('should DELETE the newly created payment_type using the insertId', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/payment-types/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);

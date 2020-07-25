@@ -1,9 +1,4 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Customers API (/api/customers)', function () {
     let insertId = 0;
@@ -22,7 +17,7 @@ describe('Customers API (/api/customers)', function () {
             "credit_card_num": "4444111122223333",
             "cc_expiration": "10 / 22"
         };
-        chai.request(server)
+        agent
             .post('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
@@ -35,7 +30,7 @@ describe('Customers API (/api/customers)', function () {
     });
 
     it('should GET the newly created customer by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/customers/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -57,7 +52,7 @@ describe('Customers API (/api/customers)', function () {
     });
 
     it('should GET all customers', function (done) {
-        chai.request(server)
+        agent
             .get('/api/customers')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -81,7 +76,7 @@ describe('Customers API (/api/customers)', function () {
     })
 
     it('should GET a status 200 and an empty array because customer_id 0 should not match any customers', function (done) {
-        chai.request(server)
+        agent
             .get('/api/customers/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -91,7 +86,7 @@ describe('Customers API (/api/customers)', function () {
     });
 
     it('should FAIL to GET a single customer and instead return a status 400 because the customer_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/customers/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -115,7 +110,7 @@ describe('Customers API (/api/customers)', function () {
             "credit_card_num": 555,
             "cc_expiration": ""
         };
-        chai.request(server)
+        agent
             .post('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
@@ -142,7 +137,7 @@ describe('Customers API (/api/customers)', function () {
             "credit_card_num": "4444111122223333",
             "cc_expiration": "10 / 22"
         };
-        chai.request(server)
+        agent
             .put('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
@@ -166,7 +161,7 @@ describe('Customers API (/api/customers)', function () {
             "credit_card_num": 555,
             "cc_expiration": ""
         };
-        chai.request(server)
+        agent
             .put('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
@@ -193,7 +188,7 @@ describe('Customers API (/api/customers)', function () {
             "credit_card_num": "4444111122223333",
             "cc_expiration": "10 / 22"
         };
-        chai.request(server)
+        agent
             .put('/api/customers')
             .send(paramsObj)
             .end(function (error, response) {
@@ -205,7 +200,7 @@ describe('Customers API (/api/customers)', function () {
     });
 
     it('should FAIL to DELETE the newly created customer because the customer_id is invalid', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/customers/0')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -216,7 +211,7 @@ describe('Customers API (/api/customers)', function () {
     });
 
     it('should FAIL to DELETE the newly created customer because the customer_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/customers/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -227,7 +222,7 @@ describe('Customers API (/api/customers)', function () {
     });
 
     it('should DELETE the newly created customer using the insertId', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/customers/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);
