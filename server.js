@@ -15,7 +15,7 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     } else {
-        // return res.status(401).json({ message: 'User needs admin priviledges!' });
+        // return res.status(401).json({ message: 'User must be logged in to access these routes!' });
         return next();
     }
 }
@@ -27,6 +27,7 @@ mysqlConnect()
         app.use(passport.initialize());
         app.use(passport.session());
         app.get('/api/test', (req, res) => res.status(200).end());
+        app.use('/api/auth', require('./controllers/authController'));
         app.use('/api', checkAuthenticated, require('./controllers'));
     })
     .catch((error) => {
@@ -43,6 +44,6 @@ if (NODE_ENV === 'production') {
     });
 }
 
-const server = app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
+app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
 
-module.exports = server;
+module.exports = app;
