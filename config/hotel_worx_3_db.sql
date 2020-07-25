@@ -253,7 +253,9 @@ INSERT INTO users (username, password, access_id) VALUES
 ('manager', '$2b$10$2ataQ4kjDbZaR9TDSUqXI.Mt.Gq/bDn1Te3MN939s3fJAtTrKJa9i', 2),
 ('user', '$2b$10$rnUz2cFk61G27KdixeR5G.rf78zaKzDZlebrs9ZK5tnnVGFWrnUPm', 1);
 
- -- pw admin
+ -- admin password: admin
+ -- manager password: 111111
+ -- user password: ?
  -- pw 123456
  -- pw 654321
  -- pw 123123

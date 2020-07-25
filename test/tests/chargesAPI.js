@@ -1,9 +1,4 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Charges API (/api/charges)', function () {
     let insertId = 0;
@@ -15,7 +10,7 @@ describe('Charges API (/api/charges)', function () {
             "charge_amount": 43.12,
             "taxable": 1
         };
-        chai.request(server)
+        agent
             .post('/api/charges')
             .send(paramsObj)
             .end(function (error, response) {
@@ -28,7 +23,7 @@ describe('Charges API (/api/charges)', function () {
     });
 
     it('should GET the newly created charge by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/charges/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -44,7 +39,7 @@ describe('Charges API (/api/charges)', function () {
     });
 
     it('should GET all the charges', function (done) {
-        chai.request(server)
+        agent
             .get('/api/charges')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -62,7 +57,7 @@ describe('Charges API (/api/charges)', function () {
     })
 
     it('should GET a status 200 and an empty array because charge_id 0 should not match any charges', function (done) {
-        chai.request(server)
+        agent
             .get('/api/charges/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -72,7 +67,7 @@ describe('Charges API (/api/charges)', function () {
     });
 
     it('should FAIL to GET a charge and instead return a status 400 because the charge_id param is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/charges/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -89,7 +84,7 @@ describe('Charges API (/api/charges)', function () {
             "charge_amount": 29.87,
             "taxable": 1
         };
-        chai.request(server)
+        agent
             .post('/api/charges')
             .send(paramsObj)
             .end(function (error, response) {
@@ -107,7 +102,7 @@ describe('Charges API (/api/charges)', function () {
             "charge_amount": "a43.12",
             "taxable": 2
         };
-        chai.request(server)
+        agent
             .post('/api/charges')
             .send(paramsObj)
             .end(function (error, response) {
@@ -127,7 +122,7 @@ describe('Charges API (/api/charges)', function () {
             "charge_amount": 53.12,
             "taxable": 1
         };
-        chai.request(server)
+        agent
             .put('/api/charges')
             .send(paramsObj)
             .end(function (error, response) {
@@ -144,7 +139,7 @@ describe('Charges API (/api/charges)', function () {
             "charge_amount": "a53.12",
             "taxable": 2
         };
-        chai.request(server)
+        agent
             .put('/api/charges')
             .send(paramsObj)
             .end(function (error, response) {
@@ -164,7 +159,7 @@ describe('Charges API (/api/charges)', function () {
             "charge_amount": 53.12,
             "taxable": 1
         };
-        chai.request(server)
+        agent
             .put('/api/charges')
             .send(paramsObj)
             .end(function (error, response) {
@@ -176,7 +171,7 @@ describe('Charges API (/api/charges)', function () {
     });
     
     it('should FAIL to DELETE the newly created charge because the charge_id is invalid', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/charges/0')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -187,7 +182,7 @@ describe('Charges API (/api/charges)', function () {
     });
     
     it('should FAIL to DELETE all charges associated with a res_room_id because the res_room id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/charges/res-rooms/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -198,7 +193,7 @@ describe('Charges API (/api/charges)', function () {
     });
     
     it('should DELETE the newly created charge using the insertId', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/charges/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);
@@ -207,7 +202,7 @@ describe('Charges API (/api/charges)', function () {
     });
     
     it('should DELETE all charges associated with a res_room_id', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/charges/res-rooms/1100')
             .end(function (error, response) {
                 response.should.have.status(204);

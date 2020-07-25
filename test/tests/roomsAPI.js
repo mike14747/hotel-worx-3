@@ -1,13 +1,8 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Rooms API (/api/room)', function () {
     it('should GET all rooms', function (done) {
-        chai.request(server)
+        agent
             .get('/api/rooms')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -30,7 +25,7 @@ describe('Rooms API (/api/room)', function () {
     });
     
     it('should GET a single room by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/rooms/1')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -51,7 +46,7 @@ describe('Rooms API (/api/room)', function () {
     });
 
     it('should return status 200 and an empty array since room_id 0 should not match any rooms', function (done) {
-        chai.request(server)
+        agent
             .get('/api/rooms/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -61,7 +56,7 @@ describe('Rooms API (/api/room)', function () {
     });
 
     it('should GET a status 400 since the room_id param is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/rooms/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -70,7 +65,7 @@ describe('Rooms API (/api/room)', function () {
     });
 
     it('should get all rooms with only their room_id and room_num', function (done) {
-        chai.request(server)
+        agent
             .get('/api/rooms/all-ids-nums')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -84,7 +79,7 @@ describe('Rooms API (/api/room)', function () {
     });
 
     it('should GET cumulative totals for hotel-wide house status', function (done) {
-        chai.request(server)
+        agent
             .get('/api/rooms/house-status')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -99,7 +94,7 @@ describe('Rooms API (/api/room)', function () {
     });
 
     it('should GET all rooms that meet the query params and their housekeeping status data', function (done) {
-        chai.request(server)
+        agent
             .get('/api/rooms/housekeeping-status')
             .end(function (error, response) {
                 response.should.have.status(200);

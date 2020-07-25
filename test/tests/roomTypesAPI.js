@@ -1,9 +1,4 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Room Types API (/api/room_types)', function () {
     let insertId = 0;
@@ -13,7 +8,7 @@ describe('Room Types API (/api/room_types)', function () {
             "room_type": "Some room type",
             "room_rate": 119.99
         };
-        chai.request(server)
+        agent
             .post('/api/room-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -26,7 +21,7 @@ describe('Room Types API (/api/room_types)', function () {
     });
 
     it('should GET the newly created room_type by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/room-types/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -40,7 +35,7 @@ describe('Room Types API (/api/room_types)', function () {
     });
 
     it('should GET all room_types', function (done) {
-        chai.request(server)
+        agent
             .get('/api/room-types')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -56,7 +51,7 @@ describe('Room Types API (/api/room_types)', function () {
     });
 
     it('should GET a status 200 and an empty array because room_type_id 0 should not match any room_types', function (done) {
-        chai.request(server)
+        agent
             .get('/api/room-types/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -66,7 +61,7 @@ describe('Room Types API (/api/room_types)', function () {
     });
     
     it('should FAIL to GET a single room_type and instead return a status 400 because the room_type_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/room-types/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -81,7 +76,7 @@ describe('Room Types API (/api/room_types)', function () {
             "room_type": 0,
             "room_rate": "abc"
         };
-        chai.request(server)
+        agent
             .post('/api/room-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -99,7 +94,7 @@ describe('Room Types API (/api/room_types)', function () {
             "room_type": "Updated room Type",
             "room_rate": 129.99
         };
-        chai.request(server)
+        agent
             .put('/api/room-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -114,7 +109,7 @@ describe('Room Types API (/api/room_types)', function () {
             "room_type": "",
             "room_rate": "abc"
         };
-        chai.request(server)
+        agent
             .put('/api/room-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -132,7 +127,7 @@ describe('Room Types API (/api/room_types)', function () {
             "room_type": "Restaurant",
             "room_rate": 119.99
         };
-        chai.request(server)
+        agent
             .put('/api/room-types')
             .send(paramsObj)
             .end(function (error, response) {
@@ -144,7 +139,7 @@ describe('Room Types API (/api/room_types)', function () {
     });
     
     it('should FAIL to DELETE the newly created room_type because the room_type_id is invalid', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/room-types/0')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -155,7 +150,7 @@ describe('Room Types API (/api/room_types)', function () {
     });
 
     it('should FAIL to DELETE the newly created room_type because the room_type_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/room-types/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -166,7 +161,7 @@ describe('Room Types API (/api/room_types)', function () {
     });
     
     it('should DELETE the newly created room_type using the insertId', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/room-types/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);

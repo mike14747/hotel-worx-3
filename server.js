@@ -15,8 +15,8 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     } else {
-        // return res.status(401).json({ message: 'User needs admin priviledges!' });
-        return next();
+        return res.status(401).json({ message: 'User must be logged in to access these routes!' });
+        // return next();
     }
 }
 
@@ -27,6 +27,7 @@ mysqlConnect()
         app.use(passport.initialize());
         app.use(passport.session());
         app.get('/api/test', (req, res) => res.status(200).end());
+        app.use('/api/auth', require('./controllers/authController'));
         app.use('/api', checkAuthenticated, require('./controllers'));
     })
     .catch((error) => {

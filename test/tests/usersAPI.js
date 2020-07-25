@@ -1,9 +1,4 @@
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-const server = require('../../server');
-
-chai.should();
-chai.use(chaiHttp);
+const agent = require('../utils/serverInit');
 
 describe('Users API (/api/users)', function () {
     let insertId = 0;
@@ -15,7 +10,7 @@ describe('Users API (/api/users)', function () {
             "access_id": 2,
             "active": 1
         };
-        chai.request(server)
+        agent
             .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
@@ -28,7 +23,7 @@ describe('Users API (/api/users)', function () {
     });
 
     it('should GET the newly created user by id', function (done) {
-        chai.request(server)
+        agent
             .get('/api/users/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -42,7 +37,7 @@ describe('Users API (/api/users)', function () {
     });
 
     it('should GET all users', function (done) {
-        chai.request(server)
+        agent
             .get('/api/users')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -58,7 +53,7 @@ describe('Users API (/api/users)', function () {
     });
 
     it('should GET a status 200 and an empty array because user_id 0 should not match any users', function (done) {
-        chai.request(server)
+        agent
             .get('/api/users/0')
             .end(function (error, response) {
                 response.should.have.status(200);
@@ -68,7 +63,7 @@ describe('Users API (/api/users)', function () {
     });
 
     it('should FAIL to GET a single user and instead return a status 400 because the user_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .get('/api/users/1a')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -85,7 +80,7 @@ describe('Users API (/api/users)', function () {
             "access_id": 1,
             "active": 1
         };
-        chai.request(server)
+        agent
             .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
@@ -104,7 +99,7 @@ describe('Users API (/api/users)', function () {
             "access_id": 1,
             "active": 1
         };
-        chai.request(server)
+        agent
             .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
@@ -123,7 +118,7 @@ describe('Users API (/api/users)', function () {
             "access_id": 0,
             "active": 2
         };
-        chai.request(server)
+        agent
             .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
@@ -143,7 +138,7 @@ describe('Users API (/api/users)', function () {
             "access_id": 2,
             "active": 1
         };
-        chai.request(server)
+        agent
             .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
@@ -160,7 +155,7 @@ describe('Users API (/api/users)', function () {
             "access_id": 0,
             "active": 2
         };
-        chai.request(server)
+        agent
             .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
@@ -180,7 +175,7 @@ describe('Users API (/api/users)', function () {
             "access_id": 2,
             "active": 1
         };
-        chai.request(server)
+        agent
             .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
@@ -192,7 +187,7 @@ describe('Users API (/api/users)', function () {
     });
 
     it('should FAIL to DELETE the newly created user because the user_id is invalid', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/users/0')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -203,7 +198,7 @@ describe('Users API (/api/users)', function () {
     });
 
     it('should FAIL to DELETE the newly created user because the user_id is not an integer', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/users/abc')
             .end(function (error, response) {
                 response.should.have.status(400);
@@ -214,7 +209,7 @@ describe('Users API (/api/users)', function () {
     });
 
     it('should DELETE the newly created user using the insertId', function (done) {
-        chai.request(server)
+        agent
             .delete('/api/users/' + insertId)
             .end(function (error, response) {
                 response.should.have.status(204);

@@ -1,12 +1,16 @@
-const server = require('../server');
+const agent = require('./utils/serverInit');
 
-const chai = require('chai');
-const chaiHttp = require('chai-http');
-chai.should();
-chai.use(chaiHttp);
+describe('Test authenticated routes', function () {
+    const userCredentials = {
+        "username": "admin",
+        "password": process.env.TEST_ADMIN_PASSWORD
+    };
 
-describe('Wrapper for all tests', function () {
-    before(done => setTimeout(done, 1000));
+    before(function (done) {
+        setTimeout(() => {
+            done();
+        }, 1000);
+    });
 
     const runTests = () => {
         require('./tests/accessLevelsAPI');
@@ -19,20 +23,30 @@ describe('Wrapper for all tests', function () {
         require('./tests/RoomTypesAPI');
         require('./tests/taxesAPI');
         require('./tests/usersAPI');
+        require('./tests/cleanup');
     };
 
-    const checkRoutes = () => {
-        it('should check to see if the routes are ready', function (done) {
-            chai.request(server)
-                .get('/api/test')
-                .end(function (error, response) {
-                    response.should.have.status(200);
-                    if (response.status === 200) runTests();
-                    done();
-                });
-        });
-    };
+    it('should login a user, via POST', function (done) {
+        agent
+            .post('/api/auth/login')
+            .send(userCredentials)
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.should.be.json;
+                response.body.should.have.property('user').and.to.be.an('object');
+                done();
+            });
+    });
 
-    checkRoutes();
-
+    it('should check and see if the user is logged in', function (done) {
+        agent
+            .get('/api/auth/status')
+            .end(function (error, response) {
+                response.should.have.status(200);
+                response.should.be.json;
+                response.body.should.have.property('user').and.to.be.an('object');
+                if (response.status === 200) runTests();
+                done();
+            });
+    });
 });
