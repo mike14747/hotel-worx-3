@@ -3,12 +3,12 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
+    // Link,
 } from 'react-router-dom';
-import Generic from './pages/generic/generic';
 import Calendar from './components/calendar/index';
 import NavBar from './components/navbar/navbar';
-import AxiosTest from './pages/axiosTest';
+import Generic from './pages/generic/generic';
+import AxiosTest from './pages/axiosTest/axiosTest';
 import UserContext from './components/context/userContext';
 
 export default function App() {
@@ -28,12 +28,8 @@ export default function App() {
                     <Route exact path="/">
                         <Home />
                     </Route>
-                    <Route exact path="/generic">
-                        <Generic />
-                    </Route>
-                    <Route exact path="/calendar">
-                        <Calendar />
-                    </Route>
+                    <Route exact path="/generic" component={Generic} />
+                    <Route exact path="/calendar" component={Calendar} />
                     <UserContext.Provider value={user}>
                         <Route exact path="/axiostest" component={AxiosTest} />
                     </UserContext.Provider>

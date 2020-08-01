@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import UserContext from '../components/context/userContext';
+import UserContext from '../../components/context/userContext';
 
-export default function AxiosTest() {
+const AxiosTest = () => {
     const [invoice, setInvoice] = useState({});
     const [charges, setCharges] = useState([]);
     const [taxes, setTaxes] = useState([]);
@@ -10,8 +10,6 @@ export default function AxiosTest() {
     const resRoomId = 1001;
     const invoiceId = 1;
     const user = useContext(UserContext);
-
-    // const apiRoot = process.env.REACT_APP_API_ROOT;
 
     useEffect(() => {
         axios.get('/api/invoices/' + invoiceId)
@@ -117,4 +115,6 @@ export default function AxiosTest() {
             }
         </div>
     );
-}
+};
+
+export default AxiosTest;

@@ -15,6 +15,7 @@ DB_USER=root
 DB_PW=<your-mysql-password>
 DB_NAME=hotel_worx_3_db
 SESSION_SECRET=<your-session-secret>
+TEST_ADMIN_PASSWORD=admin
 ```
 3. Install the **npm packages**. From the root directory, run:
 ```
