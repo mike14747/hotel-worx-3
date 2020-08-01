@@ -1,22 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Generic extends Component {
-    state = {
-        username: 'Mike',
-    }
-
-    componentDidMount() {
-
-    }
-
-    render() {
-        return (
-            <div>
-                <h1>This is a generic page.</h1>
-                <p>Welcome {this.state.username}!</p>
-            </div>
-        );
-    }
-}
+const Generic = () => {
+    return (
+        <div>Testing the Generic component.</div>
+    );
+};
 
 export default Generic;
