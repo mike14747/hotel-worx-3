@@ -15,8 +15,8 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     } else {
-        return res.status(401).json({ message: 'User must be logged in to access these routes!' });
-        // return next();
+        // return res.status(401).json({ message: 'User must be logged in to access these routes!' });
+        return next();
     }
 }
 
@@ -35,14 +35,15 @@ mysqlConnect()
         app.get('/api/*', (req, res) => {
             res.status(500).json({ message: 'There is no connection to the database!' });
         });
+    })
+    .finally(() => {
+        if (NODE_ENV === 'production') {
+            app.use(express.static(path.join(__dirname, 'client/build')));
+            app.get('*', (req, res) => {
+                res.sendFile(path.join(__dirname, 'client/build/index.html'));
+            });
+        }
     });
-
-if (NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'client/build')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'client/build/index.html'));
-    });
-}
 
 const server = app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
 
