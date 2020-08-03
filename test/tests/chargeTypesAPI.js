@@ -12,6 +12,7 @@ describe('Charge Types API (/api/charge-types))', function () {
             .post('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(201);
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
@@ -24,6 +25,7 @@ describe('Charge Types API (/api/charge-types))', function () {
         agent
             .get('/api/charge-types/' + insertId)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
                 response.body[0].should.have.property('charge_type_id').and.to.be.a('number');
@@ -37,6 +39,7 @@ describe('Charge Types API (/api/charge-types))', function () {
         agent
             .get('/api/charge-types')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
@@ -52,6 +55,7 @@ describe('Charge Types API (/api/charge-types))', function () {
         agent
             .get('/api/charge-types/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
@@ -62,6 +66,7 @@ describe('Charge Types API (/api/charge-types))', function () {
         agent
             .get('/api/charge-types/1a')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -78,6 +83,7 @@ describe('Charge Types API (/api/charge-types))', function () {
             .post('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -96,6 +102,7 @@ describe('Charge Types API (/api/charge-types))', function () {
             .put('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(204);
                 done();
             });
@@ -111,6 +118,7 @@ describe('Charge Types API (/api/charge-types))', function () {
             .put('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -129,6 +137,7 @@ describe('Charge Types API (/api/charge-types))', function () {
             .put('/api/charge-types')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -140,6 +149,7 @@ describe('Charge Types API (/api/charge-types))', function () {
         agent
             .delete('/api/charge-types/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -151,6 +161,7 @@ describe('Charge Types API (/api/charge-types))', function () {
         agent
             .delete('/api/charge-types/abc')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -162,6 +173,7 @@ describe('Charge Types API (/api/charge-types))', function () {
         agent
             .delete('/api/charge-types/' + insertId)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(204);
                 done();
             });

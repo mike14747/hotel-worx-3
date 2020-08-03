@@ -5,6 +5,7 @@ describe('Test cleanup', function () {
         agent
             .get('/api/auth/logout')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.should.be.json;
                 response.body.should.have.property('user').and.to.be.null;

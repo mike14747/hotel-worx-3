@@ -5,6 +5,7 @@ describe('Rooms API (/api/room)', function () {
         agent
             .get('/api/rooms')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
@@ -28,6 +29,7 @@ describe('Rooms API (/api/room)', function () {
         agent
             .get('/api/rooms/1')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
                 response.body[0].should.have.property('room_id').and.to.be.a('number');
@@ -49,6 +51,7 @@ describe('Rooms API (/api/room)', function () {
         agent
             .get('/api/rooms/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
@@ -59,6 +62,7 @@ describe('Rooms API (/api/room)', function () {
         agent
             .get('/api/rooms/1a')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 done();
             });
@@ -68,6 +72,7 @@ describe('Rooms API (/api/room)', function () {
         agent
             .get('/api/rooms/all-ids-nums')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
@@ -82,6 +87,7 @@ describe('Rooms API (/api/room)', function () {
         agent
             .get('/api/rooms/house-status')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
                 response.body[0].should.have.property('roomsToSell').and.to.be.a('number');
@@ -97,6 +103,7 @@ describe('Rooms API (/api/room)', function () {
         agent
             .get('/api/rooms/housekeeping-status')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
