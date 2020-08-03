@@ -31,6 +31,7 @@ describe('Test authenticated routes', function () {
             .post('/api/auth/login')
             .send(userCredentials)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.should.be.json;
                 response.body.should.have.property('user').and.to.be.an('object');
@@ -42,6 +43,7 @@ describe('Test authenticated routes', function () {
         agent
             .get('/api/auth/status')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.should.be.json;
                 response.body.should.have.property('user').and.to.be.an('object');

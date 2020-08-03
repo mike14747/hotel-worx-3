@@ -14,6 +14,7 @@ describe('Users API (/api/users)', function () {
             .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(201);
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
@@ -26,6 +27,7 @@ describe('Users API (/api/users)', function () {
         agent
             .get('/api/users/' + insertId)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
                 response.body[0].should.have.property('user_id').and.to.be.a('number');
@@ -40,6 +42,7 @@ describe('Users API (/api/users)', function () {
         agent
             .get('/api/users')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
@@ -56,6 +59,7 @@ describe('Users API (/api/users)', function () {
         agent
             .get('/api/users/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
@@ -66,6 +70,7 @@ describe('Users API (/api/users)', function () {
         agent
             .get('/api/users/1a')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -84,6 +89,7 @@ describe('Users API (/api/users)', function () {
             .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -103,6 +109,7 @@ describe('Users API (/api/users)', function () {
             .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -122,6 +129,7 @@ describe('Users API (/api/users)', function () {
             .post('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -142,6 +150,7 @@ describe('Users API (/api/users)', function () {
             .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(204);
                 done();
             });
@@ -159,6 +168,7 @@ describe('Users API (/api/users)', function () {
             .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -179,6 +189,7 @@ describe('Users API (/api/users)', function () {
             .put('/api/users')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -190,6 +201,7 @@ describe('Users API (/api/users)', function () {
         agent
             .delete('/api/users/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -201,6 +213,7 @@ describe('Users API (/api/users)', function () {
         agent
             .delete('/api/users/abc')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -212,6 +225,7 @@ describe('Users API (/api/users)', function () {
         agent
             .delete('/api/users/' + insertId)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(204);
                 done();
             });

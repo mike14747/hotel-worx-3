@@ -21,6 +21,7 @@ describe('Companies API (/api/companies)', function () {
             .post('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(201);
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
@@ -33,6 +34,7 @@ describe('Companies API (/api/companies)', function () {
         agent
             .get('/api/companies/' + insertId)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
                 response.body[0].should.have.property('company_id').and.to.be.a('number');
@@ -55,6 +57,7 @@ describe('Companies API (/api/companies)', function () {
         agent
             .get('/api/companies')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
@@ -79,6 +82,7 @@ describe('Companies API (/api/companies)', function () {
         agent
             .get('/api/companies/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
@@ -89,6 +93,7 @@ describe('Companies API (/api/companies)', function () {
         agent
             .get('/api/companies/1a')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -114,6 +119,7 @@ describe('Companies API (/api/companies)', function () {
             .post('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -141,6 +147,7 @@ describe('Companies API (/api/companies)', function () {
             .put('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(204);
                 done();
             });
@@ -165,6 +172,7 @@ describe('Companies API (/api/companies)', function () {
             .put('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -192,6 +200,7 @@ describe('Companies API (/api/companies)', function () {
             .put('/api/companies')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -203,6 +212,7 @@ describe('Companies API (/api/companies)', function () {
         agent
             .delete('/api/companies/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -214,6 +224,7 @@ describe('Companies API (/api/companies)', function () {
         agent
             .delete('/api/companies/abc')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -225,6 +236,7 @@ describe('Companies API (/api/companies)', function () {
         agent
             .delete('/api/companies/' + insertId)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(204);
                 done();
             });

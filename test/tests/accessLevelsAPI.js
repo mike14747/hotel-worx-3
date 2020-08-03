@@ -12,6 +12,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             .post('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(201);
                 response.body.should.be.an('object');
                 response.body.should.have.property('insertId').and.to.be.a('number');
@@ -24,6 +25,7 @@ describe('Access Levels API (/api/access-levels)', function () {
         agent
             .get('/api/access-levels/' + insertId)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(1);
                 response.body[0].should.have.all.keys('access_id', 'access_level', 'access_type');
@@ -38,6 +40,7 @@ describe('Access Levels API (/api/access-levels)', function () {
         agent
             .get('/api/access-levels')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
@@ -54,6 +57,7 @@ describe('Access Levels API (/api/access-levels)', function () {
         agent
             .get('/api/access-levels/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(200);
                 response.body.should.be.an('array').and.have.lengthOf(0);
                 done();
@@ -64,6 +68,7 @@ describe('Access Levels API (/api/access-levels)', function () {
         agent
             .get('/api/access-levels/1a')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -80,6 +85,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             .post('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -98,6 +104,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             .put('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(204);
                 done();
             });
@@ -113,6 +120,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             .put('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -131,6 +139,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             .put('/api/access-levels')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -142,6 +151,7 @@ describe('Access Levels API (/api/access-levels)', function () {
         agent
             .delete('/api/access-levels/0')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -153,6 +163,7 @@ describe('Access Levels API (/api/access-levels)', function () {
         agent
             .delete('/api/access-levels/abc')
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('message').and.to.be.a('string');
@@ -164,6 +175,7 @@ describe('Access Levels API (/api/access-levels)', function () {
         agent
             .delete('/api/access-levels/' + insertId)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(204);
                 done();
             });
