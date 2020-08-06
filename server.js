@@ -5,8 +5,6 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
-const { mysqlConnect } = require('./config/connectionPool');
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -19,7 +17,11 @@ function checkAuthenticated(req, res, next) {
     }
 }
 
-mysqlConnect()
+const { dbTest } = require('./config/connectionPool');
+
+app.use(require('./controllers/testController'));
+
+dbTest()
     .then(() => {
         app.use(require('./passport/expressSession'));
         const passport = require('./passport/passportFunctions');
