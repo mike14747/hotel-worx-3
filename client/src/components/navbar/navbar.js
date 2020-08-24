@@ -3,7 +3,6 @@ import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import smallLogo from './solidcolor.png';
 import './style.css';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import ReactWeather from 'react-open-weather';
 
 class NavBar extends Component {
     constructor(props) {
