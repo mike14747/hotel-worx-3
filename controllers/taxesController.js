@@ -26,12 +26,6 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    // ReferenceError
-    // RangeError
-    // EvalError
-    // SyntaxError
-    // TypeError
-
     try {
         const paramsObj = {
             tax_name: req.body.tax_name,
