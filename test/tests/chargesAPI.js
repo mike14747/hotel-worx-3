@@ -77,7 +77,7 @@ describe('Charges API (/api/charges)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -101,7 +101,7 @@ describe('Charges API (/api/charges)', function () {
             });
     });
     
-    it('should FAIL to POST a new charge and return 4 errors because all 4 parameters are invalid', function (done) {
+    it('should FAIL to POST a new charge and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "res_room_id": 0,
             "charge_type_id": 0,
@@ -115,8 +115,7 @@ describe('Charges API (/api/charges)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -139,7 +138,7 @@ describe('Charges API (/api/charges)', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, one of the newly created charges and return 5 errors because all 5 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, one of the newly created charges and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "charge_id": 0,
             "res_room_id": 0,
@@ -154,13 +153,12 @@ describe('Charges API (/api/charges)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(5);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to update, via PUT, one of the newly created charges and return an error object because one or more ids are not integers', function (done) {
+    it('should FAIL to update, via PUT, one of the newly created charges and return an error because one or more ids are not integers', function (done) {
         const paramsObj = {
             "charge_id": 'a',
             "res_room_id": 'b',
@@ -175,7 +173,7 @@ describe('Charges API (/api/charges)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -187,7 +185,19 @@ describe('Charges API (/api/charges)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE all charges associated with a res_room_id because the res_room_id is invalid', function (done) {
+        agent
+            .delete('/api/charges/res-rooms/0')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
@@ -199,7 +209,7 @@ describe('Charges API (/api/charges)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });

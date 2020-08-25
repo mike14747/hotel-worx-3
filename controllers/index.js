@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const Joi = require('joi');
 
 // all these routes point to the base route path of /api as specified in server.js
 
@@ -39,6 +40,11 @@ router.use((req, res, next) => {
 });
 
 router.use((error, req, res, next) => {
+    if (error instanceof Joi.ValidationError) {
+        return res.status(400).json({ 'Validation error': error.details[0].message });
+    } else if (error instanceof RangeError) {
+        return res.status(400).json({ 'Invalid request': error.message });
+    }
     res.status(error.status || 500);
     error.status === 404 ? res.send(error.message) : res.send('Request failed... please check your request and try again!\n' + error.message);
 });

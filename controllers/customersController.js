@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const Customer = require('../models/customer');
-const { isCustomerBodyValid } = require('./validation/customersValidation');
-const { idRegEx, idErrorObj } = require('./validation/idValidation');
-const { postError, putError, deleteError } = require('./validation/generalValidation');
+const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { customersSchema, customerIdSchema } = require('./validation/schema/customersSchema');
+const isCustomerIdValid = require('./validation/helpers/isCustomerIdValid');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -14,9 +14,9 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
-        const [data, error] = await Customer.getCustomerById({ id: parseInt(req.params.id) || 0 });
+        await customerIdSchema.validateAsync({ customer_id: req.params.id });
+        const [data, error] = await Customer.getCustomerById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
@@ -38,21 +38,19 @@ router.post('/', async (req, res, next) => {
             credit_card_num: req.body.credit_card_num,
             cc_expiration: req.body.cc_expiration,
         };
-        const [result, errorObj] = await isCustomerBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+        await customersSchema.validateAsync(paramsObj);
         const [data, error] = await Customer.addNewCustomer(paramsObj);
-        if (error) next(error);
-        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
+        if (error) return next(error);
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ Error: postError });
     } catch (error) {
         next(error);
     }
 });
 
 router.put('/', async (req, res, next) => {
-    if (!idRegEx.test(req.body.customer_id)) return res.status(400).json(idErrorObj);
     try {
         const paramsObj = {
-            customer_id: parseInt(req.body.customer_id),
+            customer_id: req.body.customer_id,
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             address: req.body.address,
@@ -65,22 +63,22 @@ router.put('/', async (req, res, next) => {
             credit_card_num: req.body.credit_card_num,
             cc_expiration: req.body.cc_expiration,
         };
-        const [result, errorObj] = await isCustomerBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+        await customersSchema.validateAsync(paramsObj);
+        await isCustomerIdValid(paramsObj.customer_id);
         const [data, error] = await Customer.updateCustomerById(paramsObj);
-        if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
+        if (error) return next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ Error: putError });
     } catch (error) {
         next(error);
     }
 });
 
 router.delete('/:id', async (req, res, next) => {
-    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
-        const [data, error] = await Customer.deleteCustomerById({ id: parseInt(req.params.id) || 0 });
-        if (error) next(error);
-        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: deleteError });
+        await customerIdSchema.validateAsync({ customer_id: req.params.id });
+        const [data, error] = await Customer.deleteCustomerById({ id: parseInt(req.params.id) });
+        if (error) return next(error);
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ Error: deleteError });
     } catch (error) {
         next(error);
     }
