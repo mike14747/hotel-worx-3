@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const Tax = require('../models/tax');
-const { isTaxBodyValid } = require('./validation/taxesValidation');
 const { idRegEx, idErrorObj } = require('./validation/idValidation');
 const { postError, putError, deleteError } = require('./validation/generalValidation');
+const taxesSchema = require('./validation/schema/taxesSchema');
+const isTaxIdValid = require('./validation/helpers/isTaxIdValid');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -25,13 +26,18 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
+        await taxesSchema.validateAsync(req.body);
+    } catch (error) {
+        return res.status(400).json({ error: error.details[0].message });
+    }
+
+    try {
         const paramsObj = {
             tax_name: req.body.tax_name,
             tax_rate: req.body.tax_rate,
             active: req.body.active,
         };
-        const [result, errorObj] = await isTaxBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+
         const [data, error] = await Tax.addNewTax(paramsObj);
         if (error) next(error);
         data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
@@ -42,15 +48,20 @@ router.post('/', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
-        if (!idRegEx.test(req.body.tax_id)) return res.status(400).json(idErrorObj);
+        await taxesSchema.validateAsync(req.body);
+        await isTaxIdValid(req.body.tax_id);
+    } catch (error) {
+        return res.status(400).json({ error: error.message || error.details[0].message });
+    }
+
+    try {
         const paramsObj = {
             tax_id: req.body.tax_id,
             tax_name: req.body.tax_name,
             tax_rate: req.body.tax_rate,
             active: req.body.active,
         };
-        const [result, errorObj] = await isTaxBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+
         const [data, error] = await Tax.updateTaxById(paramsObj);
         if (error) next(error);
         data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
