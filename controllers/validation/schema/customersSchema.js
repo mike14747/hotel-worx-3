@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const schema = Joi.object({
+const customersSchema = Joi.object({
     customer_id: Joi.number().integer(),
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
@@ -15,4 +15,11 @@ const schema = Joi.object({
     cc_expiration: Joi.string().required(),
 });
 
-module.exports = schema;
+const customerIdSchema = Joi.object({
+    customer_id: Joi.number().integer().required(),
+});
+
+module.exports = {
+    customersSchema,
+    customerIdSchema,
+};
