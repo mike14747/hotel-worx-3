@@ -77,7 +77,7 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should FAIL to POST a new tax and and return 3 errors because all 3 parameters are invalid', function (done) {
+    it('should FAIL to POST a new tax and and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "tax_name": "",
             "tax_rate": "b1.375",
@@ -90,8 +90,7 @@ describe('Taxes API (/api/taxes)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
+                response.body.should.have.property('error').and.to.be.a('string');
                 done();
             });
     });
@@ -113,9 +112,9 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, the newly created tax and return 4 errors because all 4 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created tax and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
-            "tax_id": 0,
+            "tax_id": "",
             "tax_name": "",
             "tax_rate": "a1.375",
             "active": 2
@@ -127,15 +126,14 @@ describe('Taxes API (/api/taxes)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(4);
+                response.body.should.have.property('error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created tax and return an error object because the tax_id is not an integer', function (done) {
+    it('should FAIL to update, via PUT, the newly created tax and return an error object because the tax_id does not match any in the database', function (done) {
         const paramsObj = {
-            "tax_id": "e",
+            "tax_id": 0,
             "tax_name": "City",
             "tax_rate": 1.375,
             "active": 1
@@ -147,7 +145,7 @@ describe('Taxes API (/api/taxes)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('error').and.to.be.a('string');
                 done();
             });
     });

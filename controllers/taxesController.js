@@ -4,6 +4,7 @@ const { idRegEx, idErrorObj } = require('./validation/idValidation');
 const { postError, putError, deleteError } = require('./validation/generalValidation');
 const taxesSchema = require('./validation/schema/taxesSchema');
 const isTaxIdValid = require('./validation/helpers/isTaxIdValid');
+const Joi = require('joi');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -26,34 +27,28 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-        await taxesSchema.validateAsync(req.body);
-    } catch (error) {
-        return res.status(400).json({ error: error.details[0].message });
-    }
-
-    try {
         const paramsObj = {
             tax_name: req.body.tax_name,
             tax_rate: req.body.tax_rate,
             active: req.body.active,
         };
 
+        await taxesSchema.validateAsync(paramsObj);
+
         const [data, error] = await Tax.addNewTax(paramsObj);
-        if (error) next(error);
-        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
+        if (error) return next(error);
+        if (data && data.insertId) return res.status(201).json({ insertId: data.insertId });
+        res.status(400).json({ message: postError });
     } catch (error) {
-        next(error);
+        if (error instanceof Joi.ValidationError) {
+            return res.status(400).json({ error: error.details[0].message });
+        } else {
+            next(error);
+        }
     }
 });
 
 router.put('/', async (req, res, next) => {
-    try {
-        await taxesSchema.validateAsync(req.body);
-        await isTaxIdValid(req.body.tax_id);
-    } catch (error) {
-        return res.status(400).json({ error: error.message || error.details[0].message });
-    }
-
     try {
         const paramsObj = {
             tax_id: req.body.tax_id,
@@ -62,11 +57,21 @@ router.put('/', async (req, res, next) => {
             active: req.body.active,
         };
 
+        await taxesSchema.validateAsync(paramsObj);
+        await isTaxIdValid(paramsObj.tax_id);
+
         const [data, error] = await Tax.updateTaxById(paramsObj);
-        if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
+        if (error) return next(error);
+        if (data && data.affectedRows === 1) return res.status(204).end();
+        res.status(400).json({ message: putError });
     } catch (error) {
-        next(error);
+        if (error instanceof Joi.ValidationError) {
+            return res.status(400).json({ error: error.details[0].message });
+        } else if (error instanceof RangeError) {
+            return res.status(400).json({ error: error.message });
+        } else {
+            next(error);
+        }
     }
 });
 
