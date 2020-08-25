@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const customersSchema = Joi.object({
-    customer_id: Joi.number().integer(),
+    customer_id: Joi.number().integer().min(0),
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
     address: Joi.string().required(),
@@ -16,7 +16,7 @@ const customersSchema = Joi.object({
 });
 
 const customerIdSchema = Joi.object({
-    customer_id: Joi.number().integer().required(),
+    customer_id: Joi.number().integer().min(0).required(),
 });
 
 module.exports = {
