@@ -32,16 +32,13 @@ router.post('/', async (req, res, next) => {
             tax_rate: req.body.tax_rate,
             active: req.body.active,
         };
-
         await taxesSchema.validateAsync(paramsObj);
-
         const [data, error] = await Tax.addNewTax(paramsObj);
         if (error) return next(error);
-        if (data && data.insertId) return res.status(201).json({ insertId: data.insertId });
-        res.status(400).json({ message: postError });
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
     } catch (error) {
         if (error instanceof Joi.ValidationError) {
-            return res.status(400).json({ error: error.details[0].message });
+            return res.status(400).json({ 'Validation error': error.details[0].message });
         } else {
             next(error);
         }
@@ -56,19 +53,16 @@ router.put('/', async (req, res, next) => {
             tax_rate: req.body.tax_rate,
             active: req.body.active,
         };
-
         await taxesSchema.validateAsync(paramsObj);
         await isTaxIdValid(paramsObj.tax_id);
-
         const [data, error] = await Tax.updateTaxById(paramsObj);
         if (error) return next(error);
-        if (data && data.affectedRows === 1) return res.status(204).end();
-        res.status(400).json({ message: putError });
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
     } catch (error) {
         if (error instanceof Joi.ValidationError) {
-            return res.status(400).json({ error: error.details[0].message });
+            return res.status(400).json({ 'Validation error': error.details[0].message });
         } else if (error instanceof RangeError) {
-            return res.status(400).json({ error: error.message });
+            return res.status(400).json({ 'Invalid request': error.message });
         } else {
             next(error);
         }

@@ -101,7 +101,7 @@ describe('Customers API (/api/customers)', function () {
             });
     });
 
-    it('should FAIL to POST a new customer and return 11 errors because all 11 parameters are invalid', function (done) {
+    it('should FAIL to POST a new customer and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "first_name": "",
             "last_name": 111,
@@ -122,8 +122,7 @@ describe('Customers API (/api/customers)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(11);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -153,9 +152,9 @@ describe('Customers API (/api/customers)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created customer and return 12 errors because all 12 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created customer and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
-            "customer_id": 0,
+            "customer_id": "",
             "first_name": "",
             "last_name": 111,
             "address": "",
@@ -175,15 +174,14 @@ describe('Customers API (/api/customers)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(12);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created customer and return an error object because the customer_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, the newly created customer and return an error object because the customer_id does not match any in the database', function (done) {
         const paramsObj = {
-            "customer_id": "abc",
+            "customer_id": 0,
             "first_name": "Jamar",
             "last_name": "Wilkerson",
             "address": "7193 Valley St",
@@ -203,7 +201,7 @@ describe('Customers API (/api/customers)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });

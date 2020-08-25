@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const Customer = require('../models/customer');
-const { isCustomerBodyValid } = require('./validation/customersValidation');
 const { idRegEx, idErrorObj } = require('./validation/idValidation');
 const { postError, putError, deleteError } = require('./validation/generalValidation');
+const customersSchema = require('./validation/schema/customersSchema');
+const isCustomerIdValid = require('./validation/helpers/isCustomerIdValid');
+const Joi = require('joi');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -38,21 +40,23 @@ router.post('/', async (req, res, next) => {
             credit_card_num: req.body.credit_card_num,
             cc_expiration: req.body.cc_expiration,
         };
-        const [result, errorObj] = await isCustomerBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+        await customersSchema.validateAsync(paramsObj);
         const [data, error] = await Customer.addNewCustomer(paramsObj);
-        if (error) next(error);
+        if (error) return next(error);
         data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
     } catch (error) {
-        next(error);
+        if (error instanceof Joi.ValidationError) {
+            return res.status(400).json({ 'Validation error': error.details[0].message });
+        } else {
+            next(error);
+        }
     }
 });
 
 router.put('/', async (req, res, next) => {
-    if (!idRegEx.test(req.body.customer_id)) return res.status(400).json(idErrorObj);
     try {
         const paramsObj = {
-            customer_id: parseInt(req.body.customer_id),
+            customer_id: req.body.customer_id,
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             address: req.body.address,
@@ -65,13 +69,19 @@ router.put('/', async (req, res, next) => {
             credit_card_num: req.body.credit_card_num,
             cc_expiration: req.body.cc_expiration,
         };
-        const [result, errorObj] = await isCustomerBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+        await customersSchema.validateAsync(paramsObj);
+        await isCustomerIdValid(paramsObj.customer_id);
         const [data, error] = await Customer.updateCustomerById(paramsObj);
-        if (error) next(error);
+        if (error) return next(error);
         data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
     } catch (error) {
-        next(error);
+        if (error instanceof Joi.ValidationError) {
+            return res.status(400).json({ 'Validation error': error.details[0].message });
+        } else if (error instanceof RangeError) {
+            return res.status(400).json({ 'Invalid request': error.message });
+        } else {
+            next(error);
+        }
     }
 });
 

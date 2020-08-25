@@ -90,7 +90,7 @@ describe('Taxes API (/api/taxes)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('error').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -126,7 +126,7 @@ describe('Taxes API (/api/taxes)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('error').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -145,7 +145,7 @@ describe('Taxes API (/api/taxes)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('error').and.to.be.a('string');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
