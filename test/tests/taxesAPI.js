@@ -73,6 +73,7 @@ describe('Taxes API (/api/taxes)', function () {
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(400);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
