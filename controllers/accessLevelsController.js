@@ -2,7 +2,7 @@ const router = require('express').Router();
 const AccessLevel = require('../models/accessLevel');
 const { postError, putError, deleteError } = require('./utils/errorMessages');
 const { accessLevelsSchema, accessIdSchema } = require('./validation/schema/accessLevelsSchema');
-const isAccessIdValid = require('./validation/helpers/isAccesIdValid');
+const isAccessIdValid = require('./validation/helpers/isAccessIdValid');
 
 router.get('/', async (req, res, next) => {
     try {

@@ -97,6 +97,12 @@ hotel_worx_3_db.sql had some changes to the users and access_levels tables, so t
 
 Figure out why the "getRoomTypeAvailability" room_type model method on the "/api/room-types/availability/:date" route doesn't return just an array of daily availablility.
 
+
+
+The user table in the database needs an email field
+
+Add failing tests to usersAPI.js where the access_id is invalid
+
 ------------------------------------------------------
 
 in the controller:
@@ -167,6 +173,11 @@ await isSomeIdValid(req.params.id);
 
 in the API test files:
 
+get rid of all:
+response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+
+------------------------------------
+
 change all:
 response.body.should.have.property('message').and.to.be.a('string');
 
@@ -175,11 +186,6 @@ response.body.should.have.property('Validation error').and.to.be.a('string');
 
 or (when checking for the existence of a valid id):
 response.body.should.have.property('Invalid request').and.to.be.a('string');
-
-------------------------------------
-
-get rid of all:
-response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
 
 ------------------------------------
 
