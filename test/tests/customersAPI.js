@@ -152,7 +152,7 @@ describe('Customers API (/api/customers)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created customer and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, any customer and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "customer_id": "",
             "first_name": "",
@@ -179,7 +179,7 @@ describe('Customers API (/api/customers)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created customer and return an error object because the customer_id does not match any in the database', function (done) {
+    it('should FAIL to update, via PUT, any customer and return an error because the customer_id does not exist', function (done) {
         const paramsObj = {
             "customer_id": 0,
             "first_name": "Jamar",
@@ -206,7 +206,7 @@ describe('Customers API (/api/customers)', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created customer because the customer_id is invalid', function (done) {
+    it('should FAIL to DELETE any customer because the customer_id is invalid', function (done) {
         agent
             .delete('/api/customers/0')
             .end(function (error, response) {
@@ -218,7 +218,7 @@ describe('Customers API (/api/customers)', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created customer because the customer_id is not an integer', function (done) {
+    it('should FAIL to DELETE any customer because the customer_id is not an integer', function (done) {
         agent
             .delete('/api/customers/abc')
             .end(function (error, response) {

@@ -132,7 +132,7 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created tax and return an error object because the tax_id does not match any in the database', function (done) {
+    it('should FAIL to update, via PUT, the newly created tax and return an error because the tax_id does not exist', function (done) {
         const paramsObj = {
             "tax_id": 0,
             "tax_name": "City",
@@ -151,7 +151,7 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created tax because the tax_id is invalid', function (done) {
+    it('should FAIL to DELETE any tax and return an error because the tax_id does not exist', function (done) {
         agent
             .delete('/api/taxes/0')
             .end(function (error, response) {
@@ -163,7 +163,7 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created tax because the tax_id is not an integer', function (done) {
+    it('should FAIL to DELETE the any tax because the tax_id is not an integer', function (done) {
         agent
             .delete('/api/taxes/abc')
             .end(function (error, response) {

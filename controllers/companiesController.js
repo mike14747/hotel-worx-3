@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const Company = require('../models/company');
-const { isCompanyBodyValid } = require('./validation/companiesValidation');
-const { idRegEx, idErrorObj } = require('./validation/idValidation');
-const { postError, putError, deleteError } = require('./validation/generalValidation');
+const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { companiesSchema, companyIdSchema } = require('./validation/schema/companiesSchema');
+const isCompanyIdValid = require('./validation/helpers/isCompanyIdValid');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -14,8 +14,8 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
+        await companyIdSchema.validateAsync({ company_id: req.params.id });
         const [data, error] = await Company.getCompanyById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
@@ -38,18 +38,16 @@ router.post('/', async (req, res, next) => {
             cc_expiration: req.body.cc_expiration,
             tax_exempt: parseInt(req.body.tax_exempt),
         };
-        const [result, errorObj] = await isCompanyBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+        await companiesSchema.validateAsync(paramsObj);
         const [data, error] = await Company.addNewCompany(paramsObj);
-        if (error) next(error);
-        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
+        if (error) return next(error);
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ Error: postError });
     } catch (error) {
         next(error);
     }
 });
 
 router.put('/', async (req, res, next) => {
-    if (!idRegEx.test(req.body.company_id)) return res.status(400).json(idErrorObj);
     try {
         const paramsObj = {
             company_id: parseInt(req.body.company_id),
@@ -65,22 +63,23 @@ router.put('/', async (req, res, next) => {
             cc_expiration: req.body.cc_expiration,
             tax_exempt: parseInt(req.body.tax_exempt),
         };
-        const [result, errorObj] = await isCompanyBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+        await companiesSchema.validateAsync(paramsObj);
+        await isCompanyIdValid(paramsObj.company_id);
         const [data, error] = await Company.updateCompanyById(paramsObj);
-        if (error) next(error);
-        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
+        if (error) return next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ Error: putError });
     } catch (error) {
         next(error);
     }
 });
 
 router.delete('/:id', async (req, res, next) => {
-    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
+        await companyIdSchema.validateAsync({ company_id: req.params.id });
+        await isCompanyIdValid(req.params.id);
         const [data, error] = await Company.deleteCompanyById({ id: parseInt(req.params.id) });
-        if (error) next(error);
-        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: deleteError });
+        if (error) return next(error);
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ Error: deleteError });
     } catch (error) {
         next(error);
     }

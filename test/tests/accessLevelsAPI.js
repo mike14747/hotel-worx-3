@@ -145,7 +145,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created access_level and return an error object because the access_id not valid', function (done) {
+    it('should FAIL to update, via PUT, the newly created access_level and return an error because the access_level_id does not exist', function (done) {
         const paramsObj = {
             "access_id": 0,
             "access_level": 50,
@@ -163,7 +163,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
     
-    it('should FAIL to DELETE the newly created access_level because the access_id is invalid', function (done) {
+    it('should FAIL to DELETE any access_level and return an error because the access_level_id does not exist', function (done) {
         agent
             .delete('/api/access-levels/0')
             .end(function (error, response) {
