@@ -47,7 +47,7 @@ router.put('/', async (req, res, next) => {
             active: parseInt(req.body.active),
         };
         await paymentTypesSchema.validateAsync(paramsObj);
-        await isPaymentIdValid({ payment_type_id: paramsObj.payment_type_id });
+        await isPaymentIdValid(paramsObj.payment_type_id);
         const [data, error] = await PaymentType.updatePaymentTypeById(paramsObj);
         if (error) return next(error);
         data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ Error: putError });
