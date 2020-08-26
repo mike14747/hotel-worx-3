@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const AccessLevel = require('../models/accessLevel');
-const { isAccessLevelBodyValid } = require('./validation/accessLevelsValidation');
-const { idRegEx, idErrorObj } = require('./validation/idValidation');
-const { postError, putError, deleteError } = require('./validation/generalValidation');
+const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { accessLevelsSchema, accessIdSchema } = require('./validation/schema/accessLevelsSchema');
+const isAccessIdValid = require('./validation/helpers/isAccessIdValid');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -14,8 +14,8 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
+        await accessIdSchema.validateAsync({ access_id: req.params.id });
         const [data, error] = await AccessLevel.getAccessLevelById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
@@ -29,10 +29,9 @@ router.post('/', async (req, res, next) => {
             access_level: parseInt(req.body.access_level),
             access_type: req.body.access_type,
         };
-        const [result, errorObj] = await isAccessLevelBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+        await accessLevelsSchema.validateAsync(paramsObj);
         const [data, error] = await AccessLevel.addNewAccessLevel(paramsObj);
-        if (error) next(error);
+        if (error) return next(error);
         data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ message: postError });
     } catch (error) {
         next(error);
@@ -41,16 +40,15 @@ router.post('/', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
-        if (!idRegEx.test(req.body.access_id)) return res.status(400).json(idErrorObj);
         const paramsObj = {
             access_id: parseInt(req.body.access_id),
             access_level: parseInt(req.body.access_level),
             access_type: req.body.access_type,
         };
-        const [result, errorObj] = await isAccessLevelBodyValid(paramsObj);
-        if (!result) return res.status(400).json(errorObj);
+        await accessLevelsSchema.validateAsync(paramsObj);
+        await isAccessIdValid(paramsObj.access_id);
         const [data, error] = await AccessLevel.updateAccessLevel(paramsObj);
-        if (error) next(error);
+        if (error) return next(error);
         data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ message: putError });
     } catch (error) {
         next(error);
@@ -58,10 +56,11 @@ router.put('/', async (req, res, next) => {
 });
 
 router.delete('/:id', async (req, res, next) => {
-    if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
     try {
+        await accessIdSchema.validateAsync({ access_id: req.params.id });
+        await isAccessIdValid(req.params.id);
         const [data, error] = await AccessLevel.deleteAccessLevelById({ id: parseInt(req.params.id) });
-        if (error) next(error);
+        if (error) return next(error);
         data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ message: deleteError });
     } catch (error) {
         next(error);

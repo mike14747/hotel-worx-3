@@ -73,12 +73,12 @@ describe('Users API (/api/users)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to POST a new user and return an error because the username and/or password parameters were invalid', function (done) {
+    it('should FAIL to POST a new user and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "username": "",
             "password": "",
@@ -92,8 +92,7 @@ describe('Users API (/api/users)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(1);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -112,13 +111,12 @@ describe('Users API (/api/users)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(1);
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to POST a new user and return 2 errors because 2 of the parameters were invalid', function (done) {
+    it('should FAIL to POST a new user and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "username": "another_username",
             "password": "some_password",
@@ -132,8 +130,7 @@ describe('Users API (/api/users)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -156,7 +153,7 @@ describe('Users API (/api/users)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created user and return 2 errors because 2 of the parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, any user and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "user_id": insertId,
             "username": "another_username",
@@ -171,13 +168,12 @@ describe('Users API (/api/users)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created user and return an error object because user_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, any user and return an error because user_id is not an interger', function (done) {
         const paramsObj = {
             "user_id": "abc",
             "username": "new_username",
@@ -192,19 +188,39 @@ describe('Users API (/api/users)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to DELETE the newly created user because the user_id is invalid', function (done) {
+    it('should FAIL to update, via PUT, any user and return an error because the user_id does not exist', function (done) {
+        const paramsObj = {
+            "user_id": 0,
+            "username": "new_username",
+            "password": "new_password",
+            "access_id": 2,
+            "active": 1
+        };
+        agent
+            .put('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE any user and return an error because the user_id does not exist', function (done) {
         agent
             .delete('/api/users/0')
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
@@ -216,7 +232,7 @@ describe('Users API (/api/users)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });

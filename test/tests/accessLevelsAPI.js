@@ -71,12 +71,12 @@ describe('Access Levels API (/api/access-levels)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
     
-    it('should FAIL to POST a new access_level and return 2 errors because both parameters are invalid', function (done) {
+    it('should FAIL to POST a new access_level and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "access_level": "a40",
             "access_type": 2
@@ -88,8 +88,7 @@ describe('Access Levels API (/api/access-levels)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -110,7 +109,7 @@ describe('Access Levels API (/api/access-levels)', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, the newly created access_level and return 3 errors because all 3 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created access_level and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "access_id": 0,
             "access_level": "a50",
@@ -123,8 +122,7 @@ describe('Access Levels API (/api/access-levels)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -142,19 +140,37 @@ describe('Access Levels API (/api/access-levels)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, the newly created access_level and return an error because the access_level_id does not exist', function (done) {
+        const paramsObj = {
+            "access_id": 0,
+            "access_level": 50,
+            "access_type": "new access type"
+        };
+        agent
+            .put('/api/access-levels')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
     
-    it('should FAIL to DELETE the newly created access_level because the access_id is invalid', function (done) {
+    it('should FAIL to DELETE any access_level and return an error because the access_level_id does not exist', function (done) {
         agent
             .delete('/api/access-levels/0')
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
@@ -166,7 +182,7 @@ describe('Access Levels API (/api/access-levels)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });

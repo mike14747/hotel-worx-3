@@ -96,12 +96,12 @@ describe('Companies API (/api/companies)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to POST a new company and return 11 errors because all 11 parameters are invalid', function (done) {
+    it('should FAIL to POST a new company return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "company_name": "",
             "address": 111,
@@ -122,8 +122,7 @@ describe('Companies API (/api/companies)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(11);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -153,9 +152,9 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created company and return 12 errors because all 12 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created company and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
-            "company_id": 0,
+            "company_id": null,
             "company_name": "",
             "address": 111,
             "city": "",
@@ -175,13 +174,12 @@ describe('Companies API (/api/companies)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(12);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created company and return an error object because the company_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, the newly created company and return an error because the company_id is not an interger', function (done) {
         const paramsObj = {
             "company_id": "abc",
             "company_name": "Union Sand",
@@ -203,31 +201,58 @@ describe('Companies API (/api/companies)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to DELETE the newly created company because the company_id is invalid', function (done) {
+    it('should FAIL to update, via PUT, any company and return an error because the company_id does not exist', function (done) {
+        const paramsObj = {
+            "company_id": 0,
+            "company_name": "Union Sand",
+            "address": "234 Bank St",
+            "city": "Painesville",
+            "state": "Ohio",
+            "zip": "44077",
+            "country": "USA",
+            "email": "u.sand@yahoo.net",
+            "phone": "800-555-1212",
+            "credit_card_num": "1234567890123456",
+            "cc_expiration": "11 / 24",
+            "tax_exempt": 0,
+        };
+        agent
+            .put('/api/companies')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE any company and return an error because the company_id does not exist', function (done) {
         agent
             .delete('/api/companies/0')
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to DELETE the newly created company because the company_id is not an integer', function (done) {
+    it('should FAIL to DELETE any company and return an error because the company_id is not an integer', function (done) {
         agent
             .delete('/api/companies/abc')
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });

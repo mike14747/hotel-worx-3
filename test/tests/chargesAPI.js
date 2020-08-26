@@ -140,8 +140,8 @@ describe('Charges API (/api/charges)', function () {
     
     it('should FAIL to update, via PUT, one of the newly created charges and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
-            "charge_id": 0,
-            "res_room_id": 0,
+            "charge_id": null,
+            "res_room_id": null,
             "charge_type_id": 0,
             "charge_amount": "a53.12",
             "taxable": 2
@@ -177,8 +177,46 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
+
+    it('should FAIL to update, via PUT, any charges and return an error because the charge_id does not exist', function (done) {
+        const paramsObj = {
+            "charge_id": 0,
+            "res_room_id": 1200,
+            "charge_type_id": 2,
+            "charge_amount": 53.12,
+            "taxable": 1
+        };
+        agent
+            .put('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any charges and return an error because the res_room_id does not exist', function (done) {
+        const paramsObj = {
+            "charge_id": 1,
+            "res_room_id": 0,
+            "charge_type_id": 2,
+            "charge_amount": 53.12,
+            "taxable": 1
+        };
+        agent
+            .put('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
     
-    it('should FAIL to DELETE the newly created charge because the charge_id is invalid', function (done) {
+    it('should FAIL to DELETE any charge and return an error because the charge_id does not exist', function (done) {
         agent
             .delete('/api/charges/0')
             .end(function (error, response) {
@@ -190,7 +228,7 @@ describe('Charges API (/api/charges)', function () {
             });
     });
 
-    it('should FAIL to DELETE all charges associated with a res_room_id because the res_room_id is invalid', function (done) {
+    it('should FAIL to DELETE all charges associated with a res_room_id return an error because the res_room_id does not exist', function (done) {
         agent
             .delete('/api/charges/res-rooms/0')
             .end(function (error, response) {
