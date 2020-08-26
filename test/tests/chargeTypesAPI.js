@@ -69,12 +69,12 @@ describe('Charge Types API (/api/charge-types))', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
     
-    it('should FAIL to POST a new charge_type and return 2 errors because both parameters are invalid', function (done) {
+    it('should FAIL to POST a new charge_type and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "charge_type": 0,
             "active": 2
@@ -86,8 +86,7 @@ describe('Charge Types API (/api/charge-types))', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -108,9 +107,9 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, the newly created charge_type and return 3 errors because all 3 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, the newly created charge_type and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
-            "charge_type_id": 0,
+            "charge_type_id": null,
             "charge_type": "",
             "active": 2
         };
@@ -121,8 +120,7 @@ describe('Charge Types API (/api/charge-types))', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -140,7 +138,25 @@ describe('Charge Types API (/api/charge-types))', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, the newly created charge_type and return an error object because the charge_type_id is not valid', function (done) {
+        const paramsObj = {
+            "charge_type_id": 0,
+            "charge_type": "Restaurant",
+            "active": 1
+        };
+        agent
+            .put('/api/charge-types')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
@@ -152,7 +168,7 @@ describe('Charge Types API (/api/charge-types))', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
@@ -164,7 +180,7 @@ describe('Charge Types API (/api/charge-types))', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });

@@ -99,3 +99,95 @@ Figure out why the "getRoomTypeAvailability" room_type model method on the "/api
 
 ------------------------------------------------------
 
+in the controller:
+
+------------------------------------
+
+change these lines near the beginning from:
+const { isChargeTypeValid } = require('./validation/chargeTypesValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
+const { postError, putError, deleteError } = require('./validation/generalValidation');
+
+to:
+const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { someSchema, someIdSchema } = require('./validation/schema/someSchema');
+const isSomeIdValid = require('./validation/helpers/isSomeIdValid');
+
+------------------------------------
+
+get rid of all these line (there should be one in each route with an :id param and even in some PUT routes):
+if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
+
+------------------------------------
+
+change all:
+if (error) next(error);
+
+to:
+if (error) return next(error)
+
+------------------------------------
+
+change all:
+res.status(400).json({ message:
+
+to:
+res.status(400).json({ Error:
+
+------------------------------------
+
+add (as the first line inside the try block where there are :id params):
+await someIdSchema.validateAsync({ some_id: req.params.id });
+
+------------------------------------
+
+in the post route, replace:
+const [result, errorObj] = await isSomethingValid(paramsObj);
+if (!result) return res.status(400).json(errorObj);
+
+with:
+await someSchema.validateAsync(paramsObj);
+
+------------------------------------
+
+in the put route, replace:
+const [result, errorObj] = await isSomethingValid(paramsObj);
+if (!result) return res.status(400).json(errorObj);
+
+with:
+await someSchema.validateAsync(paramsObj);
+await isSomeIdValid(paramsObj.some_id);
+
+------------------------------------
+
+in the DELETE route, add this after the also added schema line:
+await isSomeIdValid(req.params.id);
+
+------------------------------------------------------
+
+in the API test files:
+
+change all:
+response.body.should.have.property('message').and.to.be.a('string');
+
+to (most cases):
+response.body.should.have.property('Validation error').and.to.be.a('string');
+
+or (when checking for the existence of a valid id):
+response.body.should.have.property('Invalid request').and.to.be.a('string');
+
+------------------------------------
+
+get rid of all:
+response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+
+------------------------------------
+
+change the wording in it() statement of the failing POST and PUT routes to say:
+...return an error because one or more parameters are invalid
+
+------------------------------------------------------
+
+make sure the schema file for each controller is in place
+
+helper files seem to be ready
