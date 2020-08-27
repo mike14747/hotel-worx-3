@@ -101,8 +101,6 @@ Figure out why the "getRoomTypeAvailability" room_type model method on the "/api
 
 The user table in the database needs an email field
 
-Add failing tests to usersAPI.js where the access_id is invalid
-
 ------------------------------------------------------
 
 in the controller:
