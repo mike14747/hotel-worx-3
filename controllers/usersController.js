@@ -38,7 +38,7 @@ router.post('/', async (req, res, next) => {
         await usersSchema.validateAsync(paramsObj);
         await isAccessIdValid(paramsObj.access_id);
         paramsObj.password = bcrypt.hashSync(paramsObj.password, salt);
-        const [result, err] = await User.checkExistingUsername({ username: paramsObj.username });
+        const [result, err] = await User.checkUsernameExists({ username: paramsObj.username });
         if (result && result.length > 0) return res.status(400).json({ 'Invalid request': 'the submitted username (' + paramsObj.username + ') already exists' });
         if (err) return next(err);
         const [data, error] = await User.addNewUser(paramsObj);
@@ -62,7 +62,7 @@ router.put('/', async (req, res, next) => {
         await isUserIdValid(paramsObj.user_id);
         await isAccessIdValid(paramsObj.access_id);
         paramsObj.password = bcrypt.hashSync(paramsObj.password, salt);
-        const [result, err] = await User.checkExistingUsername({ username: paramsObj.username });
+        const [result, err] = await User.checkUsernameExists({ username: paramsObj.username });
         if (result && result.length > 0) return res.status(400).json({ 'Invalid request': 'the submitted username (' + paramsObj.username + ') already exists' });
         if (err) return next(err);
         const [data, error] = await User.updateUserById(paramsObj);
