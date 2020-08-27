@@ -34,7 +34,7 @@ dbTest()
     .catch((error) => {
         console.log('An error occurred connecting to the database!', error.message);
         app.get('/api/*', (req, res) => {
-            res.status(500).json({ message: 'There is no connection to the database!' });
+            res.status(500).json({ Error: 'There is no connection to the database!' });
         });
     })
     .finally(() => {

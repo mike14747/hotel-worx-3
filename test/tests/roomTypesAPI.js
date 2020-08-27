@@ -71,12 +71,24 @@ describe('Room Types API (/api/room_types)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to GET room_type availability and return an error because the data param is invalid', function (done) {
+        agent
+            .get('/api/room-types/availability/202-08-01')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
     
-    it('should FAIL to POST a new room_type and return 2 errors because both parameters were invalid', function (done) {
+    it('should FAIL to POST a new room_type and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "room_type": 0,
             "room_rate": "abc"
@@ -88,8 +100,7 @@ describe('Room Types API (/api/room_types)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -110,9 +121,9 @@ describe('Room Types API (/api/room_types)', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, the newly created room_type and return 3 errors because all 3 parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, any room_type and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
-            "room_type_id": 0,
+            "room_type_id": null,
             "room_type": "",
             "room_rate": "abc"
         };
@@ -123,13 +134,12 @@ describe('Room Types API (/api/room_types)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
-                response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(3);
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created room_type and return an error object because the room_type_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, any room_type and return an error because the room_type_id is not an integer', function (done) {
         const paramsObj = {
             "room_type_id": "d",
             "room_type": "Restaurant",
@@ -142,31 +152,49 @@ describe('Room Types API (/api/room_types)', function () {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any room_type and return an error because the room_type_id does not exist', function (done) {
+        const paramsObj = {
+            "room_type_id": 0,
+            "room_type": "Restaurant",
+            "room_rate": 119.99
+        };
+        agent
+            .put('/api/room-types')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
     
-    it('should FAIL to DELETE the newly created room_type because the room_type_id is invalid', function (done) {
+    it('should FAIL to DELETE any room_type and return an error because the room_type_id does not exist', function (done) {
         agent
             .delete('/api/room-types/0')
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
                 done();
             });
     });
 
-    it('should FAIL to DELETE the newly created room_type because the room_type_id is not an integer', function (done) {
+    it('should FAIL to DELETE any room_type because the room_type_id is not an integer', function (done) {
         agent
             .delete('/api/room-types/abc')
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
-                response.body.should.have.property('message').and.to.be.a('string');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
