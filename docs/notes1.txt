@@ -97,11 +97,11 @@ hotel_worx_3_db.sql had some changes to the users and access_levels tables, so t
 
 Figure out why the "getRoomTypeAvailability" room_type model method on the "/api/room-types/availability/:date" route doesn't return just an array of daily availablility.
 
+------------------------------------------------------
 
+The user table in the database needs an email field.
 
-The user table in the database needs an email field
-
-Add failing tests to usersAPI.js where the access_id is invalid
+Need a schema and validation check for the /api/room-types/availability/:date route, plus a test or two.
 
 ------------------------------------------------------
 

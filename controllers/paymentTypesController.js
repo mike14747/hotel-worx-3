@@ -2,7 +2,6 @@ const router = require('express').Router();
 const PaymentType = require('../models/paymentType');
 const { postError, putError, deleteError } = require('./utils/errorMessages');
 const { paymentTypesSchema, paymentTypeIdSchema } = require('./validation/schema/paymentTypesSchema');
-const { required } = require('joi');
 const isPaymentIdValid = require('./validation/helpers/isPaymentTypeIdValid');
 
 router.get('/', async (req, res, next) => {
