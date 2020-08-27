@@ -36,6 +36,18 @@ const User = {
             return [null, error];
         }
     },
+    checkUsernameExists: async (paramsObj) => {
+        try {
+            const queryString = 'SELECT u.username FROM users AS u WHERE username=? LIMIT 1;';
+            const queryParams = [
+                paramsObj.username,
+            ];
+            const [result] = await pool.query(queryString, queryParams);
+            return [result, null];
+        } catch (error) {
+            return [null, error];
+        }
+    },
     addNewUser: async (paramsObj) => {
         try {
             const queryString = 'INSERT INTO users(username, password, access_id, active) VALUES(?, ?, ?, ?);';

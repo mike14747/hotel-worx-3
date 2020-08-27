@@ -213,6 +213,26 @@ describe('Users API (/api/users)', function () {
             });
     });
 
+    it('should FAIL to update, via PUT, any user and return an error because the access_id does not exist', function (done) {
+        const paramsObj = {
+            "user_id": 1,
+            "username": "new_username",
+            "password": "new_password",
+            "access_id": 0,
+            "active": 1
+        };
+        agent
+            .put('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
     it('should FAIL to DELETE any user and return an error because the user_id does not exist', function (done) {
         agent
             .delete('/api/users/0')
