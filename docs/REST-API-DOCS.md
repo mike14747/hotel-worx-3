@@ -13,7 +13,7 @@
 > * Takes in an id parameter in the url.
 > * Returns status 200 and an array containing a single object associated with that specific endpoint.
 > * Returns status 200 and an empty array if nothing was found for that id.
-> * It will return status 400 (and a json with a message property) if the id param is not an integer.
+> * It will return status 400 (and an error object) if the id param is not an integer.
 
 ### **'/api/\<some-endpoint\>/' POST routes**
 > * Adds a new record associated with the specific endpoint.
