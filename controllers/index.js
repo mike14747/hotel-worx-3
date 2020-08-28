@@ -1,7 +1,4 @@
 const router = require('express').Router();
-const Joi = require('joi');
-
-// all these routes point to the base route path of /api as specified in server.js
 
 // remove this once the app goes into production with the frontend and backend on the same server
 router.use((req, res, next) => {
@@ -40,7 +37,7 @@ router.use((req, res, next) => {
 });
 
 router.use((error, req, res, next) => {
-    if (error instanceof Joi.ValidationError) {
+    if (error.isJoi) {
         return res.status(400).json({ 'Validation error': error.details[0].message });
     } else if (error instanceof RangeError) {
         return res.status(400).json({ 'Invalid request': error.message });
