@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { dateError } = require('../../utils/errorMessages');
 
 const roomTypesSchema = Joi.object({
     room_type_id: Joi.number().integer().min(0),
@@ -10,12 +11,20 @@ const roomTypeIdSchema = Joi.object({
     room_type_id: Joi.number().integer().required(),
 });
 
-const roomTypeDateSchema = Joi.object({
-    date: Joi.date().iso().required(),
+const roomTypeDateSchema1 = Joi.object({
+    date: Joi.date().iso().messages({
+        'date.base': dateError,
+        'date.format': dateError,
+    }).required(),
+});
+
+const roomTypeDateSchema2 = Joi.object({
+    date: Joi.string().pattern(new RegExp('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')).message(dateError).required(),
 });
 
 module.exports = {
     roomTypesSchema,
     roomTypeIdSchema,
-    roomTypeDateSchema,
+    roomTypeDateSchema1,
+    roomTypeDateSchema2,
 };
