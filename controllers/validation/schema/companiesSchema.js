@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const taxExemptError = require('../../utils/errorMessages');
 
 const companiesSchema = Joi.object({
     company_id: Joi.number().integer().min(0),
@@ -12,7 +13,10 @@ const companiesSchema = Joi.object({
     phone: Joi.string().required(),
     credit_card_num: Joi.string().required(),
     cc_expiration: Joi.string().required(),
-    tax_exempt: Joi.number().integer().min(0).message('the tax_exempt field serves as a boolean and must be either 0 or 1').max(1).message('the tax_exempt field serves as a boolean and must be either 0 or 1').required(),
+    tax_exempt: Joi.number().integer().min(0).max(1).messages({
+        'number.min': taxExemptError,
+        'number.max': taxExemptError,
+    }).required(),
 });
 
 const companyIdSchema = Joi.object({
