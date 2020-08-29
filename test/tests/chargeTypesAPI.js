@@ -125,7 +125,7 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created charge_type and return an error object because the charge_type_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, the newly created charge_type and return an error object because the charge_type_id is not an integer', function (done) {
         const paramsObj = {
             "charge_type_id": "d",
             "charge_type": "Restaurant",

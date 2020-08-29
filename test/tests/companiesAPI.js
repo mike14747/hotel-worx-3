@@ -179,7 +179,7 @@ describe('Companies API (/api/companies)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created company and return an error because the company_id is not an interger', function (done) {
+    it('should FAIL to update, via PUT, the newly created company and return an error because the company_id is not an integer', function (done) {
         const paramsObj = {
             "company_id": "abc",
             "company_name": "Union Sand",

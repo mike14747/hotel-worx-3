@@ -10,6 +10,7 @@ CREATE TABLE users (
     user_id int UNSIGNED NOT NULL AUTO_INCREMENT,
     username varchar(20) NOT NULL UNIQUE,
     password varchar(255) NOT NULL,
+    email varchar(30) NOT NULL,
     access_id int UNSIGNED NOT NULL,
     FOREIGN KEY (access_id) REFERENCES access_levels(access_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     active boolean DEFAULT 1,
@@ -248,10 +249,10 @@ CREATE TABLE room_issues (
 
 TRUNCATE TABLE users;
 
-INSERT INTO users (username, password, access_id) VALUES
-('admin', '$2b$10$Qf/0VNBQiYr.pHN8IN9Yl.SrYQCpG4b2mrsX6dx85DkE7/fwsNWvy', 3),
-('manager', '$2b$10$2ataQ4kjDbZaR9TDSUqXI.Mt.Gq/bDn1Te3MN939s3fJAtTrKJa9i', 2),
-('user', '$2b$10$rnUz2cFk61G27KdixeR5G.rf78zaKzDZlebrs9ZK5tnnVGFWrnUPm', 1);
+INSERT INTO users (username, password, email, access_id) VALUES
+('admin', '$2b$10$Qf/0VNBQiYr.pHN8IN9Yl.SrYQCpG4b2mrsX6dx85DkE7/fwsNWvy', 'blah1@gmail.com', 3),
+('manager', '$2b$10$2ataQ4kjDbZaR9TDSUqXI.Mt.Gq/bDn1Te3MN939s3fJAtTrKJa9i', 'blah2@yahoo.net', 2),
+('user', '$2b$10$rnUz2cFk61G27KdixeR5G.rf78zaKzDZlebrs9ZK5tnnVGFWrnUPm', 'blah3@comcast.com', 1);
 
  -- admin password: admin
  -- manager password: 111111

@@ -99,10 +99,6 @@ Figure out why the "getRoomTypeAvailability" room_type model method on the "/api
 
 ------------------------------------------------------
 
-The user table in the database needs an email field.
-
-Need a schema and validation check for the /api/room-types/availability/:date route, plus a test or two.
-
 The invoicesController needs a PUT route.
 
 The invoices and reservations routes need joi schema/helpers/tests.

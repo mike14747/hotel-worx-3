@@ -3,7 +3,7 @@ const pool = require('../config/connectionPool.js').getDb();
 const User = {
     getAllUsers: async () => {
         try {
-            const queryString = 'SELECT u.user_id, u.username, a.access_id, a.access_level, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id ORDER BY u.user_id ASC;';
+            const queryString = 'SELECT u.user_id, u.username, u.email, a.access_id, a.access_level, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id ORDER BY u.user_id ASC;';
             const queryParams = [];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];
@@ -13,7 +13,7 @@ const User = {
     },
     getUserById: async (paramsObj) => {
         try {
-            const queryString = 'SELECT u.user_id, u.username, a.access_id, a.access_level, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id WHERE u.user_id=? LIMIT 1;';
+            const queryString = 'SELECT u.user_id, u.username, u.email, a.access_id, a.access_level, a.access_type, u.active FROM users AS u INNER JOIN access_levels AS a ON u.access_id=a.access_id WHERE u.user_id=? LIMIT 1;';
             const queryParams = [
                 paramsObj.id,
             ];
@@ -50,10 +50,11 @@ const User = {
     },
     addNewUser: async (paramsObj) => {
         try {
-            const queryString = 'INSERT INTO users(username, password, access_id, active) VALUES(?, ?, ?, ?);';
+            const queryString = 'INSERT INTO users(username, password, email, access_id, active) VALUES(?, ?, ?, ?, ?);';
             const queryParams = [
                 paramsObj.username,
                 paramsObj.password,
+                paramsObj.email,
                 paramsObj.access_id,
                 paramsObj.active,
             ];
@@ -65,10 +66,11 @@ const User = {
     },
     updateUserById: async (paramsObj) => {
         try {
-            const queryString = 'UPDATE users SET username=?, password=?, access_id=?, active=? WHERE user_id=?;';
+            const queryString = 'UPDATE users SET username=?, password=?, email=?, access_id=?, active=? WHERE user_id=?;';
             const queryParams = [
                 paramsObj.username,
                 paramsObj.password,
+                paramsObj.email,
                 paramsObj.access_id,
                 paramsObj.active,
                 paramsObj.user_id,
