@@ -6,6 +6,8 @@ const taxesSchema = Joi.object({
     tax_name: Joi.string().required(),
     tax_rate: Joi.number().min(0).required(),
     active: Joi.number().integer().min(0).max(1).messages({
+        'number.base': activeError,
+        'number.integer': activeError,
         'number.min': activeError,
         'number.max': activeError,
     }).required(),
