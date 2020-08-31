@@ -23,8 +23,6 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-// this route needs some tinkering to implement "data ? res.json(data) : next(error);"
-// this route was changed to implement "data ? res.json(data) : next(error);", but it hasn't been tested
 router.get('/availability/:date', async (req, res, next) => {
     try {
         await roomTypeDateSchema.validateAsync({ dateCheck1: req.params.date, dateCheck2: req.params.date });

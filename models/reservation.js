@@ -23,7 +23,6 @@ const Reservation = {
             return [null, error];
         }
     },
-    // this model was changed to the new "return [results, null]; / return [null, error];" system, but it hasn't been tested
     addNewReservation: async (paramsObj) => {
         console.log(paramsObj);
         const connection = await pool.getConnection();

@@ -2,8 +2,6 @@ const router = require('express').Router();
 const Reservation = require('../models/reservation');
 const ResRoom = require('../models/resRoom');
 
-// all these routes point to /api/reservations as specified in server.js and controllers/index.js
-
 router.get('/', async (req, res, next) => {
     try {
         const [data, error] = await Reservation.getAllReservations();
@@ -62,7 +60,6 @@ router.put('/', async (req, res, next) => {
     }
 });
 
-// this route was changed to implement "data ? res.json(data) : next(error);", but it hasn't been tested
 router.put('/res-rooms/assign', async (req, res, next) => {
     const baseConfirmationCode = req.body.confirmation_code.slice(0, -3);
     try {
