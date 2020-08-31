@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const RoomType = require('../models/roomType');
 const { postError, putError, deleteError } = require('./utils/errorMessages');
-const { roomTypesSchema, roomTypeIdSchema, roomTypeDateSchema1, roomTypeDateSchema2 } = require('./validation/schema/roomTypesSchema');
+const { roomTypesSchema, roomTypeIdSchema, roomTypeDateSchema } = require('./validation/schema/roomTypesSchema');
 const isRoomTypeIdValid = require('./validation/helpers/isRoomTypeIdValid');
 
 router.get('/', async (req, res, next) => {
@@ -23,12 +23,9 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-// this route needs some tinkering to implement "data ? res.json(data) : next(error);"
-// this route was changed to implement "data ? res.json(data) : next(error);", but it hasn't been tested
 router.get('/availability/:date', async (req, res, next) => {
     try {
-        await roomTypeDateSchema1.validateAsync({ date: req.params.date });
-        await roomTypeDateSchema2.validateAsync({ date: req.params.date });
+        await roomTypeDateSchema.validateAsync({ dateCheck1: req.params.date, dateCheck2: req.params.date });
         const [data, error] = await RoomType.getRoomTypeAvailability({ date: req.params.date });
         data ? res.json(data) : next(error);
     } catch (error) {

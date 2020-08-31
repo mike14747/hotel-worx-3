@@ -32,6 +32,7 @@ router.post('/', async (req, res, next) => {
         const paramsObj = {
             username: req.body.username,
             password: req.body.password,
+            email: req.body.email,
             access_id: req.body.access_id,
             active: req.body.active,
         };
@@ -55,6 +56,7 @@ router.put('/', async (req, res, next) => {
             user_id: req.body.user_id,
             username: req.body.username,
             password: req.body.password,
+            email: req.body.email,
             access_id: req.body.access_id,
             active: req.body.active,
         };
