@@ -161,12 +161,52 @@ describe('Users API (/api/users)', function () {
             });
     });
 
-    it('should FAIL to POST a new user and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to POST a new user and return an error because access_id is invalid', function (done) {
+        const paramsObj = {
+            "username": "another_user",
+            "password": "some_password",
+            "email": "some@test.com",
+            "access_id": undefined,
+            "active": 1
+        };
+        agent
+            .post('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new user and return an error because access_id does not exist', function (done) {
         const paramsObj = {
             "username": "another_user",
             "password": "some_password",
             "email": "some@test.com",
             "access_id": 0,
+            "active": 1
+        };
+        agent
+            .post('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new user and return an error because active is invalid', function (done) {
+        const paramsObj = {
+            "username": "another_user",
+            "password": "some_password",
+            "email": "some@test.com",
+            "access_id": 1,
             "active": 2
         };
         agent
@@ -200,30 +240,9 @@ describe('Users API (/api/users)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, any user and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, any user and return an error because user_id is invalid', function (done) {
         const paramsObj = {
-            "user_id": insertId,
-            "username": "another_user",
-            "password": "some_password",
-            "email": "some_other@test.com",
-            "access_id": 0,
-            "active": 2
-        };
-        agent
-            .put('/api/users')
-            .send(paramsObj)
-            .end(function (error, response) {
-                if (error) done(error);
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('Validation error').and.to.be.a('string');
-                done();
-            });
-    });
-
-    it('should FAIL to update, via PUT, any user and return an error because user_id is not an integer', function (done) {
-        const paramsObj = {
-            "user_id": "abc",
+            "user_id": undefined,
             "username": "new_user",
             "password": "new_password",
             "email": "some_other@test.com",
@@ -242,7 +261,7 @@ describe('Users API (/api/users)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, any user and return an error because the user_id does not exist', function (done) {
+    it('should FAIL to update, via PUT, any user and return an error because user_id does not exist', function (done) {
         const paramsObj = {
             "user_id": 0,
             "username": "new_user",
@@ -259,6 +278,90 @@ describe('Users API (/api/users)', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any user and return an error because username is invalid', function (done) {
+        const paramsObj = {
+            "user_id": 1,
+            "username": undefined,
+            "password": "new_password",
+            "email": "some_other@test.com",
+            "access_id": 2,
+            "active": 1
+        };
+        agent
+            .put('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any user and return an error because password is invalid', function (done) {
+        const paramsObj = {
+            "user_id": 1,
+            "username": "some_user",
+            "password": undefined,
+            "email": "some_other@test.com",
+            "access_id": 2,
+            "active": 1
+        };
+        agent
+            .put('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any user and return an error because email is invalid', function (done) {
+        const paramsObj = {
+            "user_id": 1,
+            "username": "some_user",
+            "password": "some_pass",
+            "email": undefined,
+            "access_id": 2,
+            "active": 1
+        };
+        agent
+            .put('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any user and return an error because access_id is invalid', function (done) {
+        const paramsObj = {
+            "user_id": 1,
+            "username": "new_user",
+            "password": "new_password",
+            "email": "some_other@test.com",
+            "access_id": undefined,
+            "active": 1
+        };
+        agent
+            .put('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });
@@ -280,6 +383,37 @@ describe('Users API (/api/users)', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any user and return an error because active is invalid', function (done) {
+        const paramsObj = {
+            "user_id": 1,
+            "username": "new_user",
+            "password": "new_password",
+            "email": "some_other@test.com",
+            "access_id": 2,
+            "active": undefined
+        };
+        agent
+            .put('/api/users')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE any user and return an error because the user_id was not included', function (done) {
+        agent
+            .delete('/api/users')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(404);
                 done();
             });
     });

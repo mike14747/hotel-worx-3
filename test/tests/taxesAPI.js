@@ -78,11 +78,47 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should FAIL to POST a new tax and and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to POST a new tax and and return an error because tax_name is invalid', function (done) {
         const paramsObj = {
-            "tax_name": "",
-            "tax_rate": "b1.375",
-            "active": 2
+            "tax_name": undefined,
+            "tax_rate": 1.375,
+            "active": 1
+        };
+        agent
+            .post('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new tax and and return an error because tax_rate is invalid', function (done) {
+        const paramsObj = {
+            "tax_name": "Special Tax",
+            "tax_rate": undefined,
+            "active": 1
+        };
+        agent
+            .post('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new tax and and return an error because active is invalid', function (done) {
+        const paramsObj = {
+            "tax_name": "Special Tax",
+            "tax_rate": 1.375,
+            "active": undefined
         };
         agent
             .post('/api/taxes')
@@ -113,12 +149,12 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, the newly created tax and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, any tax and return an error because tax_id is invalid', function (done) {
         const paramsObj = {
-            "tax_id": "",
-            "tax_name": "",
-            "tax_rate": "a1.375",
-            "active": 2
+            "tax_id": undefined,
+            "tax_name": "Some Tax",
+            "tax_rate": 1.375,
+            "active": 1
         };
         agent
             .put('/api/taxes')
@@ -132,7 +168,64 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created tax and return an error because the tax_id does not exist', function (done) {
+    it('should FAIL to update, via PUT, any tax and return an error because tax_name is invalid', function (done) {
+        const paramsObj = {
+            "tax_id": insertId,
+            "tax_name": undefined,
+            "tax_rate": 1.375,
+            "active": 1
+        };
+        agent
+            .put('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any tax and return an error because tax_rate is invalid', function (done) {
+        const paramsObj = {
+            "tax_id": insertId,
+            "tax_name": "Some Tax",
+            "tax_rate": undefined,
+            "active": 1
+        };
+        agent
+            .put('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any tax and return an error because active is invalid', function (done) {
+        const paramsObj = {
+            "tax_id": insertId,
+            "tax_name": "Some Tax",
+            "tax_rate": 1.375,
+            "active": undefined
+        };
+        agent
+            .put('/api/taxes')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any tax and return an error because the tax_id does not exist', function (done) {
         const paramsObj = {
             "tax_id": 0,
             "tax_name": "City",
@@ -171,6 +264,16 @@ describe('Taxes API (/api/taxes)', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE the any tax because the tax_id was not included', function (done) {
+        agent
+            .delete('/api/taxes')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(404);
                 done();
             });
     });

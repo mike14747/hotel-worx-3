@@ -48,6 +48,7 @@ router.put('/', async (req, res, next) => {
             active: req.body.active,
         };
         await taxesSchema.validateAsync(paramsObj);
+        await taxIdSchema.validateAsync({ tax_id: paramsObj.tax_id });
         await isTaxIdValid(paramsObj.tax_id);
         const [data, error] = await Tax.updateTaxById(paramsObj);
         if (error) return next(error);
