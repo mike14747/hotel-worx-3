@@ -2,7 +2,55 @@ const agent = require('../utils/serverInit');
 
 describe('Charges API (/api/charges)', function () {
     let insertId = 0;
-    
+    let reservationId = 0;
+    let customerId = 0;
+    let resRoomId = 0;
+
+    it('should add a new reservation, so there will be a res_room_id to apply a charge to'), function (done) {
+        paramsObj = {
+            "customerObj": {
+                "first_name": "Peter",
+                "last_name": "Pan",
+                "address": "1111 FairyTale Lane",
+                "city": "Fantasyland",
+                "state": "Vermont",
+                "zip": "23456",
+                "country": "USA",
+                "email": "p.pan@yahoo.net",
+                "phone": "800-555-1212",
+                "credit_card_num": "1234567890123456",
+                "cc_expiration": "11 / 21"
+            },
+            "reservationObj": {
+                "company_id": null,
+                "user_id": 1,
+                "comments": "test reservation comment"
+            },
+            "resRoomsArr": [
+                {
+                    "room_type_id": 2,
+                    "check_in_date": "2019-12-12",
+                    "check_out_date": "2019-12-15",
+                    "adults": 2,
+                    "room_rate": 119.99,
+                    "comments": "need a good view",
+                    "allow_charges": 1
+                }
+            ]
+        };
+        agent
+            .post('/api/reservations')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(201);
+                response.body.should.be.an('object');
+                response.body.should.have.property('insertId').and.to.be.a('number');
+                if (response.body.insertId) resRoomId = response.body.insertId;
+                done();
+            });
+    };
+
     it('should POST a new charge with the provided params body and return the insertId', function (done) {
         const paramsObj = {
             "res_room_id": 1200,
@@ -81,7 +129,7 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
-    
+
     it('should POST a second new charge with the provided params body and return the insertId', function (done) {
         const paramsObj = {
             "res_room_id": 1100,
@@ -100,7 +148,7 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
-    
+
     it('should FAIL to POST a new charge and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "res_room_id": 0,
@@ -119,7 +167,7 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
-    
+
     it('should update, via PUT, one of the newly created charge with these new parameters', function (done) {
         const paramsObj = {
             "charge_id": insertId,
@@ -137,7 +185,7 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
-    
+
     it('should FAIL to update, via PUT, one of the newly created charges and return an error because one or more parameters are invalid', function (done) {
         const paramsObj = {
             "charge_id": null,
@@ -215,7 +263,7 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
-    
+
     it('should FAIL to DELETE any charge and return an error because the charge_id does not exist', function (done) {
         agent
             .delete('/api/charges/0')
@@ -239,7 +287,7 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
-    
+
     it('should FAIL to DELETE all charges associated with a res_room_id because the res_room id is not an integer', function (done) {
         agent
             .delete('/api/charges/res-rooms/abc')
@@ -251,7 +299,7 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
-    
+
     it('should DELETE the newly created charge using the insertId', function (done) {
         agent
             .delete('/api/charges/' + insertId)
@@ -261,10 +309,40 @@ describe('Charges API (/api/charges)', function () {
                 done();
             });
     });
-    
+
     it('should DELETE all charges associated with a res_room_id', function (done) {
         agent
             .delete('/api/charges/res-rooms/1100')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(204);
+                done();
+            });
+    });
+
+    it('should DELETE the newly created customer', function (done) {
+        agent
+            .delete('/api/customers/' + customerId)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(204);
+                done();
+            });
+    });
+
+    it('should DELETE the newly created reservation', function (done) {
+        agent
+            .delete('/api/reservations/' + reservationId)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(204);
+                done();
+            });
+    });
+
+    it('should DELETE the newly created resRoom', function (done) {
+        agent
+            .delete('/api/reservations/' + reservationId)
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(204);
