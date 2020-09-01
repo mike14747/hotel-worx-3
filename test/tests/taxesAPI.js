@@ -268,7 +268,7 @@ describe('Taxes API (/api/taxes)', function () {
             });
     });
 
-    it('should FAIL to DELETE the any tax because the tax_id was not included', function (done) {
+    it('should FAIL to DELETE the any tax because the tax_id param was not included', function (done) {
         agent
             .delete('/api/taxes')
             .end(function (error, response) {

@@ -408,7 +408,7 @@ describe('Users API (/api/users)', function () {
             });
     });
 
-    it('should FAIL to DELETE any user and return an error because the user_id was not included', function (done) {
+    it('should FAIL to DELETE any user and return an error because the user_id param was not included', function (done) {
         agent
             .delete('/api/users')
             .end(function (error, response) {

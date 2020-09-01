@@ -46,6 +46,7 @@ router.put('/', async (req, res, next) => {
             access_type: req.body.access_type,
         };
         await accessLevelsSchema.validateAsync(paramsObj);
+        await accessIdSchema.validateAsync({ access_id: paramsObj.access_id });
         await isAccessIdValid(paramsObj.access_id);
         const [data, error] = await AccessLevel.updateAccessLevel(paramsObj);
         if (error) return next(error);
