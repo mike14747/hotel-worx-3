@@ -67,9 +67,9 @@ const Reservation = {
                     resRoom.allow_charges,
                 ];
             })];
-            await connection.query(resRoomQueryString, resRoomQueryParams);
+            const resRoomResult = await connection.query(resRoomQueryString, resRoomQueryParams);
             await connection.commit();
-            return [reservationResult, null];
+            return [{ reservation_id: reservationResult.insertId, customer_id: customerResult[0].insertId, res_room_id: resRoomResult[0].insertId }, null];
         } catch (error) {
             await connection.rollback();
             return [null, error];
