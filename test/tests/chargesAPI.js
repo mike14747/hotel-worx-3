@@ -29,8 +29,8 @@ describe('Charges API (/api/charges)', function () {
             "resRoomsArr": [
                 {
                     "room_type_id": 2,
-                    "check_in_date": "2019-12-12",
-                    "check_out_date": "2019-12-15",
+                    "check_in_date": "2029-12-12",
+                    "check_out_date": "2029-12-15",
                     "adults": 2,
                     "room_rate": 119.99,
                     "comments": "need a good view",
@@ -45,15 +45,19 @@ describe('Charges API (/api/charges)', function () {
                 if (error) done(error);
                 response.should.have.status(201);
                 response.body.should.be.an('object');
-                response.body.should.have.property('insertId').and.to.be.a('number');
-                if (response.body.insertId) resRoomId = response.body.insertId;
+                response.body.should.have.property('reservation_id').and.to.be.a('number');
+                response.body.should.have.property('customer_id').and.to.be.a('number');
+                response.body.should.have.property('res_room_id').and.to.be.a('number');
+                reservationId = response.body.reservation_id;
+                customerId = response.body.customer_id;
+                resRoomId = response.body.res_room_id;
                 done();
             });
     };
 
     it('should POST a new charge with the provided params body and return the insertId', function (done) {
         const paramsObj = {
-            "res_room_id": 1200,
+            "res_room_id": resRoomId,
             "charge_type_id": 3,
             "charge_amount": 43.12,
             "taxable": 1
@@ -132,7 +136,7 @@ describe('Charges API (/api/charges)', function () {
 
     it('should POST a second new charge with the provided params body and return the insertId', function (done) {
         const paramsObj = {
-            "res_room_id": 1100,
+            "res_room_id": resRoomId,
             "charge_type_id": 2,
             "charge_amount": 29.87,
             "taxable": 1
@@ -171,7 +175,7 @@ describe('Charges API (/api/charges)', function () {
     it('should update, via PUT, one of the newly created charge with these new parameters', function (done) {
         const paramsObj = {
             "charge_id": insertId,
-            "res_room_id": 1200,
+            "res_room_id": resRoomId,
             "charge_type_id": 2,
             "charge_amount": 53.12,
             "taxable": 1
@@ -229,7 +233,7 @@ describe('Charges API (/api/charges)', function () {
     it('should FAIL to update, via PUT, any charges and return an error because the charge_id does not exist', function (done) {
         const paramsObj = {
             "charge_id": 0,
-            "res_room_id": 1200,
+            "res_room_id": resRoomId,
             "charge_type_id": 2,
             "charge_amount": 53.12,
             "taxable": 1
@@ -238,6 +242,7 @@ describe('Charges API (/api/charges)', function () {
             .put('/api/charges')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('Invalid request').and.to.be.a('string');
@@ -257,6 +262,7 @@ describe('Charges API (/api/charges)', function () {
             .put('/api/charges')
             .send(paramsObj)
             .end(function (error, response) {
+                if (error) done(error);
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('Invalid request').and.to.be.a('string');
@@ -312,7 +318,7 @@ describe('Charges API (/api/charges)', function () {
 
     it('should DELETE all charges associated with a res_room_id', function (done) {
         agent
-            .delete('/api/charges/res-rooms/1100')
+            .delete('/api/charges/res-rooms/' + resRoomId)
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(204);
@@ -342,7 +348,7 @@ describe('Charges API (/api/charges)', function () {
 
     it('should DELETE the newly created resRoom', function (done) {
         agent
-            .delete('/api/reservations/' + reservationId)
+            .delete('/api/reservations/' + resRoomId)
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(204);
