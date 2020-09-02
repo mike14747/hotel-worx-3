@@ -62,7 +62,7 @@ router.put('/', async (req, res, next) => {
             taxable: parseInt(req.body.taxable),
         };
         await chargesSchema.validateAsync(paramsObj);
-        await chargeIdSchema.validateAsync({ charge_id: req.params.id });
+        await chargeIdSchema.validateAsync({ charge_id: paramsObj.charge_id });
         await isChargeIdValid(paramsObj.charge_id);
         await isResRoomIdValid(paramsObj.res_room_id);
         const [data, error] = await Charge.updateChargeById(paramsObj);

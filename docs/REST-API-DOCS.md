@@ -501,8 +501,7 @@
 * Takes in a list of parameters in the body object.
 * This route accesses the reservation model which uses a database transaction that sequentially queries 3 tables (**customers, reservations and res_rooms**)... with either all succeeding/committing or rolling back if any of them fail.
 * The **resRoomsArr** property of the body is an array that contains an object element for each res_room in the reservation.
-* If successful, it returns status code 200 and a JSON object including things like "affectedRows", "insertId" and such.
-* On this endpoint, the "insertId" will be the new reservation_id.
+* If successful, it returns status code 201 and a JSON object including the reservation_id, the customer_id and the final res_room_id of the inserted reservation.
 ```
 // sample request body for this route
 {
@@ -544,6 +543,15 @@
             "allow_charges": 0
         }
     ]
+}
+```
+
+```
+// sample response from this route
+{
+    "reservation_id": 1206,
+    "customer_id": 209,
+    "res_room_id": 1204
 }
 ```
 
