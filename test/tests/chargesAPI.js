@@ -6,8 +6,8 @@ describe('Charges API (/api/charges)', function () {
     let customerId = 0;
     let resRoomId = 0;
 
-    it('should add a new reservation, so there will be a res_room_id to apply a charge to'), function (done) {
-        paramsObj = {
+    it('should POST a new reservation, so there will be a res_room_id to apply a charge to', function (done) {
+        const paramsObj = {
             "customerObj": {
                 "first_name": "Peter",
                 "last_name": "Pan",
@@ -29,8 +29,8 @@ describe('Charges API (/api/charges)', function () {
             "resRoomsArr": [
                 {
                     "room_type_id": 2,
-                    "check_in_date": "2029-12-12",
-                    "check_out_date": "2029-12-15",
+                    "check_in_date": "2021-12-12",
+                    "check_out_date": "2021-12-15",
                     "adults": 2,
                     "room_rate": 119.99,
                     "comments": "need a good view",
@@ -46,14 +46,14 @@ describe('Charges API (/api/charges)', function () {
                 response.should.have.status(201);
                 response.body.should.be.an('object');
                 response.body.should.have.property('reservation_id').and.to.be.a('number');
-                response.body.should.have.property('customer_id').and.to.be.a('number');
-                response.body.should.have.property('res_room_id').and.to.be.a('number');
                 reservationId = response.body.reservation_id;
+                response.body.should.have.property('customer_id').and.to.be.a('number');
                 customerId = response.body.customer_id;
+                response.body.should.have.property('res_room_id').and.to.be.a('number');
                 resRoomId = response.body.res_room_id;
                 done();
             });
-    };
+    });
 
     it('should POST a new charge with the provided params body and return the insertId', function (done) {
         const paramsObj = {
@@ -172,7 +172,7 @@ describe('Charges API (/api/charges)', function () {
             });
     });
 
-    it('should update, via PUT, one of the newly created charge with these new parameters', function (done) {
+    it('should update, via PUT, one of the newly created charges with these new parameters', function (done) {
         const paramsObj = {
             "charge_id": insertId,
             "res_room_id": resRoomId,
@@ -326,16 +326,6 @@ describe('Charges API (/api/charges)', function () {
             });
     });
 
-    it('should DELETE the newly created customer', function (done) {
-        agent
-            .delete('/api/customers/' + customerId)
-            .end(function (error, response) {
-                if (error) done(error);
-                response.should.have.status(204);
-                done();
-            });
-    });
-
     it('should DELETE the newly created reservation', function (done) {
         agent
             .delete('/api/reservations/' + reservationId)
@@ -346,9 +336,9 @@ describe('Charges API (/api/charges)', function () {
             });
     });
 
-    it('should DELETE the newly created resRoom', function (done) {
+    it('should DELETE the newly created customer', function (done) {
         agent
-            .delete('/api/reservations/' + resRoomId)
+            .delete('/api/customers/' + customerId)
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(204);

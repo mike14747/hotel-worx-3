@@ -27,25 +27,31 @@ const Reservation = {
         const connection = await pool.getConnection();
         try {
             const { customerObj, reservationObj, resRoomsArr } = paramsObj;
-            const customerQueryString = 'INSERT INTO customers (first_name, last_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
-            const customerParams = [
-                customerObj.first_name,
-                customerObj.last_name,
-                customerObj.address,
-                customerObj.city,
-                customerObj.state,
-                customerObj.zip,
-                customerObj.country,
-                customerObj.email,
-                customerObj.phone,
-                customerObj.credit_card_num,
-                customerObj.cc_expiration,
-            ];
             await connection.beginTransaction();
-            const customerResult = await connection.query(customerQueryString, customerParams);
+            let customerId;
+            if (customerObj.customer_id) {
+                customerId = customerObj.customer_id;
+            } else {
+                const customerQueryString = 'INSERT INTO customers (first_name, last_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+                const customerParams = [
+                    customerObj.first_name,
+                    customerObj.last_name,
+                    customerObj.address,
+                    customerObj.city,
+                    customerObj.state,
+                    customerObj.zip,
+                    customerObj.country,
+                    customerObj.email,
+                    customerObj.phone,
+                    customerObj.credit_card_num,
+                    customerObj.cc_expiration,
+                ];
+                const customerResult = await connection.query(customerQueryString, customerParams);
+                customerId = customerResult[0].insertId;
+            }
             const reservationQueryString = 'INSERT INTO reservations (customer_id, company_id, user_id, comments) VALUES (?, ?, ?, ?);';
             const reservationParams = [
-                customerResult[0].insertId,
+                customerId,
                 reservationObj.company_id,
                 reservationObj.user_id,
                 reservationObj.comments,
@@ -69,7 +75,7 @@ const Reservation = {
             })];
             const resRoomResult = await connection.query(resRoomQueryString, resRoomQueryParams);
             await connection.commit();
-            return [{ reservation_id: reservationResult.insertId, customer_id: customerResult[0].insertId, res_room_id: resRoomResult[0].insertId }, null];
+            return [{ reservation_id: reservationResult.insertId, customer_id: customerId, res_room_id: resRoomResult[0].insertId }, null];
         } catch (error) {
             await connection.rollback();
             return [null, error];
@@ -87,6 +93,18 @@ const Reservation = {
                 paramsObj.comments,
                 paramsObj.active,
                 paramsObj.reservation_id,
+            ];
+            const [result] = await pool.query(queryString, queryParams);
+            return [result, null];
+        } catch (error) {
+            return [null, error];
+        }
+    },
+    deleteReservationById: async (paramsObj) => {
+        try {
+            const queryString = 'DELETE FROM reservations WHERE reservation_id=?;';
+            const queryParams = [
+                paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];

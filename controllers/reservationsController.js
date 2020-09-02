@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Reservation = require('../models/reservation');
 const ResRoom = require('../models/resRoom');
+const { postError, putError, deleteError } = require('./utils/errorMessages');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -11,18 +12,18 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9]+)', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const [data, error] = await Reservation.getReservationById({ id: parseInt(req.params.id) || 0 });
+        const [data, error] = await Reservation.getReservationById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/:id([0-9]+)/res-rooms', async (req, res, next) => {
+router.get('/:id/res-rooms', async (req, res, next) => {
     try {
-        const [data, error] = await ResRoom.getResRoomsByReservationId({ id: parseInt(req.params.id) || 0 });
+        const [data, error] = await ResRoom.getResRoomsByReservationId({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
@@ -37,7 +38,8 @@ router.post('/', async (req, res, next) => {
     };
     try {
         const [data, error] = await Reservation.addNewReservation(paramsObj);
-        data ? res.json(data) : next(error);
+        if (error) return next(error);
+        data ? res.status(201).json(data) : res.status(400).json({ Error: postError });
     } catch (error) {
         next(error);
     }
@@ -118,19 +120,29 @@ router.put('/res-rooms', async (req, res, next) => {
     }
 });
 
-router.put('/res-rooms/:id([0-9]+)/check-in', async (req, res, next) => {
+router.put('/res-rooms/:id/check-in', async (req, res, next) => {
     try {
-        const [data, error] = await ResRoom.updateResRoomCheckinById({ id: parseInt(req.params.id) || 0 });
+        const [data, error] = await ResRoom.updateResRoomCheckinById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.put('/res-rooms/:id([0-9]+)/check-out', async (req, res, next) => {
+router.put('/res-rooms/:id/check-out', async (req, res, next) => {
     try {
-        const [data, error] = await ResRoom.updateResRoomCheckoutById({ id: parseInt(req.params.id) || 0 });
+        const [data, error] = await ResRoom.updateResRoomCheckoutById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.delete('/:id', async (req, res, next) => {
+    try {
+        const [data, error] = await Reservation.deleteReservationById({ id: parseInt(req.params.id) });
+        if (error) return next(error);
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ Error: deleteError });
     } catch (error) {
         next(error);
     }
