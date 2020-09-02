@@ -67,7 +67,7 @@
         "active": 1,
         "room_type_id": 1,
         "type": "2 Queens",
-        "rate": "109.99"
+        "room_rate": "109.99"
     },
     {
         ...
@@ -89,7 +89,7 @@
         "active": 1,
         "room_type_id": 1,
         "type": "2 Queens",
-        "rate": "109.99"
+        "room_rate": "109.99"
     }
 ]
 ```
@@ -483,7 +483,7 @@
         "checked_out": 0,
         "adults": 1,
         "room_id": 9,
-        "rate": "109.99",
+        "room_rate": "109.99",
         "confirmation_code": "190501001001",
         "comments": "needs a late checkout time",
         "allow_charges": 1,
@@ -530,7 +530,7 @@
             "check_in_date": "2019-12-12",
             "check_out_date": "2019-12-15",
             "adults": 2,
-            "rate": 119.99,
+            "room_rate": 119.99,
             "comments": "need a good view",
             "allow_charges": 1
         },
@@ -539,7 +539,7 @@
             "check_in_date": "2019-12-12",
             "check_out_date": "2019-12-17",
             "adults": 2,
-            "rate": 109.99,
+            "room_rate": 109.99,
             "comments": "want a late checkout",
             "allow_charges": 0
         }
@@ -572,7 +572,7 @@
 	"res_room_id": 1201,
     "room_type_id": 1,
     "room_id": 98,
-    "rate": 109.99,
+    "room_rate": 109.99,
     "reservation_id": 1201,
     "confirmation_code": "191130201001"
 }
@@ -587,7 +587,7 @@
 	"res_room_id": 1202,
     "room_type_id": 1,
     "room_id": 91,
-    "rate": 109.99,
+    "room_rate": 109.99,
     "reservation_id": 1201
 }
 ```
@@ -602,7 +602,7 @@
     "check_in_date": "2020-03-14",
     "check_out_date": "2020-03-18",
     "adults": 3,
-    "rate": 119.99,
+    "room_rate": 119.99,
     "comments": "blah, blah",
     "allow_charges": 1
 }
@@ -625,7 +625,7 @@
     {
         "room_type_id": 1,
         "type": "2 Queens",
-        "rate": "109.99"
+        "room_rate": "109.99"
     },
     {
         ...
@@ -640,7 +640,7 @@
     {
         "room_type_id": 1,
         "type": "2 Queens",
-        "rate": "109.99"
+        "room_rate": "109.99"
     }
 ]
 ```
@@ -686,7 +686,7 @@
 // sample request body for this route
 {
     "type": "Double",
-    "rate": 109.99
+    "room_rate": 109.99
 }
 ```
 
@@ -698,7 +698,7 @@
 {
     "room_type_id": 2,
     "type": "King",
-    "rate": "119.99"
+    "room_rate": "119.99"
 }
 ```
 
@@ -748,7 +748,7 @@
         "check_out_date": "Dec 01, 2019",
         "adults": 1,
         "room_id": 9,
-        "rate": "109.99",
+        "room_rate": "109.99",
         "confirmation_code": "190501001001",
         "res_room_comments": "needs a late checkout time",
         "room_num": "109",

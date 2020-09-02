@@ -14,7 +14,7 @@ const taxesSchema = Joi.object({
 });
 
 const taxIdSchema = Joi.object({
-    tax_id: Joi.number().integer().required(),
+    tax_id: Joi.number().integer().min(0).required(),
 });
 
 module.exports = {

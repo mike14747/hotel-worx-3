@@ -24,7 +24,6 @@ const Reservation = {
         }
     },
     addNewReservation: async (paramsObj) => {
-        console.log(paramsObj);
         const connection = await pool.getConnection();
         try {
             const { customerObj, reservationObj, resRoomsArr } = paramsObj;
@@ -52,7 +51,7 @@ const Reservation = {
                 reservationObj.comments,
             ];
             const [reservationResult] = await connection.query(reservationQueryString, reservationParams);
-            const resRoomQueryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments, allow_charges) VALUES ?;';
+            const resRoomQueryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, room_rate, confirmation_code, comments, allow_charges) VALUES ?;';
             const today = new Date();
             const confirmationCode = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + reservationResult.insertId.toString().slice(-3) + '001';
             const resRoomQueryParams = [resRoomsArr.map((resRoom) => {
@@ -62,7 +61,7 @@ const Reservation = {
                     resRoom.check_in_date,
                     resRoom.check_out_date,
                     resRoom.adults,
-                    resRoom.rate,
+                    resRoom.room_rate,
                     confirmationCode,
                     resRoom.comments,
                     resRoom.allow_charges,

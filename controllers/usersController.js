@@ -61,6 +61,7 @@ router.put('/', async (req, res, next) => {
             active: req.body.active,
         };
         await usersSchema.validateAsync(paramsObj);
+        await userIdSchema.validateAsync({ user_id: paramsObj.user_id });
         await isUserIdValid(paramsObj.user_id);
         await isAccessIdValid(paramsObj.access_id);
         paramsObj.password = bcrypt.hashSync(paramsObj.password, salt);

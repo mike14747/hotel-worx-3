@@ -16,6 +16,8 @@ router.use('/room-types', require('./roomTypesController'));
 
 router.use('/reservations', require('./reservationsController'));
 
+router.use('/res-rooms', require('./resRoomsController'));
+
 router.use('/taxes', require('./taxesController'));
 
 router.use('/invoices', require('./invoicesController'));
