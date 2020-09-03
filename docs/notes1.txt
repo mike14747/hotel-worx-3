@@ -195,3 +195,38 @@ or:
 make sure the schema file for each controller is in place
 
 helper files seem to be ready
+
+------------------------------------------------------
+
+in each intergration test file:
+
+POST a new record (should return status 201 and the insertId of the new record)
+
+GET the newly created records by id (should return status 200 and the record)
+
+GET all of the records (should return status 200 and the records)
+
+GET no records, by passing 0 as the id (should return status 200 and an empty array)
+
+GET an error by passing a non-integer as the id (should return status 400 and a "Validation error" message)
+
+Fail to POST a new record by passing undefined as each parameter... or passing 2 in the boolean field... there will be a separate test for each undefined parameter (should return status 400 and a "Validation error" message for each failed test)
+
+Fail to POST a new record for any foreign key ids because 0 was passed for each (should return status 400 and a "Invalid request" message)
+
+Successfully update a record, via PUT, by passing all valid params (should return status 204)
+
+Fail to update a record, via PUT, by passing undefined as each parameter... or passing 2 in the boolean field... there will be a separate test for each undefined parameter (should return status 400 and a "Validation error" message for each failed test)
+
+Fail to PUT for any foreign key ids because 0 was passed for each (should return status 400 and a "Invalid request" message)
+
+Fail to DELETE any records because 0 passed as an id does not exist (should return status 400 and a "Invalid request" message)
+
+Fail to DELETE any records because a non-integer was passed an an id (should return status 400 and a "Validation error" message)
+
+Fail to DELETE a record because no id param was passed (should return a status 404)
+
+DELETE a record by passing a valid id (should return status 204)
+
+------------------------------------------------------
+

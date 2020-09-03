@@ -196,7 +196,7 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should FAIL to DELETE the newly created charge_type because the charge_type_id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created charge_type because the charge_type_id does not exist', function (done) {
         agent
             .delete('/api/charge-types/0')
             .end(function (error, response) {
