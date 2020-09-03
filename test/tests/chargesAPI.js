@@ -22,7 +22,7 @@ describe('Charges API (/api/charges)', function () {
                 "cc_expiration": "11 / 21"
             },
             "reservationObj": {
-                "company_id": null,
+                "company_id": undefined,
                 "user_id": 1,
                 "comments": "test reservation comment"
             },
@@ -155,7 +155,7 @@ describe('Charges API (/api/charges)', function () {
 
     it('should FAIL to POST a new charge and return an error because res_room_id is invalid', function (done) {
         const paramsObj = {
-            "res_room_id": null,
+            "res_room_id": undefined,
             "charge_type_id": 1,
             "charge_amount": 43.12,
             "taxable": 1
@@ -194,7 +194,7 @@ describe('Charges API (/api/charges)', function () {
     it('should FAIL to POST a new charge and return an error because charge_type_id is invalid', function (done) {
         const paramsObj = {
             "res_room_id": resRoomId,
-            "charge_type_id": null,
+            "charge_type_id": undefined,
             "charge_amount": 43.12,
             "taxable": 1
         };
@@ -233,7 +233,7 @@ describe('Charges API (/api/charges)', function () {
         const paramsObj = {
             "res_room_id": resRoomId,
             "charge_type_id": 1,
-            "charge_amount": null,
+            "charge_amount": undefined,
             "taxable": 1
         };
         agent
@@ -253,7 +253,7 @@ describe('Charges API (/api/charges)', function () {
             "res_room_id": resRoomId,
             "charge_type_id": 1,
             "charge_amount": 43.12,
-            "taxable": null
+            "taxable": undefined
         };
         agent
             .post('/api/charges')
@@ -308,7 +308,7 @@ describe('Charges API (/api/charges)', function () {
     it('should FAIL to update, via PUT, any charges and return an error because res_room_id is invalid', function (done) {
         const paramsObj = {
             "charge_id": insertId,
-            "res_room_id": null,
+            "res_room_id": undefined,
             "charge_type_id": 1,
             "charge_amount": 43.12,
             "taxable": 1
@@ -349,7 +349,7 @@ describe('Charges API (/api/charges)', function () {
         const paramsObj = {
             "charge_id": insertId,
             "res_room_id": resRoomId,
-            "charge_type_id": null,
+            "charge_type_id": undefined,
             "charge_amount": 43.12,
             "taxable": 1
         };
@@ -390,7 +390,7 @@ describe('Charges API (/api/charges)', function () {
             "charge_id": insertId,
             "res_room_id": resRoomId,
             "charge_type_id": 1,
-            "charge_amount": null,
+            "charge_amount": undefined,
             "taxable": 1
         };
         agent
@@ -411,7 +411,7 @@ describe('Charges API (/api/charges)', function () {
             "res_room_id": resRoomId,
             "charge_type_id": 1,
             "charge_amount": 43.12,
-            "taxable": null
+            "taxable": undefined
         };
         agent
             .put('/api/charges')
