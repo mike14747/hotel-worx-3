@@ -51,7 +51,7 @@ describe('Payment Types API (/api/payment-types)', function () {
             });
     });
 
-    it('should GET a status 200 and an empty array because payment_type_id 0 should not match any payment types', function (done) {
+    it('should GET a status 200 and an empty array because payment_type_id 0 does not exist', function (done) {
         agent
             .get('/api/payment-types/0')
             .end(function (error, response) {
@@ -64,7 +64,7 @@ describe('Payment Types API (/api/payment-types)', function () {
     
     it('should FAIL to GET a single payment_type and instead return a status 400 because the payment_type_id is not an integer', function (done) {
         agent
-            .get('/api/payment-types/1a')
+            .get('/api/payment-types/a')
             .end(function (error, response) {
                 if (error) done(error);
                 response.should.have.status(400);
@@ -74,9 +74,26 @@ describe('Payment Types API (/api/payment-types)', function () {
             });
     });
     
-    it('should FAIL to POST a new payment_type and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to POST a new payment_type and return an error because payment_type is invalid', function (done) {
         const paramsObj = {
-            "payment_type": 0,
+            "payment_type": undefined,
+            "active": 1
+        };
+        agent
+            .post('/api/payment-types')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new payment_type and return an error because active is invalid', function (done) {
+        const paramsObj = {
+            "payment_type": "Some type",
             "active": 2
         };
         agent
@@ -107,28 +124,10 @@ describe('Payment Types API (/api/payment-types)', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, any payment_type and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, any payment_type and return an error because payment_type_id is invalid', function (done) {
         const paramsObj = {
-            "payment_type_id": null,
-            "payment_type": "",
-            "active": 2
-        };
-        agent
-            .put('/api/payment-types')
-            .send(paramsObj)
-            .end(function (error, response) {
-                if (error) done(error);
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('Validation error').and.to.be.a('string');
-                done();
-            });
-    });
-
-    it('should FAIL to update, via PUT, any payment_type and return an error because the payment_type_id is not an integer', function (done) {
-        const paramsObj = {
-            "payment_type_id": "d",
-            "payment_type": "Updated Payment Type",
+            "payment_type_id": undefined,
+            "payment_type": "Some type",
             "active": 1
         };
         agent
@@ -143,7 +142,43 @@ describe('Payment Types API (/api/payment-types)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, any payment_type and return an error because the payment_type_id does not exist', function (done) {
+    it('should FAIL to update, via PUT, any payment_type and return an error because payment_type is invalid', function (done) {
+        const paramsObj = {
+            "payment_type_id": insertId,
+            "payment_type": undefined,
+            "active": 1
+        };
+        agent
+            .put('/api/payment-types')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any payment_type and return an error because active is invalid', function (done) {
+        const paramsObj = {
+            "payment_type_id": insertId,
+            "payment_type": "Some type",
+            "active": 2
+        };
+        agent
+            .put('/api/payment-types')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any payment_type and return an error because payment_type_id does not exist', function (done) {
         const paramsObj = {
             "payment_type_id": 0,
             "payment_type": "Updated Payment Type",
@@ -161,7 +196,7 @@ describe('Payment Types API (/api/payment-types)', function () {
             });
     });
     
-    it('should FAIL to DELETE the newly created payment_type because the payment_type_id is invalid', function (done) {
+    it('should FAIL to DELETE any payment_type because the payment_type_id does not exist', function (done) {
         agent
             .delete('/api/payment-types/0')
             .end(function (error, response) {
@@ -173,7 +208,7 @@ describe('Payment Types API (/api/payment-types)', function () {
             });
     });
 
-    it('should FAIL to DELETE the newly created payment_type because the payment_type_id is not an integer', function (done) {
+    it('should FAIL to DELETE any payment_type because the payment_type_id is invalid', function (done) {
         agent
             .delete('/api/payment-types/abc')
             .end(function (error, response) {
@@ -181,6 +216,16 @@ describe('Payment Types API (/api/payment-types)', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE the any payment_type because the payment_type_id param was not included', function (done) {
+        agent
+            .delete('/api/payment-types')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(404);
                 done();
             });
     });

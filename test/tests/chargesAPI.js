@@ -22,7 +22,7 @@ describe('Charges API (/api/charges)', function () {
                 "cc_expiration": "11 / 21"
             },
             "reservationObj": {
-                "company_id": null,
+                "company_id": undefined,
                 "user_id": 1,
                 "comments": "test reservation comment"
             },
@@ -153,12 +153,107 @@ describe('Charges API (/api/charges)', function () {
             });
     });
 
-    it('should FAIL to POST a new charge and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to POST a new charge and return an error because res_room_id is invalid', function (done) {
+        const paramsObj = {
+            "res_room_id": undefined,
+            "charge_type_id": 1,
+            "charge_amount": 43.12,
+            "taxable": 1
+        };
+        agent
+            .post('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new charge and return an error because res_room_id does not exist', function (done) {
         const paramsObj = {
             "res_room_id": 0,
+            "charge_type_id": 1,
+            "charge_amount": 43.12,
+            "taxable": 1
+        };
+        agent
+            .post('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new charge and return an error because charge_type_id is invalid', function (done) {
+        const paramsObj = {
+            "res_room_id": resRoomId,
+            "charge_type_id": undefined,
+            "charge_amount": 43.12,
+            "taxable": 1
+        };
+        agent
+            .post('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new charge and return an error because charge_type_id does not exist', function (done) {
+        const paramsObj = {
+            "res_room_id": resRoomId,
             "charge_type_id": 0,
-            "charge_amount": "a43.12",
-            "taxable": 2
+            "charge_amount": 43.12,
+            "taxable": 1
+        };
+        agent
+            .post('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new charge and return an error because charge_amount is invalid', function (done) {
+        const paramsObj = {
+            "res_room_id": resRoomId,
+            "charge_type_id": 1,
+            "charge_amount": undefined,
+            "taxable": 1
+        };
+        agent
+            .post('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to POST a new charge and return an error because taxable is invalid', function (done) {
+        const paramsObj = {
+            "res_room_id": resRoomId,
+            "charge_type_id": 1,
+            "charge_amount": 43.12,
+            "taxable": undefined
         };
         agent
             .post('/api/charges')
@@ -190,46 +285,6 @@ describe('Charges API (/api/charges)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, one of the newly created charges and return an error because one or more parameters are invalid', function (done) {
-        const paramsObj = {
-            "charge_id": null,
-            "res_room_id": null,
-            "charge_type_id": 0,
-            "charge_amount": "a53.12",
-            "taxable": 2
-        };
-        agent
-            .put('/api/charges')
-            .send(paramsObj)
-            .end(function (error, response) {
-                if (error) done(error);
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('Validation error').and.to.be.a('string');
-                done();
-            });
-    });
-
-    it('should FAIL to update, via PUT, one of the newly created charges and return an error because one or more ids are not integers', function (done) {
-        const paramsObj = {
-            "charge_id": 'a',
-            "res_room_id": 'b',
-            "charge_type_id": 'c',
-            "charge_amount": 53.12,
-            "taxable": 1
-        };
-        agent
-            .put('/api/charges')
-            .send(paramsObj)
-            .end(function (error, response) {
-                if (error) done(error);
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('Validation error').and.to.be.a('string');
-                done();
-            });
-    });
-
     it('should FAIL to update, via PUT, any charges and return an error because the charge_id does not exist', function (done) {
         const paramsObj = {
             "charge_id": 0,
@@ -250,12 +305,32 @@ describe('Charges API (/api/charges)', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, any charges and return an error because the res_room_id does not exist', function (done) {
+    it('should FAIL to update, via PUT, any charges and return an error because res_room_id is invalid', function (done) {
         const paramsObj = {
-            "charge_id": 1,
+            "charge_id": insertId,
+            "res_room_id": undefined,
+            "charge_type_id": 1,
+            "charge_amount": 43.12,
+            "taxable": 1
+        };
+        agent
+            .put('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any charges and return an error because res_room_id does not exist', function (done) {
+        const paramsObj = {
+            "charge_id": insertId,
             "res_room_id": 0,
-            "charge_type_id": 2,
-            "charge_amount": 53.12,
+            "charge_type_id": 1,
+            "charge_amount": 43.12,
             "taxable": 1
         };
         agent
@@ -270,6 +345,87 @@ describe('Charges API (/api/charges)', function () {
             });
     });
 
+    it('should FAIL to update, via PUT, any charges and return an error because charge_type_id is invalid', function (done) {
+        const paramsObj = {
+            "charge_id": insertId,
+            "res_room_id": resRoomId,
+            "charge_type_id": undefined,
+            "charge_amount": 43.12,
+            "taxable": 1
+        };
+        agent
+            .put('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any charges and return an error because charge_type_id does not exist', function (done) {
+        const paramsObj = {
+            "charge_id": insertId,
+            "res_room_id": resRoomId,
+            "charge_type_id": 0,
+            "charge_amount": 43.12,
+            "taxable": 1
+        };
+        agent
+            .put('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any charges and return an error because charge_amount is invalid', function (done) {
+        const paramsObj = {
+            "charge_id": insertId,
+            "res_room_id": resRoomId,
+            "charge_type_id": 1,
+            "charge_amount": undefined,
+            "taxable": 1
+        };
+        agent
+            .put('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any charges and return an error because taxable is invalid', function (done) {
+        const paramsObj = {
+            "charge_id": insertId,
+            "res_room_id": resRoomId,
+            "charge_type_id": 1,
+            "charge_amount": 43.12,
+            "taxable": undefined
+        };
+        agent
+            .put('/api/charges')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+
     it('should FAIL to DELETE any charge and return an error because the charge_id does not exist', function (done) {
         agent
             .delete('/api/charges/0')
@@ -278,6 +434,28 @@ describe('Charges API (/api/charges)', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('Invalid request').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE any charge and return an error because the charge_id param was not included', function (done) {
+        agent
+            .delete('/api/charges')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(404);
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE any charge associated with a res_room_id and return an error because the res_room_id param was not included', function (done) {
+        agent
+            .delete('/api/charges/res-rooms')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
                 done();
             });
     });

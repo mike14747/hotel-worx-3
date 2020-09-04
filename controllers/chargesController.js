@@ -5,6 +5,7 @@ const { chargesSchema, chargeIdSchema } = require('./validation/schema/chargesSc
 const { resRoomIdSchema } = require('./validation/schema/resRoomsSchema');
 const isChargeIdValid = require('./validation/helpers/isChargeIdValid');
 const isResRoomIdValid = require('./validation/helpers/isResRoomIdValid');
+const isChargeTypeIdValid = require('./validation/helpers/isChargeTypeIdValid');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -40,10 +41,11 @@ router.post('/', async (req, res, next) => {
             res_room_id: parseInt(req.body.res_room_id),
             charge_type_id: parseInt(req.body.charge_type_id),
             charge_amount: parseFloat(req.body.charge_amount),
-            taxable: parseInt(req.body.taxable),
+            taxable: parseInt(req.body.taxable) || null,
         };
         await chargesSchema.validateAsync(paramsObj);
         await isResRoomIdValid(paramsObj.res_room_id);
+        await isChargeTypeIdValid(paramsObj.charge_type_id);
         const [data, error] = await Charge.addNewCharge(paramsObj);
         if (error) return next(error);
         data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ Error: postError });
@@ -65,6 +67,7 @@ router.put('/', async (req, res, next) => {
         await chargeIdSchema.validateAsync({ charge_id: paramsObj.charge_id });
         await isChargeIdValid(paramsObj.charge_id);
         await isResRoomIdValid(paramsObj.res_room_id);
+        await isChargeTypeIdValid(paramsObj.charge_type_id);
         const [data, error] = await Charge.updateChargeById(paramsObj);
         if (error) return next(error);
         data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ Error: putError });

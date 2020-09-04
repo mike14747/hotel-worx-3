@@ -73,10 +73,27 @@ describe('Charge Types API (/api/charge-types))', function () {
                 done();
             });
     });
-    
-    it('should FAIL to POST a new charge_type and return an error because one or more parameters are invalid', function (done) {
+
+    it('should FAIL to POST a new charge_type and return an error because charge_type is invalid', function (done) {
         const paramsObj = {
-            "charge_type": 0,
+            "charge_type": undefined,
+            "active": 2
+        };
+        agent
+            .post('/api/charge-types')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+    
+    it('should FAIL to POST a new charge_type and return an error because active is invalid', function (done) {
+        const paramsObj = {
+            "charge_type": "Some type",
             "active": 2
         };
         agent
@@ -107,28 +124,10 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
     
-    it('should FAIL to update, via PUT, the newly created charge_type and return an error because one or more parameters are invalid', function (done) {
+    it('should FAIL to update, via PUT, any charge_type and return an error because charge_type_id is invalid', function (done) {
         const paramsObj = {
-            "charge_type_id": null,
-            "charge_type": "",
-            "active": 2
-        };
-        agent
-            .put('/api/charge-types')
-            .send(paramsObj)
-            .end(function (error, response) {
-                if (error) done(error);
-                response.should.have.status(400);
-                response.body.should.be.an('object');
-                response.body.should.have.property('Validation error').and.to.be.a('string');
-                done();
-            });
-    });
-
-    it('should FAIL to update, via PUT, the newly created charge_type and return an error object because the charge_type_id is not an integer', function (done) {
-        const paramsObj = {
-            "charge_type_id": "d",
-            "charge_type": "Restaurant",
+            "charge_type_id": undefined,
+            "charge_type": "Some type",
             "active": 1
         };
         agent
@@ -143,7 +142,7 @@ describe('Charge Types API (/api/charge-types))', function () {
             });
     });
 
-    it('should FAIL to update, via PUT, the newly created charge_type and return an error object because the charge_type_id is not valid', function (done) {
+    it('should FAIL to update, via PUT, any charge_type and return an error because the charge_type_id does not exist', function (done) {
         const paramsObj = {
             "charge_type_id": 0,
             "charge_type": "Restaurant",
@@ -160,8 +159,44 @@ describe('Charge Types API (/api/charge-types))', function () {
                 done();
             });
     });
+
+    it('should FAIL to update, via PUT, any charge_type and return an error because charge_type is invalid', function (done) {
+        const paramsObj = {
+            "charge_type_id": insertId,
+            "charge_type": undefined,
+            "active": 1
+        };
+        agent
+            .put('/api/charge-types')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to update, via PUT, any charge_type and return an error because active is invalid', function (done) {
+        const paramsObj = {
+            "charge_type_id": insertId,
+            "charge_type": "Some type",
+            "active": 2
+        };
+        agent
+            .put('/api/charge-types')
+            .send(paramsObj)
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(400);
+                response.body.should.be.an('object');
+                response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
     
-    it('should FAIL to DELETE the newly created charge_type because the charge_type_id is invalid', function (done) {
+    it('should FAIL to DELETE the newly created charge_type because the charge_type_id does not exist', function (done) {
         agent
             .delete('/api/charge-types/0')
             .end(function (error, response) {
@@ -181,6 +216,16 @@ describe('Charge Types API (/api/charge-types))', function () {
                 response.should.have.status(400);
                 response.body.should.be.an('object');
                 response.body.should.have.property('Validation error').and.to.be.a('string');
+                done();
+            });
+    });
+
+    it('should FAIL to DELETE the any charge_type because the charge_type_id param was not included', function (done) {
+        agent
+            .delete('/api/charge-types')
+            .end(function (error, response) {
+                if (error) done(error);
+                response.should.have.status(404);
                 done();
             });
     });

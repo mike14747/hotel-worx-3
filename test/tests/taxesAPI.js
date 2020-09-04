@@ -3,7 +3,7 @@ const agent = require('../utils/serverInit');
 describe('Taxes API (/api/taxes)', function () {
     let insertId = 0
 
-    it('should POST a new tax and return the insertId', function (done) {
+    it('should POST a new tax with the provided params body and return the insertId', function (done) {
         const paramsObj = {
             "tax_name": "Special Tax",
             "tax_rate": 1.375,
