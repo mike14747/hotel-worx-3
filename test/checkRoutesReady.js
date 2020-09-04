@@ -8,7 +8,6 @@ describe('Test authenticated routes', function () {
 
     const runTests = () => {
         require('./tests/accessLevelsAPI');
-        require('./tests/chargesAPI');
         require('./tests/companiesAPI');
         require('./tests/customersAPI');
         require('./tests/paymentTypesAPI');
