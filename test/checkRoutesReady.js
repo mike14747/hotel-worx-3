@@ -9,10 +9,10 @@ describe('Test authenticated routes', function () {
     const runTests = () => {
         require('./tests/accessLevelsAPI');
         require('./tests/chargesAPI');
-        require('./tests/chargeTypesAPI');
         require('./tests/companiesAPI');
         require('./tests/customersAPI');
         require('./tests/paymentTypesAPI');
+        require('./tests/reservationsPlusAPI');
         require('./tests/roomsAPI');
         require('./tests/RoomTypesAPI');
         require('./tests/taxesAPI');

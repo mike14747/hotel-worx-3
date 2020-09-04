@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Reservation = require('../models/reservation');
 const ResRoom = require('../models/resRoom');
 const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { reservationNewSchema, reservationUpdateSchema, reservationIdSchema } = require('./validation/schema/reservationsSchema');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -140,6 +141,8 @@ router.put('/res-rooms/:id/check-out', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
+        await reservationIdSchema.validateAsync({ reservation_id: req.params.id });
+        // await isReservationIdValid(req.params.id);
         const [data, error] = await Reservation.deleteReservationById({ id: parseInt(req.params.id) });
         if (error) return next(error);
         data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ Error: deleteError });
