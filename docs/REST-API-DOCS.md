@@ -13,25 +13,25 @@
 > * Takes in an id parameter in the url.
 > * Returns status 200 and an array containing a single object associated with that specific endpoint.
 > * Returns status 200 and an empty array if nothing was found for that id.
-> * It will return status 400 (and an error object) if the id param is not an integer.
+> * It will return status 400 (and a "Validation error") if the id param is not an integer.
 
 ### **'/api/\<some-endpoint\>/' POST routes**
 > * Adds a new record associated with the specific endpoint.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 201 and an object with the insertId of the new document as the only property.
-> * If unsuccessful, it returns status code 400 and an error object.
+> * If unsuccessful, it returns status code 400 and either a "Validation error" or "Invalid request" error.
 
 ### **'/api/\<some-endpoint\>/' PUT routes**
 > * It is used to edit an existing record by that record's id.
 > * Takes in a list of parameters in the body object.
 > * If successful, it returns status code 204 and nothing else.
-> * If unsuccessful, it returns status code 400 and an error object.
+> * If unsuccessful, it returns status code 400 and either a "Validation error" or "Invalid request" error.
 
 ### **'/api/\<some-endpoint\>/:id' DELETE routes**
 > * Takes in an id parameter in the url.
 > * This will permanently delete a single record associated with the specific endpoint.
 > * If successful, it returns status code 204 and nothing else.
-> * If unsuccessful, it returns status code 400 and an error object.
+> * If unsuccessful, it returns status code 400 and either a "Validation error" or "Invalid request" error.
 > * **Note:** Some records cannot be deleted if they are part of other records due to MySQL foreign key constraints.
 
 ## Note:
@@ -571,6 +571,19 @@
 }
 ```
 
+### **DELETE methods:**
+
+> ## '/api/reservations/:id'
+- This route is used to delete a reservation.
+- It will also delete all resRooms associated with the reservation through the cascading of the foreign keys.
+
+---
+---
+
+## /api/res-rooms
+
+### **PUT methods:**
+
 > ## '/api/reservations/res-rooms/assign'
 * This route is used for assigning a room number and room type to a res_room.
 * It will have its confirmation code updated by the reservationsController as needed.
@@ -615,9 +628,6 @@
     "allow_charges": 1
 }
 ```
-
-### **DELETE methods:**
-
 
 ---
 ---
