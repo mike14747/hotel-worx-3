@@ -46,6 +46,6 @@ dbTest()
         }
     });
 
-const server = app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
+app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
 
-module.exports = server;
+module.exports = app;
