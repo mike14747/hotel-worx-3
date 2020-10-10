@@ -23,37 +23,41 @@ const Reservation = {
             return [null, error];
         }
     },
-    // this model was changed to the new "return [results, null]; / return [null, error];" system, but it hasn't been tested
     addNewReservation: async (paramsObj) => {
-        console.log(paramsObj);
         const connection = await pool.getConnection();
         try {
             const { customerObj, reservationObj, resRoomsArr } = paramsObj;
-            const customerQueryString = 'INSERT INTO customers (first_name, last_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
-            const customerParams = [
-                customerObj.first_name,
-                customerObj.last_name,
-                customerObj.address,
-                customerObj.city,
-                customerObj.state,
-                customerObj.zip,
-                customerObj.country,
-                customerObj.email,
-                customerObj.phone,
-                customerObj.credit_card_num,
-                customerObj.cc_expiration,
-            ];
             await connection.beginTransaction();
-            const customerResult = await connection.query(customerQueryString, customerParams);
+            let customerId;
+            if (customerObj.customer_id) {
+                customerId = customerObj.customer_id;
+            } else {
+                const customerQueryString = 'INSERT INTO customers (first_name, last_name, address, city, state, zip, country, email, phone, credit_card_num, cc_expiration) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+                const customerParams = [
+                    customerObj.first_name,
+                    customerObj.last_name,
+                    customerObj.address,
+                    customerObj.city,
+                    customerObj.state,
+                    customerObj.zip,
+                    customerObj.country,
+                    customerObj.email,
+                    customerObj.phone,
+                    customerObj.credit_card_num,
+                    customerObj.cc_expiration,
+                ];
+                const customerResult = await connection.query(customerQueryString, customerParams);
+                customerId = customerResult[0].insertId;
+            }
             const reservationQueryString = 'INSERT INTO reservations (customer_id, company_id, user_id, comments) VALUES (?, ?, ?, ?);';
             const reservationParams = [
-                customerResult[0].insertId,
+                customerId,
                 reservationObj.company_id,
                 reservationObj.user_id,
                 reservationObj.comments,
             ];
             const [reservationResult] = await connection.query(reservationQueryString, reservationParams);
-            const resRoomQueryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, rate, confirmation_code, comments, allow_charges) VALUES ?;';
+            const resRoomQueryString = 'INSERT INTO res_rooms (reservation_id, room_type_id, check_in_date, check_out_date, adults, room_rate, confirmation_code, comments, allow_charges) VALUES ?;';
             const today = new Date();
             const confirmationCode = today.getFullYear().toString().substr(2) + (today.getMonth() + 1).toString() + today.getDate().toString() + reservationResult.insertId.toString().slice(-3) + '001';
             const resRoomQueryParams = [resRoomsArr.map((resRoom) => {
@@ -63,15 +67,15 @@ const Reservation = {
                     resRoom.check_in_date,
                     resRoom.check_out_date,
                     resRoom.adults,
-                    resRoom.rate,
+                    resRoom.room_rate,
                     confirmationCode,
                     resRoom.comments,
                     resRoom.allow_charges,
                 ];
             })];
-            await connection.query(resRoomQueryString, resRoomQueryParams);
+            const resRoomResult = await connection.query(resRoomQueryString, resRoomQueryParams);
             await connection.commit();
-            return [reservationResult, null];
+            return [{ reservation_id: reservationResult.insertId, customer_id: customerId, res_room_id: resRoomResult[0].insertId }, null];
         } catch (error) {
             await connection.rollback();
             return [null, error];
@@ -89,6 +93,18 @@ const Reservation = {
                 paramsObj.comments,
                 paramsObj.active,
                 paramsObj.reservation_id,
+            ];
+            const [result] = await pool.query(queryString, queryParams);
+            return [result, null];
+        } catch (error) {
+            return [null, error];
+        }
+    },
+    deleteReservationById: async (paramsObj) => {
+        try {
+            const queryString = 'DELETE FROM reservations WHERE reservation_id=?;';
+            const queryParams = [
+                paramsObj.id,
             ];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];

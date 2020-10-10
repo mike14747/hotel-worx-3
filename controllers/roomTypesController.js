@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const RoomType = require('../models/room_type');
-
-// all these routes point to /api/room-types as specified in server.js and controllers/index.js
+const RoomType = require('../models/roomType');
+const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { roomTypesSchema, roomTypeIdSchema, roomTypeDateSchema } = require('./validation/schema/roomTypesSchema');
+const isRoomTypeIdValid = require('./validation/helpers/isRoomTypeIdValid');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -12,20 +13,19 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9]+)', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const [data, error] = await RoomType.getRoomTypeById({ id: parseInt(req.params.id) || 0 });
+        await roomTypeIdSchema.validateAsync({ room_type_id: req.params.id });
+        const [data, error] = await RoomType.getRoomTypeById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-// this route needs some tinkering to implement "data ? res.json(data) : next(error);"
-// this route was changed to implement "data ? res.json(data) : next(error);", but it hasn't been tested
 router.get('/availability/:date', async (req, res, next) => {
-    // /^[0-9]{4}-(([0]{1}[0-9]{1})|([1]{1}[0-2]{1}))-(([0-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/g
     try {
+        await roomTypeDateSchema.validateAsync({ dateCheck1: req.params.date, dateCheck2: req.params.date });
         const [data, error] = await RoomType.getRoomTypeAvailability({ date: req.params.date });
         data ? res.json(data) : next(error);
     } catch (error) {
@@ -34,36 +34,44 @@ router.get('/availability/:date', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    const paramsObj = {
-        type: req.body.type,
-        rate: req.body.rate,
-    };
     try {
+        const paramsObj = {
+            room_type: req.body.room_type,
+            room_rate: parseFloat(req.body.room_rate),
+        };
+        await roomTypesSchema.validateAsync(paramsObj);
         const [data, error] = await RoomType.addNewRoomType(paramsObj);
-        data ? res.json(data) : next(error);
+        if (error) return next(error);
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ Error: postError });
     } catch (error) {
         next(error);
     }
 });
 
 router.put('/', async (req, res, next) => {
-    const paramsObj = {
-        room_type_id: req.body.room_type_id,
-        type: req.body.type,
-        rate: req.body.rate,
-    };
     try {
+        const paramsObj = {
+            room_type_id: req.body.room_type_id,
+            room_type: req.body.room_type,
+            room_rate: parseFloat(req.body.room_rate),
+        };
+        await roomTypesSchema.validateAsync(paramsObj);
+        await isRoomTypeIdValid(paramsObj.room_type_id);
         const [data, error] = await RoomType.updateRoomTypeById(paramsObj);
-        data ? res.json(data) : next(error);
+        if (error) return next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ Error: putError });
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id([0-9]+)', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const [data, error] = await RoomType.deleteRoomTypeById({ id: parseInt(req.params.id) || 0 });
-        data ? res.json(data) : next(error);
+        await roomTypeIdSchema.validateAsync({ room_type_id: req.params.id });
+        await isRoomTypeIdValid(req.params.id);
+        const [data, error] = await RoomType.deleteRoomTypeById({ id: parseInt(req.params.id) });
+        if (error) return next(error);
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ Error: deleteError });
     } catch (error) {
         next(error);
     }

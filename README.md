@@ -15,10 +15,11 @@ DB_USER=root
 DB_PW=<your-mysql-password>
 DB_NAME=hotel_worx_3_db
 SESSION_SECRET=<your-session-secret>
+TEST_ADMIN_PASSWORD=admin
 ```
 3. Install the **npm packages**. From the root directory, run:
 ```
-yarn install
+npm install
 ```
 4. Install the database by using the schema/seeds file (**config/hotel_worx_3_db.sql**).
 

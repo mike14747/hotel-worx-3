@@ -7,10 +7,11 @@ set foreign_key_checks=0;
 -- --------------------------------------------------------
 
 CREATE TABLE users (
-    user_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id int UNSIGNED NOT NULL AUTO_INCREMENT,
     username varchar(20) NOT NULL UNIQUE,
     password varchar(255) NOT NULL,
-    access_id int(11) UNSIGNED NOT NULL,
+    email varchar(30) NOT NULL,
+    access_id int UNSIGNED NOT NULL,
     FOREIGN KEY (access_id) REFERENCES access_levels(access_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     active boolean DEFAULT 1,
     PRIMARY KEY (user_id)
@@ -19,8 +20,8 @@ CREATE TABLE users (
 -- --------------------------------------------------------
 
 CREATE TABLE access_levels (
-    access_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-	access_level int(11) UNSIGNED NOT NULL,
+    access_id int UNSIGNED NOT NULL AUTO_INCREMENT,
+	access_level int UNSIGNED NOT NULL,
     access_type varchar(30) NOT NULL,
     PRIMARY KEY (access_id)
 );
@@ -28,12 +29,12 @@ CREATE TABLE access_levels (
 -- --------------------------------------------------------
 
 CREATE TABLE rooms (
-    room_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    room_id int UNSIGNED NOT NULL AUTO_INCREMENT,
     room_num varchar(20) NOT NULL UNIQUE,
-    room_type_id int(11) UNSIGNED NOT NULL,
+    room_type_id int UNSIGNED NOT NULL,
     FOREIGN KEY (room_type_id) REFERENCES room_types(room_type_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     description varchar(255) NOT NULL,
-    num_beds int(11) UNSIGNED NOT NULL,
+    num_beds int UNSIGNED NOT NULL,
     clean boolean DEFAULT 0,
     occupied boolean DEFAULT 0,
     active boolean DEFAULT 1,
@@ -43,16 +44,16 @@ CREATE TABLE rooms (
 -- --------------------------------------------------------
 
 CREATE TABLE room_types (
-    room_type_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    type varchar(30) NOT NULL,
-    rate decimal(6,2) NOT NULL,
+    room_type_id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    room_type varchar(30) NOT NULL,
+    room_rate decimal(6,2) NOT NULL,
     PRIMARY KEY (room_type_id)
 );
 
 -- --------------------------------------------------------
 
 CREATE TABLE customers (
-    customer_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    customer_id int UNSIGNED NOT NULL AUTO_INCREMENT,
     first_name varchar(30) NOT NULL,
     last_name varchar(30) NOT NULL,
     address varchar(50) NOT NULL,
@@ -70,7 +71,7 @@ CREATE TABLE customers (
 -- --------------------------------------------------------
 
 CREATE TABLE companies (
-    company_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    company_id int UNSIGNED NOT NULL AUTO_INCREMENT,
     company_name varchar(50) NOT NULL,
     address varchar(50) NOT NULL,
     city varchar(50) NOT NULL,
@@ -88,12 +89,12 @@ CREATE TABLE companies (
 -- --------------------------------------------------------
 
 CREATE TABLE reservations (
-    reservation_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    customer_id int(11) UNSIGNED NOT NULL,
+    reservation_id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    customer_id int UNSIGNED NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    company_id int(11) UNSIGNED NULL,
+    company_id int UNSIGNED NULL,
     FOREIGN KEY (company_id) REFERENCES companies(company_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    user_id int(11) UNSIGNED NOT NULL,
+    user_id int UNSIGNED NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     comments varchar(255) NOT NULL,
@@ -104,19 +105,19 @@ CREATE TABLE reservations (
 -- --------------------------------------------------------
 
 CREATE TABLE res_rooms (
-    res_room_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    reservation_id int(11) UNSIGNED NOT NULL,
+    res_room_id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    reservation_id int UNSIGNED NOT NULL,
     FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    room_type_id int(11) UNSIGNED NOT NULL,
+    room_type_id int UNSIGNED NOT NULL,
     FOREIGN KEY (room_type_id) REFERENCES room_types(room_type_id) ON DELETE NO ACTION ON UPDATE CASCADE,
     check_in_date date NOT NULL,
     check_out_date date NOT NULL,
     checked_in boolean DEFAULT 0,
     checked_out boolean DEFAULT 0,
-    adults int(11) UNSIGNED NOT NULL,
-    room_id int(11) UNSIGNED NULL,
+    adults int UNSIGNED NOT NULL,
+    room_id int UNSIGNED NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    rate decimal(6,2) NULL,
+    room_rate decimal(6,2) NULL,
     confirmation_code varchar(20) NULL,
     comments varchar(255) NOT NULL,
     allow_charges boolean DEFAULT 1,
@@ -127,7 +128,7 @@ CREATE TABLE res_rooms (
 -- --------------------------------------------------------
 
 CREATE TABLE taxes (
-    tax_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    tax_id int UNSIGNED NOT NULL AUTO_INCREMENT,
     tax_name varchar(30) NOT NULL,
     tax_rate decimal(4,3) DEFAULT 0,
     active boolean DEFAULT 1,
@@ -137,7 +138,7 @@ CREATE TABLE taxes (
 -- --------------------------------------------------------
 
 CREATE TABLE charge_types (
-    charge_type_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    charge_type_id int UNSIGNED NOT NULL AUTO_INCREMENT,
     charge_type varchar(30) NOT NULL,
     active boolean DEFAULT 1,
     PRIMARY KEY (charge_type_id)
@@ -146,8 +147,8 @@ CREATE TABLE charge_types (
 -- --------------------------------------------------------
 
 CREATE TABLE charges (
-    charge_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    res_room_id int(11) UNSIGNED NOT NULL,
+    charge_id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    res_room_id int UNSIGNED NOT NULL,
     FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE CASCADE ON UPDATE CASCADE,
     charge_type_id varchar(30) NOT NULL,
     charge_amount decimal(6,2) DEFAULT 0,
@@ -158,7 +159,7 @@ CREATE TABLE charges (
 -- --------------------------------------------------------
 
 CREATE TABLE payment_types (
-    payment_type_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    payment_type_id int UNSIGNED NOT NULL AUTO_INCREMENT,
     payment_type varchar(30) NOT NULL,
     active boolean DEFAULT 1,
     PRIMARY KEY (payment_type_id)
@@ -167,8 +168,8 @@ CREATE TABLE payment_types (
 -- --------------------------------------------------------
 
 CREATE TABLE invoices (
-    invoice_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    res_room_id int(11) UNSIGNED NOT NULL,
+    invoice_id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    res_room_id int UNSIGNED NOT NULL,
     FOREIGN KEY (res_room_id) REFERENCES res_rooms(res_room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     total_due decimal(10,2) NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -178,10 +179,10 @@ CREATE TABLE invoices (
 -- --------------------------------------------------------
 
 CREATE TABLE invoice_taxes (
-    invoice_tax_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    invoice_id int(11) UNSIGNED NOT NULL,
+    invoice_tax_id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    invoice_id int UNSIGNED NOT NULL,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    tax_id int(11) UNSIGNED NOT NULL,
+    tax_id int UNSIGNED NOT NULL,
     FOREIGN KEY (tax_id) REFERENCES taxes(tax_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     tax_amount decimal(6,2) DEFAULT 0,
     PRIMARY KEY (invoice_tax_id)
@@ -190,10 +191,10 @@ CREATE TABLE invoice_taxes (
 -- --------------------------------------------------------
 
 CREATE TABLE invoice_payments (
-    invoice_payment_id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    invoice_id int(11) UNSIGNED NOT NULL,
+    invoice_payment_id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    invoice_id int UNSIGNED NOT NULL,
     FOREIGN KEY (invoice_id) REFERENCES invoices(invoice_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    payment_type_id int(11) UNSIGNED NOT NULL,
+    payment_type_id int UNSIGNED NOT NULL,
     FOREIGN KEY (payment_type_id) REFERENCES payment_types(payment_type_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     payment_amount decimal(6,2) DEFAULT 0,
     payment_ref_num varchar(30) NOT NULL,
@@ -220,7 +221,7 @@ CREATE TABLE hotel_info (
 
 CREATE TABLE sessions (
     session_id varchar(128) COLLATE utf8mb4_bin NOT NULL,
-    expires int(11) UNSIGNED NOT NULL,
+    expires int UNSIGNED NOT NULL,
     data mediumtext COLLATE utf8mb4_bin,
     PRIMARY KEY (session_id)
 );
@@ -229,10 +230,10 @@ CREATE TABLE sessions (
 
 CREATE TABLE room_issues (
     room_issue_id int(10) NOT NULL AUTO_INCREMENT,
-    room_id int(11) UNSIGNED NOT NULL,
+    room_id int UNSIGNED NOT NULL,
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     issue text NOT NULL,
-    user_id int(11) UNSIGNED NOT NULL,
+    user_id int UNSIGNED NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     start_date date NOT NULL,
     end_date date NOT NULL,
@@ -248,12 +249,14 @@ CREATE TABLE room_issues (
 
 TRUNCATE TABLE users;
 
-INSERT INTO users (username, password, access_id) VALUES
-('admin', '$2b$10$Qf/0VNBQiYr.pHN8IN9Yl.SrYQCpG4b2mrsX6dx85DkE7/fwsNWvy', 3),
-('manager', '$2b$10$2ataQ4kjDbZaR9TDSUqXI.Mt.Gq/bDn1Te3MN939s3fJAtTrKJa9i', 2),
-('user', '$2b$10$rnUz2cFk61G27KdixeR5G.rf78zaKzDZlebrs9ZK5tnnVGFWrnUPm', 1);
+INSERT INTO users (username, password, email, access_id) VALUES
+('admin', '$2b$10$Qf/0VNBQiYr.pHN8IN9Yl.SrYQCpG4b2mrsX6dx85DkE7/fwsNWvy', 'blah1@gmail.com', 3),
+('manager', '$2b$10$2ataQ4kjDbZaR9TDSUqXI.Mt.Gq/bDn1Te3MN939s3fJAtTrKJa9i', 'blah2@yahoo.net', 2),
+('user', '$2b$10$rnUz2cFk61G27KdixeR5G.rf78zaKzDZlebrs9ZK5tnnVGFWrnUPm', 'blah3@comcast.com', 1);
 
- -- pw admin
+ -- admin password: admin
+ -- manager password: 111111
+ -- user password: ?
  -- pw 123456
  -- pw 654321
  -- pw 123123
@@ -610,7 +613,7 @@ INSERT INTO rooms (room_id, room_num, room_type_id, description, num_beds, clean
 
 TRUNCATE TABLE room_types;
 
-INSERT INTO room_types (room_type_id, type, rate) VALUES
+INSERT INTO room_types (room_type_id, room_type, room_rate) VALUES
 (1, '2 Queens', 109.99),
 (2, 'King', 119.99),
 (3, 'Suite', 129.99),
@@ -836,7 +839,7 @@ INSERT INTO reservations (reservation_id, customer_id, company_id, user_id, comm
 TRUNCATE TABLE res_rooms;
 ALTER TABLE res_rooms AUTO_INCREMENT = 1001;
 
-INSERT INTO res_rooms (res_room_id, reservation_id, room_type_id, check_in_date, check_out_date, checked_in, checked_out, adults, room_id, rate, confirmation_code, comments, allow_charges) VALUES
+INSERT INTO res_rooms (res_room_id, reservation_id, room_type_id, check_in_date, check_out_date, checked_in, checked_out, adults, room_id, room_rate, confirmation_code, comments, allow_charges) VALUES
 (1001, 1001, 1, DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 1 DAY), 1, 0, 1, 9, '109.99', '190501001001', 'needs a late checkout time', 1),
 (1002, 1002, 2, DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 1 DAY), 1, 0, 2, 4, '119.99', '190503002001', '', 1),
 (1003, 1003, 1, DATE_SUB(CURDATE(), INTERVAL 3 DAY), DATE_ADD(CURDATE(), INTERVAL 1 DAY), 1, 0, 2, 11, '109.99', '190503003001', '', 1),

@@ -13,7 +13,19 @@ const ChargeType = {
     },
     getChargeTypeById: async (paramsObj) => {
         try {
-            const queryString = 'SELECT ct.charge_type_id, ct.charge_type, ct.active FROM charge_types AS ct WHERE charge_type_id=? LIMIT 1;';
+            const queryString = 'SELECT ct.charge_type_id, ct.charge_type, ct.active FROM charge_types AS ct WHERE ct.charge_type_id=? LIMIT 1;';
+            const queryParams = [
+                paramsObj.id,
+            ];
+            const [result] = await pool.query(queryString, queryParams);
+            return [result, null];
+        } catch (error) {
+            return [null, error];
+        }
+    },
+    getActiveChargeTypeById: async (paramsObj) => {
+        try {
+            const queryString = 'SELECT ct.charge_type_id, ct.charge_type, ct.active FROM charge_types AS ct WHERE ct.active=1 && ct.charge_type_id=? LIMIT 1;';
             const queryParams = [
                 paramsObj.id,
             ];
@@ -25,9 +37,10 @@ const ChargeType = {
     },
     addNewChargeType: async (paramsObj) => {
         try {
-            const queryString = 'INSERT INTO charge_types (charge_type) VALUES(?);';
+            const queryString = 'INSERT INTO charge_types (charge_type, active) VALUES(?, ?);';
             const queryParams = [
                 paramsObj.charge_type,
+                paramsObj.active,
             ];
             const [result] = await pool.query(queryString, queryParams);
             return [result, null];

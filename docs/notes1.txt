@@ -86,16 +86,147 @@ The following are stored as decimal values and will always be received as string
 
 ------------------------------------------------------
 
-The following controllers have  // this route needs some tinkering to implement "data[0] ? res.json(data[0]) : next(data[1]);"
-
-reservationsController.js
-roomTypesController.js
-
-
-
 hotel_worx_3_db.sql had some changes to the users and access_levels tables, so the seeds spreadsheet might need to be updated too.
 
 Figure out why the "getRoomTypeAvailability" room_type model method on the "/api/room-types/availability/:date" route doesn't return just an array of daily availablility.
+
+------------------------------------------------------
+
+The invoicesController needs a PUT route.
+
+The invoices and reservations routes need joi schema/helpers/tests.
+
+Work on coding-notes/joi.md.
+
+------------------------------------------------------
+
+in the controller:
+
+------------------------------------
+
+change these lines near the beginning from:
+const { isChargeTypeValid } = require('./validation/chargeTypesValidation');
+const { idRegEx, idErrorObj } = require('./validation/idValidation');
+const { postError, putError, deleteError } = require('./validation/generalValidation');
+
+to:
+const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { someSchema, someIdSchema } = require('./validation/schema/someSchema');
+const isSomeIdValid = require('./validation/helpers/isSomeIdValid');
+
+------------------------------------
+
+get rid of all these line (there should be one in each route with an :id param and even in some PUT routes):
+if (!idRegEx.test(req.params.id)) return res.status(400).json(idErrorObj);
+
+------------------------------------
+
+change all:
+if (error) next(error);
+
+to:
+if (error) return next(error)
+
+------------------------------------
+
+change all:
+res.status(400).json({ message:
+
+to:
+res.status(400).json({ Error:
+
+------------------------------------
+
+add (as the first line inside the try block where there are :id params):
+await someIdSchema.validateAsync({ some_id: req.params.id });
+
+------------------------------------
+
+in the PUT route, replace:
+const [result, errorObj] = await isSomethingValid(paramsObj);
+if (!result) return res.status(400).json(errorObj);
+
+with:
+await someSchema.validateAsync(paramsObj);
+await isSomeIdValid(paramsObj.some_id);
+
+------------------------------------
+
+in the POST route, replace:
+const [result, errorObj] = await isSomethingValid(paramsObj);
+if (!result) return res.status(400).json(errorObj);
+
+with:
+await someSchema.validateAsync(paramsObj);
+
+------------------------------------
+
+in the DELETE route, add this after the also added schema line:
+await isSomeIdValid(req.params.id);
+
+------------------------------------------------------
+
+in the API test files:
+
+get rid of all:
+response.body.should.have.property('errorArray').and.to.be.an('array').and.have.lengthOf(2);
+
+------------------------------------
+
+change all:
+response.body.should.have.property('message').and.to.be.a('string');
+
+to (most cases):
+response.body.should.have.property('Validation error').and.to.be.a('string');
+
+or (when checking for the existence of a valid id):
+response.body.should.have.property('Invalid request').and.to.be.a('string');
+
+------------------------------------
+
+change the wording in it() statement of the failing POST and PUT routes to say:
+...return an error because one or more parameters are invalid
+
+or:
+...return an error because the some_id does not exist
+
+------------------------------------------------------
+
+make sure the schema file for each controller is in place
+
+helper files seem to be ready
+
+------------------------------------------------------
+
+in each intergration test file:
+
+POST a new record (should return status 201 and the insertId of the new record)
+
+GET the newly created records by id (should return status 200 and the record)
+
+GET all of the records (should return status 200 and the records)
+
+GET no records, by passing 0 as the id (should return status 200 and an empty array)
+
+GET an error by passing a non-integer as the id (should return status 400 and a "Validation error" message)
+
+Fail to POST a new record by passing undefined as each parameter... or passing 2 in the boolean field... there will be a separate test for each undefined parameter (should return status 400 and a "Validation error" message for each failed test)
+
+Fail to POST a new record for any foreign key ids because 0 was passed for each (should return status 400 and a "Invalid request" message)
+
+Successfully update a record, via PUT, by passing all valid params (should return status 204)
+
+Fail to update a record, via PUT, by passing undefined as each parameter... or passing 2 in the boolean field... there will be a separate test for each undefined parameter (should return status 400 and a "Validation error" message for each failed test)
+
+Fail to PUT for any foreign key ids because 0 was passed for each (should return status 400 and a "Invalid request" message)
+
+Fail to DELETE any records because 0 passed as an id does not exist (should return status 400 and a "Invalid request" message)
+
+Fail to DELETE any records because a non-integer was passed an an id (should return status 400 and a "Validation error" message)
+
+Fail to DELETE a record because no id param was passed (should return a status 404)
+
+DELETE a record by passing a valid id (should return status 204)
 
 ------------------------------------------------------
 

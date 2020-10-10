@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import UserContext from '../components/context/userContext';
+import UserContext from '../../components/context/userContext';
 
-export default function AxiosTest() {
+const AxiosTest = () => {
     const [invoice, setInvoice] = useState({});
     const [charges, setCharges] = useState([]);
     const [taxes, setTaxes] = useState([]);
@@ -11,24 +11,19 @@ export default function AxiosTest() {
     const invoiceId = 1;
     const user = useContext(UserContext);
 
-    // const apiRoot = process.env.REACT_APP_API_ROOT;
-
     useEffect(() => {
-        axios.all([
-            axios.get('/api/invoices/' + invoiceId),
-            axios.get('/api/charges/res-rooms/' + resRoomId),
-            axios.get('/api/invoices/' + invoiceId + '/invoice-taxes'),
-            axios.get('/api/invoices/' + invoiceId + '/invoice-payments'),
-        ])
-            .then(axios.spread((invoice, charges, taxes, payments) => {
-                setInvoice(invoice.data[0]);
-                setCharges(charges.data);
-                setTaxes(taxes.data);
-                setPayments(payments.data);
-            }))
-            .catch((err) => {
-                console.log(err);
-            });
+        axios.get('/api/invoices/' + invoiceId)
+            .then(response => setInvoice(response.data[0]))
+            .catch(error => console.log(error));
+        axios.get('/api/charges/res-rooms/' + resRoomId)
+            .then(response => setCharges(response.data))
+            .catch(error => console.log(error));
+        axios.get('/api/invoices/' + invoiceId + '/invoice-taxes')
+            .then(response => setTaxes(response.data))
+            .catch(error => console.log(error));
+        axios.get('/api/invoices/' + invoiceId + '/invoice-payments')
+            .then(response => setPayments(response.data))
+            .catch(error => console.log(error));
     }, [invoiceId]);
 
     return (
@@ -36,22 +31,22 @@ export default function AxiosTest() {
             <h1>This is the axios call test page.</h1>
             <h4>Hard Coded Invoice ID: {invoiceId}</h4>
             <h4>Hard Coded Res Room ID: {resRoomId}</h4>
-            <b>User Info:</b>
+            <p><b>User Info:</b></p>
             <ul>
                 <li>Username: {user.username}</li>
                 <li>Access Level: {user.access_level}</li>
             </ul>
-            <b>Invoice Info:</b>
+            <p><b>Invoice Info:</b></p>
             <ul>
                 <li>Invoice ID: {invoiceId}</li>
                 <li>Total Due: {invoice.total_due}</li>
             </ul>
-            <b>Reservation Info:</b>
+            <p><b>Reservation Info:</b></p>
             <ul>
                 <li>Reservation ID: {invoice.reservation_id}</li>
                 <li>Reservation Comments: {invoice.reservation_comments || 'n/a'}</li>
             </ul>
-            <b>Customer Info:</b>
+            <p><b>Customer Info:</b></p>
             <ul>
                 <li>Customer ID: {invoice.customer_id}</li>
                 <li>First Name: {invoice.first_name}</li>
@@ -66,27 +61,27 @@ export default function AxiosTest() {
                 <li>Credit Card Last Four: {invoice.creditCardLastFour}</li>
                 <li>Credit Card Expiration Date: {invoice.cc_expiration}</li>
             </ul>
-            <b>Res Room Info:</b>
+            <p><b>Res Room Info:</b></p>
             <ul>
                 <li>Res Room ID: {invoice.res_room_id}</li>
                 <li>Number of Nights: {invoice.num_nights}</li>
                 <li>Room Type ID: {invoice.room_type_id}</li>
-                <li>Room Type: {invoice.type}</li>
+                <li>Room Type: {invoice.room_type}</li>
                 <li>Check-in Date: {invoice.check_in_date}</li>
                 <li>Check-out Date: {invoice.check_out_date}</li>
                 <li>Adults: {invoice.adults}</li>
                 <li>Room ID: {invoice.room_id}</li>
                 <li>Room Number: {invoice.room_num}</li>
-                <li>Room Rate: {invoice.rate}</li>
+                <li>Room Rate: {invoice.room_rate}</li>
                 <li>Confirmation Code: {invoice.confirmation_code}</li>
                 <li>Res Room Comments: {invoice.res_room_comments || 'n/a'}</li>
             </ul>
-            <b>Company Info:</b>
+            <p><b>Company Info:</b></p>
             <ul>
                 <li>Company ID: {invoice.company_id || 'n/a'}</li>
                 <li>Company Name: {invoice.company_name || 'n/a'}</li>
             </ul>
-            <b>Charges:</b>
+            <p><b>Charges:</b></p>
             {
                 charges.map(charge => (
                     <ul key={charge.charge_id}>
@@ -97,7 +92,7 @@ export default function AxiosTest() {
                     </ul>
                 ))
             }
-            <b>Taxes:</b>
+            <p><b>Taxes:</b></p>
             {
                 taxes.map(tax => (
                     <ul key={tax.invoice_tax_id}>
@@ -107,7 +102,7 @@ export default function AxiosTest() {
                     </ul>
                 ))
             }
-            <b>Payments:</b>
+            <p><b>Payments:</b></p>
             {
                 payments.map(payment => (
                     <ul key={payment.invoice_payment_id}>
@@ -120,4 +115,6 @@ export default function AxiosTest() {
             }
         </div>
     );
-}
+};
+
+export default AxiosTest;

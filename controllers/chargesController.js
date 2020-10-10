@@ -1,7 +1,11 @@
 const router = require('express').Router();
 const Charge = require('../models/charge');
-
-// all these routes point to /api/charges as specified in server.js and controllers/index.js
+const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { chargesSchema, chargeIdSchema } = require('./validation/schema/chargesSchema');
+const { resRoomIdSchema } = require('./validation/schema/resRoomsSchema');
+const isChargeIdValid = require('./validation/helpers/isChargeIdValid');
+const isResRoomIdValid = require('./validation/helpers/isResRoomIdValid');
+const isChargeTypeIdValid = require('./validation/helpers/isChargeTypeIdValid');
 
 router.get('/', async (req, res, next) => {
     try {
@@ -12,18 +16,19 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9]+)', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const [data, error] = await Charge.getChargeById({ id: parseInt(req.params.id) || 0 });
+        await chargeIdSchema.validateAsync({ charge_id: req.params.id });
+        const [data, error] = await Charge.getChargeById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
 });
 
-router.get('/res-rooms/:id([0-9]+)', async (req, res, next) => {
+router.get('/res-rooms/:id', async (req, res, next) => {
     try {
-        const [data, error] = await Charge.getChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
+        const [data, error] = await Charge.getChargesByResRoomId({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
@@ -31,48 +36,65 @@ router.get('/res-rooms/:id([0-9]+)', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    const paramsObj = {
-        res_room_id: req.body.res_room_id,
-        charge_type_id: req.body.charge_type_id,
-        charge_amount: req.body.charge_amount,
-        taxable: req.body.taxable,
-    };
     try {
+        const paramsObj = {
+            res_room_id: parseInt(req.body.res_room_id),
+            charge_type_id: parseInt(req.body.charge_type_id),
+            charge_amount: parseFloat(req.body.charge_amount),
+            taxable: parseInt(req.body.taxable) || null,
+        };
+        await chargesSchema.validateAsync(paramsObj);
+        await isResRoomIdValid(paramsObj.res_room_id);
+        await isChargeTypeIdValid(paramsObj.charge_type_id);
         const [data, error] = await Charge.addNewCharge(paramsObj);
-        data ? res.json(data) : next(error);
+        if (error) return next(error);
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ Error: postError });
     } catch (error) {
         next(error);
     }
 });
 
 router.put('/', async (req, res, next) => {
-    const paramsObj = {
-        charge_id: req.body.charge_id,
-        charge_type_id: req.body.charge_type_id,
-        charge_amount: req.body.charge_amount,
-        taxable: req.body.taxable,
-    };
     try {
+        const paramsObj = {
+            res_room_id: parseInt(req.body.res_room_id),
+            charge_id: parseInt(req.body.charge_id),
+            charge_type_id: parseInt(req.body.charge_type_id),
+            charge_amount: parseFloat(req.body.charge_amount),
+            taxable: parseInt(req.body.taxable),
+        };
+        await chargesSchema.validateAsync(paramsObj);
+        await chargeIdSchema.validateAsync({ charge_id: paramsObj.charge_id });
+        await isChargeIdValid(paramsObj.charge_id);
+        await isResRoomIdValid(paramsObj.res_room_id);
+        await isChargeTypeIdValid(paramsObj.charge_type_id);
         const [data, error] = await Charge.updateChargeById(paramsObj);
-        data ? res.json(data) : next(error);
+        if (error) return next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ Error: putError });
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/:id([0-9]+)', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const [data, error] = await Charge.deleteChargeById({ id: parseInt(req.params.id) || 0 });
-        data ? res.json(data) : next(error);
+        await chargeIdSchema.validateAsync({ charge_id: req.params.id });
+        await isChargeIdValid(req.params.id);
+        const [data, error] = await Charge.deleteChargeById({ id: parseInt(req.params.id) });
+        if (error) return next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ Error: deleteError });
     } catch (error) {
         next(error);
     }
 });
 
-router.delete('/res-rooms/:id([0-9]+)', async (req, res, next) => {
+router.delete('/res-rooms/:id', async (req, res, next) => {
     try {
-        const [data, error] = await Charge.deleteChargesByResRoomId({ id: parseInt(req.params.id) || 0 });
-        data ? res.json(data) : next(error);
+        await resRoomIdSchema.validateAsync({ res_room_id: req.params.id });
+        await isResRoomIdValid(req.params.id);
+        const [data, error] = await Charge.deleteChargesByResRoomId({ id: parseInt(req.params.id) });
+        if (error) return next(error);
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ Error: deleteError });
     } catch (error) {
         next(error);
     }

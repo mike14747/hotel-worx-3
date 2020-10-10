@@ -1,10 +1,12 @@
 const router = require('express').Router();
 const User = require('../models/user');
+const { postError, putError, deleteError } = require('./utils/errorMessages');
+const { usersSchema, userIdSchema } = require('./validation/schema/usersSchema');
+const isUserIdValid = require('./validation/helpers/isUserIdValid');
+const isAccessIdValid = require('./validation/helpers/isAccessIdValid');
 
 const bcrypt = require('bcryptjs');
-const saltRounds = 10;
-
-// all these routes point to /api/users as specified in server.js and controllers/index.js
+const salt = bcrypt.genSaltSync(10);
 
 router.get('/', async (req, res, next) => {
     try {
@@ -15,9 +17,10 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id([0-9]+)', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
     try {
-        const [data, error] = await User.getUserById({ id: parseInt(req.params.id) || 0 });
+        await userIdSchema.validateAsync({ user_id: req.params.id });
+        const [data, error] = await User.getUserById({ id: parseInt(req.params.id) });
         data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
@@ -25,66 +28,61 @@ router.get('/:id([0-9]+)', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    // input validation is needed here for the username and password
-    if (req.body.username.length < 6 || req.body.password.length < 6) {
-        res.status(406).send('Username and/or Password don\'t meet length standards!');
-    } else {
-        try {
-            const existingUser = await User.checkExistingUsername({ username: req.body.username });
-            if (existingUser.length === 0) {
-                bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
-                    if (err) throw err;
-                    const paramsObj = {
-                        username: req.body.username,
-                        password: hash,
-                        access_id: req.body.access_id,
-                        active: req.body.active,
-                    };
-                    const [data, error] = await User.addNewUser(paramsObj);
-                    data ? res.json(data) : next(error);
-                });
-            } else {
-                res.status(202).send('Username is already in use!');
-            }
-        } catch (error) {
-            next(error);
-        }
+    try {
+        const paramsObj = {
+            username: req.body.username,
+            password: req.body.password,
+            email: req.body.email,
+            access_id: req.body.access_id,
+            active: req.body.active,
+        };
+        await usersSchema.validateAsync(paramsObj);
+        await isAccessIdValid(paramsObj.access_id);
+        paramsObj.password = bcrypt.hashSync(paramsObj.password, salt);
+        const [result, err] = await User.checkUsernameExists({ username: paramsObj.username });
+        if (result && result.length > 0) return res.status(400).json({ 'Invalid request': 'the submitted username (' + paramsObj.username + ') already exists' });
+        if (err) return next(err);
+        const [data, error] = await User.addNewUser(paramsObj);
+        if (error) return next(error);
+        data && data.insertId ? res.status(201).json({ insertId: data.insertId }) : res.status(400).json({ Error: postError });
+    } catch (error) {
+        next(error);
     }
 });
 
 router.put('/', async (req, res, next) => {
-    // input validation is needed here for the username and password
-    if (req.body.username.length < 6 || req.body.password.length < 6) {
-        res.status(406).send('Username and/or Password don\'t meet length standards!');
-    } else {
+    try {
         const paramsObj = {
             user_id: req.body.user_id,
             username: req.body.username,
+            password: req.body.password,
+            email: req.body.email,
+            access_id: req.body.access_id,
+            active: req.body.active,
         };
-        try {
-            const confirmUser = await User.checkUsernameForUpdate(paramsObj);
-            if (confirmUser.length === 0) {
-                bcrypt.hash(req.body.password, saltRounds, async (err, hash) => {
-                    if (err) throw err;
-                    paramsObj.password = hash;
-                    paramsObj.access_id = req.body.access_id;
-                    paramsObj.active = req.body.active;
-                    const [data, error] = await User.updateUserById(paramsObj);
-                    data ? res.json(data) : next(error);
-                });
-            } else {
-                res.status(202).send('Username is already in use!');
-            }
-        } catch (error) {
-            next(error);
-        }
+        await usersSchema.validateAsync(paramsObj);
+        await userIdSchema.validateAsync({ user_id: paramsObj.user_id });
+        await isUserIdValid(paramsObj.user_id);
+        await isAccessIdValid(paramsObj.access_id);
+        paramsObj.password = bcrypt.hashSync(paramsObj.password, salt);
+        const [result, err] = await User.checkUsernameExists({ username: paramsObj.username });
+        if (result && result.length > 0) return res.status(400).json({ 'Invalid request': 'the submitted username (' + paramsObj.username + ') already exists' });
+        if (err) return next(err);
+        const [data, error] = await User.updateUserById(paramsObj);
+        if (error) return next(error);
+        data && data.affectedRows === 1 ? res.status(204).end() : res.status(400).json({ Error: putError });
+    } catch (error) {
+        next(error);
     }
 });
 
-router.delete('/:id([0-9]+)', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
     try {
-        const [data, error] = await User.deleteUserById({ id: Number(req.params.id) });
-        data ? res.json(data) : next(error);
+        await userIdSchema.validateAsync({ user_id: req.params.id });
+        await isUserIdValid(req.params.id);
+        const [data, error] = await User.deleteUserById({ id: parseInt(req.params.id) });
+        if (error) return next(error);
+        data && data.affectedRows > 0 ? res.status(204).end() : res.status(400).json({ Error: deleteError });
     } catch (error) {
         next(error);
     }

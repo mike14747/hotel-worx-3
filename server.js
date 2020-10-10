@@ -1,13 +1,9 @@
 require('dotenv').config();
-const { PORT, NODE_ENV } = process.env;
+const PORT = process.env.PORT || 3001;
 
 const express = require('express');
 const app = express();
 const path = require('path');
-
-const connectionPool = require('./config/connectionPool');
-
-app.use(require('./passport/expressSession'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -16,39 +12,40 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     } else {
-        // return res.status(401).json({ message: 'User needs admin priviledges!' });
+        // return res.status(401).json({ message: 'User must be logged in to access these routes!' });
         return next();
     }
 }
 
-connectionPool.mysqlConnect()
+const { dbTest } = require('./config/connectionPool');
+
+app.use(require('./controllers/testController'));
+
+dbTest()
     .then(() => {
+        app.use(require('./passport/expressSession'));
         const passport = require('./passport/passportFunctions');
         app.use(passport.initialize());
         app.use(passport.session());
+        app.get('/api/test', (req, res) => res.status(200).end());
+        app.use('/api/auth', require('./controllers/authController'));
         app.use('/api', checkAuthenticated, require('./controllers'));
     })
     .catch((error) => {
-        console.error('Failed to connect to the database!\n' + error);
+        console.log('An error occurred connecting to the database!', error.message);
         app.get('/api/*', (req, res) => {
-            res.status(500).send('There is no connection to MySQL!');
+            res.status(500).json({ Error: 'There is no connection to the database!' });
         });
     })
     .finally(() => {
-        if (NODE_ENV === 'production') {
-            app.use(express.static('./client/build'));
+        if (process.env.NODE_ENV === 'production') {
+            app.use(express.static(path.join(__dirname, 'client/build')));
             app.get('*', (req, res) => {
-                res.sendFile(path.join(__dirname, './client/build/index.html'));
+                res.sendFile(path.join(__dirname, 'client/build/index.html'));
             });
         }
-        app.get('*', (req, res) => {
-            if (process.env.NODE_ENV === 'production') {
-                res.sendFile(path.join(__dirname, '../client/build/index.html'));
-            } else {
-                res.sendFile(path.join(__dirname, 'index.html'));
-            }
-        });
-        app.listen(PORT, () => {
-            console.log('Server is listening on port ' + PORT);
-        });
     });
+
+app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
+
+module.exports = app;
