@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import UserContext from '../../components/context/userContext';
+import UserContext from '../../context/userContext';
 
 const AxiosTest = () => {
     const [invoice, setInvoice] = useState({});
@@ -9,7 +9,7 @@ const AxiosTest = () => {
     const [payments, setPayments] = useState([]);
     const resRoomId = 1001;
     const invoiceId = 1;
-    const user = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
         axios.get('/api/invoices/' + invoiceId)
