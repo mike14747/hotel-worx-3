@@ -1,43 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    // Link,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Calendar from './components/calendar/index';
 import NavBar from './components/navbar/navbar';
 import Generic from './pages/generic/generic';
 import AxiosTest from './pages/axiosTest/axiosTest';
-import UserContext from './components/context/userContext';
+import UserContext from './context/userContext';
+import Loading from './components/loading/loading';
+import axios from 'axios';
+import ProtectedRoute from './components/protectedRoute/protectedRoute';
+import NoMatch from './pages/noMatch/noMatch';
+import Login from './pages/login/login';
+import './css/my_style.css';
+import './css/styles.css';
 
 export default function App() {
-    const user = { username: 'Guest', access_level: 0 };
+    const [user, setUser] = useState(null);
+    const [hasStatusLoaded, setHasStatusLoaded] = useState(false);
+
+    useEffect(() => {
+        axios.get('/api/auth/status')
+            .then(response => {
+                setUser(response.data.user);
+            })
+            .catch((error) => {
+                console.log(error);
+                setUser(null);
+            })
+            .finally(() => setHasStatusLoaded(true));
+    }, []);
+
+    if (!hasStatusLoaded) {
+        return (
+            <div className="m-5">
+                <Loading />
+            </div>
+        );
+    }
+
     return (
         <Router>
-            <div>
-                <NavBar />
-                {/* A <Switch> looks through its children <Route>s and renders the first one that matches the current URL. */}
-                <Switch>
-                    <Route exact path="/about">
-                        <About />
-                    </Route>
-                    <Route exact path="/user">
-                        <User />
-                    </Route>
-                    <Route exact path="/">
-                        <Home />
-                    </Route>
-                    <Route exact path="/generic" component={Generic} />
-                    <Route exact path="/calendar" component={Calendar} />
-                    <UserContext.Provider value={user}>
-                        <Route exact path="/axiostest" component={AxiosTest} />
-                    </UserContext.Provider>
-                    <Route path="*">
-                        <Home />
-                    </Route>
-                </Switch>
-            </div>
+            <UserContext.Provider value={{ user, setUser }}>
+                <div className="container py-4 flex-fill bg-white border border-secondary">
+                    <NavBar />
+                    <Switch>
+                        <Route exact path="/about">
+                            <About />
+                        </Route>
+                        <Route exact path="/">
+                            <Home />
+                        </Route>
+                        <Route exact path="/generic" component={Generic} />
+                        <Route exact path="/calendar" component={Calendar} />
+                        <ProtectedRoute exact path="/axiostest" user={user} component={AxiosTest} />
+                        <Route exact path="/login">
+                            {user ? <Redirect to="/" /> : <Login />}
+                        </Route>
+                        <Route component={NoMatch} />
+                    </Switch>
+                </div>
+            </UserContext.Provider>
         </Router>
     );
 }
@@ -48,29 +69,4 @@ function Home() {
 
 function About() {
     return <h2>About</h2>;
-}
-
-function User() {
-    const [users, setUsers] = useState([]);
-
-    useEffect(() => {
-        fetch('/api/users/1')
-            .then(response => response.json())
-            .then(data => setUsers({ data }))
-            .catch(err => console.log('There has been an error.\n\n' + err));
-    }, []);
-
-    return (
-        <div>
-            {users.map(user => (
-                <div key={user.user_id}>
-                    <p>user ID: {user.user_id}</p>
-                    <p>Username: {user.username}</p>
-                    <p>Password: {user.password}</p>
-                    <p>Access Level: {user.type}</p>
-                    <p>Active: {user.active}</p>
-                </div>
-            ))}
-        </div>
-    );
 }

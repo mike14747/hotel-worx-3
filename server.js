@@ -1,9 +1,10 @@
 require('dotenv').config();
-const PORT = process.env.PORT || 3001;
 
 const express = require('express');
 const app = express();
+
 const path = require('path');
+const PORT = process.env.PORT || 3001;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -27,7 +28,6 @@ dbTest()
         const passport = require('./passport/passportFunctions');
         app.use(passport.initialize());
         app.use(passport.session());
-        app.get('/api/test', (req, res) => res.status(200).end());
         app.use('/api/auth', require('./controllers/authController'));
         app.use('/api', checkAuthenticated, require('./controllers'));
     })
