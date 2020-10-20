@@ -1,11 +1,24 @@
-import React, { Component } from 'react'
+import React from "react";
+import SplitPane from "react-split-pane";
+import './style.css';
 
-export default class splitScreen extends Component {
-    render() {
-        return (
-            <div>
-                <h2>This is a split screen</h2>
-            </div>
-        )
-    }
+
+export default function splitScreen() {
+  return (
+    <div>
+      <SplitPane
+        split="vertical"
+        minSize={50}
+        defaultSize={parseInt(localStorage.getItem("splitPos"), 10)}
+        onChange={(size) => localStorage.setItem("splitPos", size)}
+      >
+        <div>
+          <h1>arrival</h1>
+        </div>
+        <div>
+          <h1>departure</h1>
+        </div>
+      </SplitPane>
+    </div>
+  );
 }
