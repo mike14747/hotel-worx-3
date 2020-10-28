@@ -5,6 +5,7 @@ import NavBar from './components/navbar/navbar';
 import Generic from './pages/generic/generic';
 import AxiosTest from './pages/axiosTest/axiosTest';
 import UserContext from './context/userContext';
+import SplitContext from './context/splitContext';
 import Loading from './components/loading/loading';
 import axios from 'axios';
 import ProtectedRoute from './components/protectedRoute/protectedRoute';
@@ -12,9 +13,11 @@ import NoMatch from './pages/noMatch/noMatch';
 import Login from './pages/login/login';
 import './css/my_style.css';
 import './css/styles.css';
+import Home from './pages/home/home';
 
 export default function App() {
     const [user, setUser] = useState(null);
+    const [split, setSplit] = useState(null);
     const [hasStatusLoaded, setHasStatusLoaded] = useState(false);
 
     useEffect(() => {
@@ -40,31 +43,29 @@ export default function App() {
     return (
         <Router>
             <UserContext.Provider value={{ user, setUser }}>
-                <div className="container py-4 flex-fill bg-white border border-secondary">
-                    <NavBar />
-                    <Switch>
-                        <Route exact path="/about">
-                            <About />
-                        </Route>
-                        <Route exact path="/">
-                            <Home />
-                        </Route>
-                        <Route exact path="/generic" component={Generic} />
-                        <Route exact path="/calendar" component={Calendar} />
-                        <ProtectedRoute exact path="/axiostest" user={user} component={AxiosTest} />
-                        <Route exact path="/login">
-                            {user ? <Redirect to="/" /> : <Login />}
-                        </Route>
-                        <Route component={NoMatch} />
-                    </Switch>
-                </div>
+                <SplitContext.Provider value={{ split, setSplit }}>
+                    <div className="container py-4 flex-fill bg-white border border-secondary">
+                        <NavBar />
+                        <Switch>
+                            <Route exact path="/about">
+                                <About />
+                            </Route>
+                            <Route exact path="/">
+                                <Home />
+                            </Route>
+                            <Route exact path="/generic" component={Generic} />
+                            <Route exact path="/calendar" component={Calendar} />
+                            <ProtectedRoute exact path="/axiostest" user={user} component={AxiosTest} />
+                            <Route exact path="/login">
+                                {user ? <Redirect to="/" /> : <Login />}
+                            </Route>
+                            <Route component={NoMatch} />
+                        </Switch>
+                    </div>
+                </SplitContext.Provider>
             </UserContext.Provider>
         </Router>
     );
-}
-
-function Home() {
-    return <h2>Home</h2>;
 }
 
 function About() {

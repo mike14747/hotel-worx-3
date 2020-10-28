@@ -3,6 +3,7 @@ import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import smallLogo from './solidcolor.png';
 import './style.css';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import SplitContext from '../../context/splitContext';
 
 class NavBar extends Component {
     constructor(props) {
