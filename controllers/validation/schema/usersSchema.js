@@ -2,7 +2,7 @@ const Joi = require('joi');
 const { activeError, usernameError, passwordError } = require('../../utils/errorMessages');
 
 const usersSchema = Joi.object({
-    user_id: Joi.number().integer().min(0),
+    user_id: Joi.optional(),
     username: Joi.string().min(6).max(12).messages({
         'string.min': usernameError,
         'string.max': usernameError,

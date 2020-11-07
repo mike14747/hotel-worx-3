@@ -2,7 +2,7 @@ const Joi = require('joi');
 const { dateError } = require('../../utils/errorMessages');
 
 const roomTypesSchema = Joi.object({
-    room_type_id: Joi.number().integer().min(0),
+    room_type_id: Joi.optional(),
     room_type: Joi.string().required(),
     room_rate: Joi.number().min(0).required(),
 });

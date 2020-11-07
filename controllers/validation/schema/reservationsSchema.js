@@ -6,7 +6,7 @@ const reservationNewSchema = Joi.object({
 });
 
 const reservationUpdateSchema = Joi.object({
-    reservation_id: Joi.number().integer().min(0).required(),
+    reservation_id: Joi.optional(),
     customer_id: Joi.number().integer().min(0).required(),
     user_id: Joi.number().integer().min(0).required(),
     company_id: Joi.number().integer().min(0),

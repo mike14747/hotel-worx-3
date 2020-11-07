@@ -2,7 +2,7 @@ const Joi = require('joi');
 const taxExemptError = require('../../utils/errorMessages');
 
 const companiesSchema = Joi.object({
-    company_id: Joi.number().integer().min(0),
+    company_id: Joi.optional(),
     company_name: Joi.string().required(),
     address: Joi.string().required(),
     city: Joi.string().required(),

@@ -2,8 +2,8 @@ const Joi = require('joi');
 const { taxableError } = require('../../utils/errorMessages');
 
 const chargesSchema = Joi.object({
+    charge_id: Joi.optional(),
     res_room_id: Joi.number().integer().min(0).required(),
-    charge_id: Joi.number().integer().min(0),
     charge_type_id: Joi.number().integer().min(0).required(),
     charge_amount: Joi.number().required(),
     taxable: Joi.number().integer().min(0).max(1).messages({

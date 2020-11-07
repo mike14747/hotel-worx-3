@@ -48,6 +48,7 @@ router.put('/', async (req, res, next) => {
             active: parseInt(req.body.active),
         };
         await chargeTypesSchema.validateAsync(paramsObj);
+        await chargeTypeIdSchema.validateAsync({ charge_type_id: req.body.charge_type_id });
         await isChargeTypeIdValid(paramsObj.charge_type_id);
         const [data, error] = await ChargeType.updateChargeTypeById(paramsObj);
         if (error) return next(error);
