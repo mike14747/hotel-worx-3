@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { taxableError } = require('../../utils/errorMessages');
+const { boolError } = require('../../utils/errorMessages');
 
 const chargesSchema = Joi.object({
     charge_id: Joi.optional(),
@@ -7,10 +7,10 @@ const chargesSchema = Joi.object({
     charge_type_id: Joi.number().integer().min(0).required(),
     charge_amount: Joi.number().required(),
     taxable: Joi.number().integer().min(0).max(1).messages({
-        'number.base': taxableError,
-        'number.integer': taxableError,
-        'number.min': taxableError,
-        'number.max': taxableError,
+        'number.base': '"taxable" ' + boolError,
+        'number.integer': '"taxable" ' + boolError,
+        'number.min': '"taxable" ' + boolError,
+        'number.max': '"taxable" ' + boolError,
     }).required(),
 });
 

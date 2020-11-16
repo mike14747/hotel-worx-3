@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { activeError, usernameError, passwordError } = require('../../utils/errorMessages');
+const { boolError, usernameError, passwordError } = require('../../utils/errorMessages');
 
 const usersSchema = Joi.object({
     user_id: Joi.optional(),
@@ -14,8 +14,8 @@ const usersSchema = Joi.object({
     email: Joi.string().email().required(),
     access_id: Joi.number().integer().min(0).required(),
     active: Joi.number().integer().min(0).max(1).messages({
-        'number.min': activeError,
-        'number.max': activeError,
+        'number.min': '"active" ' + boolError,
+        'number.max': '"active" ' + boolError,
     }).required(),
 });
 

@@ -1,5 +1,3 @@
-const { PromisePool } = require('mysql2/promise');
-
 const pool = require('../config/connectionPool.js').getDb();
 
 const Tax = {
