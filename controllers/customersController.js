@@ -64,6 +64,7 @@ router.put('/', async (req, res, next) => {
             cc_expiration: req.body.cc_expiration,
         };
         await customersSchema.validateAsync(paramsObj);
+        await customerIdSchema.validateAsync({ customer_id: req.body.customer_id });
         await isCustomerIdValid(paramsObj.customer_id);
         const [data, error] = await Customer.updateCustomerById(paramsObj);
         if (error) return next(error);

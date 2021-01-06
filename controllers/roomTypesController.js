@@ -56,6 +56,7 @@ router.put('/', async (req, res, next) => {
             room_rate: parseFloat(req.body.room_rate),
         };
         await roomTypesSchema.validateAsync(paramsObj);
+        await roomTypeIdSchema.validateAsync({ room_type_id: req.body.room_type_id });
         await isRoomTypeIdValid(paramsObj.room_type_id);
         const [data, error] = await RoomType.updateRoomTypeById(paramsObj);
         if (error) return next(error);
