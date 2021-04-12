@@ -24,11 +24,11 @@ app.use(require('./controllers/testController'));
 
 dbTest()
     .then(() => {
-        // app.use(require('./passport/expressSession'));
-        // const passport = require('./passport/passportFunctions');
-        // app.use(passport.initialize());
-        // app.use(passport.session());
-        // app.use('/api/auth', require('./controllers/authController'));
+        app.use(require('./passport/expressSession'));
+        const passport = require('./passport/passportFunctions');
+        app.use(passport.initialize());
+        app.use(passport.session());
+        app.use('/api/auth', require('./controllers/authController'));
         app.use('/api', checkAuthenticated, require('./controllers'));
     })
     .catch((error) => {
