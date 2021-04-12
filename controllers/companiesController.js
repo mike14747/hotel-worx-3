@@ -64,6 +64,7 @@ router.put('/', async (req, res, next) => {
             tax_exempt: parseInt(req.body.tax_exempt),
         };
         await companiesSchema.validateAsync(paramsObj);
+        await companyIdSchema.validateAsync({ company_id: req.body.company_id });
         await isCompanyIdValid(paramsObj.company_id);
         const [data, error] = await Company.updateCompanyById(paramsObj);
         if (error) return next(error);

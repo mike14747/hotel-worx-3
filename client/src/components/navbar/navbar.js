@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import smallLogo from './solidcolor.png';
 import './style.css';
 import { Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -93,4 +94,9 @@ class NavBar extends Component {
         );
     }
 }
+
+NavBar.propTypes = {
+    className: PropTypes.string,
+};
+
 export default NavBar;

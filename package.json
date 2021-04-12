@@ -11,7 +11,7 @@
         "server": "nodemon server.js",
         "install": "if-env NODE_ENV=production || npm run install:dev",
         "install:dev": "cd client && npm install",
-        "build": "cd client && npm run build",
+        "build": "cd client && npm install && npm run build",
         "test": "mocha --exit"
     },
     "license": "MIT",
@@ -20,7 +20,7 @@
         "chai": "^4.2.0",
         "chai-http": "^4.3.0",
         "concurrently": "^5.2.0",
-        "eslint": "^6.6.0",
+        "eslint": "^7.24.0",
         "eslint-config-standard": "^14.1.1",
         "eslint-plugin-import": "^2.22.0",
         "eslint-plugin-node": "^11.1.0",

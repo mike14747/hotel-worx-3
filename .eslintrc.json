@@ -43,7 +43,7 @@
             "single"
         ],
         "comma-dangle": [
-            "error",
+            "warn",
             {
                 "arrays": "always-multiline",
                 "objects": "always-multiline",

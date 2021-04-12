@@ -57,8 +57,8 @@ router.post('/', async (req, res, next) => {
 router.put('/', async (req, res, next) => {
     try {
         const paramsObj = {
-            res_room_id: parseInt(req.body.res_room_id),
             charge_id: parseInt(req.body.charge_id),
+            res_room_id: parseInt(req.body.res_room_id),
             charge_type_id: parseInt(req.body.charge_type_id),
             charge_amount: parseFloat(req.body.charge_amount),
             taxable: parseInt(req.body.taxable),
