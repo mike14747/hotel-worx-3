@@ -48,8 +48,7 @@ dbTest()
         // use this code if you only want the description of the api to appear on the deployed version at heroku
         if (process.env.NODE_ENV === 'production') {
             app.get('*', (req, res) => {
-                // res.sendFile(path.join(__dirname, 'docs/index.html'));
-                res.send('This is a test page!');
+                res.sendFile(path.join(__dirname, 'docs/index.html'));
             });
         }
     });
