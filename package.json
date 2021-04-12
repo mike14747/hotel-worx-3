@@ -11,7 +11,7 @@
         "server": "nodemon server.js",
         "install": "if-env NODE_ENV=production || npm run install:dev",
         "install:dev": "cd client && npm install",
-        "build": "cd client && npm run build",
+        "build": "cd client && npm install && npm run build",
         "test": "mocha --exit"
     },
     "license": "MIT",
