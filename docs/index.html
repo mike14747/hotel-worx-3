@@ -8,48 +8,170 @@
     <title>Hotel Worx 3 API Docs</title>
 
     <style>
+        :root {
+            /* start theme colors specific to this app */
+
+            --theme-color-1: #8fbc8f;
+            --theme-color-2: #8cbed6;
+            --theme-color-3: #fdd5b1;
+
+            /* end theme colors specific to this app */
+
+            --container-min-width: 320px;
+            --container-max-width: 1334px;
+
+            --mg-beige: #f5f5dc;
+            --mg-blue: #214fc6;
+            --mg-cream: #fffdd0;
+            --mg-dark: #232323;
+            --mg-green: #228b22;
+            --mg-gray: #808080;
+            --mg-gray-1: #f5f5f5;
+            --mg-gray-2: #d3d3d3;
+            --mg-gray-3: #c0c0c0;
+            --mg-gray-4: #a9a9a9;
+            --mg-gray-5: #808080;
+            --mg-gray-6: #585858;
+            --mg-gray-7: #232323;
+            --mg-light: #ffffff;
+            --mg-orange: #ff7518;
+            --mg-orange-soft: #fcd581;
+            --mg-purple: #6f42c1;
+            --mg-red: #dc143c;
+            --mg-red-dark: #b22222;
+            --mg-yellow: #fff44f;
+            --mg-yellow-pale: #ffffd5;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
         body {
-            width: calc(100% - 2rem);
-            margin: 1rem;
-            font-family: Calibri, 'Gill Sans', Geneva, Noto, Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+                'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
             font-size: 1rem;
             font-weight: 400;
-            line-height: 1.25;
-            color: #212529;
-            background-color: #fff;
+            height: 100%;
+            line-height: 1.5;
+            color: var(--mg-dark);
+            background-color: #ffffff;
             -webkit-text-size-adjust: 100%;
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         }
 
+        /* HTML5 display-role reset for older browsers */
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        hgroup,
+        main,
+        menu,
+        nav,
+        section {
+            display: block;
+        }
+
+        /* End HTML5 display-role reset for older browsers */
+
+        [tabindex='-1']:focus:not(:focus-visible) {
+            outline: 0 !important;
+        }
+
+        hr {
+            margin: 2rem auto;
+            width: 75%;
+            color: inherit;
+            background-color: currentColor;
+            border: 0;
+            opacity: 0.25;
+        }
+
+        hr:not([size]) {
+            height: 1px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.25;
+        }
+
         h1 {
             font-size: 2.5rem;
-            background-color: rgba(245, 245, 220, 0.75);
+            font-size: clamp(2rem, 1.5vw + 1.25rem, 3rem);
             border-bottom: 2px rgba(0, 0, 0, 0.50) solid;
             padding: 1rem;
             text-align: center;
+            margin-bottom: 2rem;
         }
 
         h2 {
-            font-size: 1.5rem;
-            text-transform: uppercase;
+            font-size: 2rem;
+            font-size: clamp(1.4rem, 1vw + 0.9rem, 2.1rem);
+            font-variant: small-caps;
         }
 
         h3 {
-            font-size: 1.25rem;
+            font-size: 1.30rem;
+            /* font-size: clamp(1.4rem, 1vw + 0.9rem, 2.1rem); */
+            font-size: clamp(1.1rem, 0.7vw + 0.7rem, 1.5rem);
             margin-top: 1.5rem;
             margin-bottom: 1rem;
-            color: #333333;
             background-color: rgba(176, 212, 237, 0.25);
             padding: 0.5rem;
         }
 
-        hr {
-            box-sizing: content-box;
-            height: 0;
-            overflow: visible;
-            margin: 2rem auto;
-            width: 75%;
-            background-color: #333333;
+        h4 {
+            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 0.85vw + 0.8rem, 1.8rem);
+        }
+
+        h5 {
+            font-size: 1.25rem;
+            font-size: clamp(1.1rem, 0.7vw + 0.7rem, 1.5rem);
+        }
+
+        h6 {
+            font-size: 1rem;
+            font-size: clamp(1rem, 0.55vw + 0.55rem, 1.2rem);
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            min-width: var(--container-min-width);
+            max-width: var(--container-max-width);
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 1rem;
+        }
+
+        ol,
+        ul {
+            padding-left: 2rem;
         }
 
         li {
@@ -70,8 +192,8 @@
         }
 
         blockquote h2 {
-            text-transform: none;
-            color: rgba(0, 0, 0, 0.75);
+            font-variant: initial;
+            color: var(--mg-gray-6);
             margin: 0;
         }
 
@@ -82,137 +204,131 @@
         }
 
         pre {
-            background-color: #eeeeee;
+            max-width: 120ch;
+            /* background-color: #eeeeee; */
+            background-color: var(--mg-gray-1);
             font-size: 1rem;
-            margin: 0rem 1rem 1rem 1rem;
+            margin: 0rem auto 2rem auto;
             padding: 0.5rem;
             overflow: auto;
-        }
-
-        @media (min-width: 576px) {
-            body {
-                margin: 1rem auto;
-            }
-
-            h2 {
-                font-size: 1.75rem;
-            }
-
-            h3 {
-                font-size: 1.35rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            h2 {
-                font-size: 2rem;
-            }
-
-            h3 {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (min-width: 992px) {
-            body {
-                max-width: 960px;
-            }
         }
     </style>
 </head>
 
 
 <body>
-    <h1>REST API Endpoint Docs for hotel-worx-3</h1>
-    <h2>General Rules of Thumb for Accessing Routes</h2>
-    <blockquote>
-        <ul>
-            <li>These are general guidelines.</li>
-            <li>Some of the routes on this list have notes specific to that particular route.</li>
-        </ul>
-    </blockquote>
-    <h3><strong>'/api/&lt;some-endpoint&gt;/' GET routes</strong></h3>
-    <blockquote>
-        <ul>
-            <li>Takes in no parameters.</li>
-            <li>Returns status 200 and all items in an array of objects associated with that specific endpoint.</li>
-            <li>It will return status 200 and an empty array if no items were found.</li>
-        </ul>
-    </blockquote>
-    <h3><strong>'/api/&lt;some-endpoint&gt;/:id' GET routes</strong></h3>
-    <blockquote>
-        <ul>
-            <li>Takes in an id parameter in the url.</li>
-            <li>Returns status 200 and an array containing a single object associated with that specific endpoint.</li>
-            <li>Returns status 200 and an empty array if nothing was found for that id.</li>
-            <li>It will return status 400 (and a &quot;Validation error&quot;) if the id param is not an integer.</li>
-        </ul>
-    </blockquote>
-    <h3><strong>'/api/&lt;some-endpoint&gt;/' POST routes</strong></h3>
-    <blockquote>
-        <ul>
-            <li>Adds a new record associated with the specific endpoint.</li>
-            <li>Takes in a list of parameters in the body object.</li>
-            <li>If successful, it returns status code 201 and an object with the insertId of the new document as the
-                only property.</li>
-            <li>If unsuccessful, it returns status code 400 and either a &quot;Validation error&quot; or &quot;Invalid
-                request&quot; error.</li>
-        </ul>
-    </blockquote>
-    <h3><strong>'/api/&lt;some-endpoint&gt;/' PUT routes</strong></h3>
-    <blockquote>
-        <ul>
-            <li>It is used to edit an existing record by that record's id.</li>
-            <li>Takes in a list of parameters in the body object.</li>
-            <li>If successful, it returns status code 204 and nothing else.</li>
-            <li>If unsuccessful, it returns status code 400 and either a &quot;Validation error&quot; or &quot;Invalid
-                request&quot; error.</li>
-        </ul>
-    </blockquote>
-    <h3><strong>'/api/&lt;some-endpoint&gt;/:id' DELETE routes</strong></h3>
-    <blockquote>
-        <ul>
-            <li>Takes in an id parameter in the url.</li>
-            <li>This will permanently delete a single record associated with the specific endpoint.</li>
-            <li>If successful, it returns status code 204 and nothing else.</li>
-            <li>If unsuccessful, it returns status code 400 and either a &quot;Validation error&quot; or &quot;Invalid
-                request&quot; error.</li>
-            <li><strong>Note:</strong> Some records cannot be deleted if they are part of other records due to MySQL
-                foreign key constraints.</li>
-        </ul>
-    </blockquote>
-    <h2>Note:</h2>
-    <ul>
-        <li>All of the <strong>/api</strong> routes except <strong>/api/auth</strong> are going to be protected routes
-            when this app goes to production (you need to be logged in as a valid user to access them)
+    <header class="container">
+        <h1>API Endpoint Docs <small>(hotel-worx-3)</small></h1>
+    </header>
+
+    <main class="container">
+        <aside>
+            <h2>General Rules of Thumb for Accessing Routes</h2>
+            <blockquote>
+                <ul>
+                    <li>These are general guidelines.</li>
+                    <li>Some of the routes on this list have notes specific to that particular route.</li>
+                </ul>
+            </blockquote>
+            <h3><strong>'/api/&lt;some-endpoint&gt;/' GET routes</strong></h3>
+            <blockquote>
+                <ul>
+                    <li>Takes in no parameters.</li>
+                    <li>Returns status 200 and all items in an array of objects associated with that specific endpoint.
+                    </li>
+                    <li>It will return status 200 and an empty array if no items were found.</li>
+                </ul>
+            </blockquote>
+            <h3><strong>'/api/&lt;some-endpoint&gt;/:id' GET routes</strong></h3>
+            <blockquote>
+                <ul>
+                    <li>Takes in an id parameter in the url.</li>
+                    <li>Returns status 200 and an array containing a single object associated with that specific
+                        endpoint.</li>
+                    <li>Returns status 200 and an empty array if nothing was found for that id.</li>
+                    <li>It will return status 400 (and a &quot;Validation error&quot;) if the id param is not an
+                        integer.</li>
+                </ul>
+            </blockquote>
+            <h3><strong>'/api/&lt;some-endpoint&gt;/' POST routes</strong></h3>
+            <blockquote>
+                <ul>
+                    <li>Adds a new record associated with the specific endpoint.</li>
+                    <li>Takes in a list of parameters in the body object.</li>
+                    <li>If successful, it returns status code 201 and an object with the insertId of the new document as
+                        the
+                        only property.</li>
+                    <li>If unsuccessful, it returns status code 400 and either a &quot;Validation error&quot; or
+                        &quot;Invalid
+                        request&quot; error.</li>
+                </ul>
+            </blockquote>
+            <h3><strong>'/api/&lt;some-endpoint&gt;/' PUT routes</strong></h3>
+            <blockquote>
+                <ul>
+                    <li>It is used to edit an existing record by that record's id.</li>
+                    <li>Takes in a list of parameters in the body object.</li>
+                    <li>If successful, it returns status code 204 and nothing else.</li>
+                    <li>If unsuccessful, it returns status code 400 and either a &quot;Validation error&quot; or
+                        &quot;Invalid
+                        request&quot; error.</li>
+                </ul>
+            </blockquote>
+            <h3><strong>'/api/&lt;some-endpoint&gt;/:id' DELETE routes</strong></h3>
+            <blockquote>
+                <ul>
+                    <li>Takes in an id parameter in the url.</li>
+                    <li>This will permanently delete a single record associated with the specific endpoint.</li>
+                    <li>If successful, it returns status code 204 and nothing else.</li>
+                    <li>If unsuccessful, it returns status code 400 and either a &quot;Validation error&quot; or
+                        &quot;Invalid
+                        request&quot; error.</li>
+                    <li><strong>Note:</strong> Some records cannot be deleted if they are part of other records due to
+                        MySQL
+                        foreign key constraints.</li>
+                </ul>
+            </blockquote>
+            <h2>Note:</h2>
             <ul>
-                <li><strong>/api/auth</strong> is going to be left unprotected because it needs to be accessed while
-                    logging in.</li>
+                <li>All of the <strong>/api</strong> routes except <strong>/api/auth</strong> are going to be protected
+                    routes
+                    when this app goes to production (you need to be logged in as a valid user to access them)
+                    <ul>
+                        <li><strong>/api/auth</strong> is going to be left unprotected because it needs to be accessed
+                            while
+                            logging in.</li>
+                    </ul>
+                </li>
+                <li>An access level of 1 (employee) is the default access level for these routes.</li>
+                <li>Some routes will have level 2 or level 3 requirements. They will be denoted as such.</li>
             </ul>
-        </li>
-        <li>An access level of 1 (employee) is the default access level for these routes.</li>
-        <li>Some routes will have level 2 or level 3 requirements. They will be denoted as such.</li>
-    </ul>
-    <h2>Unsuccessful attempts on /api routes</h2>
-    <ul>
-        <li>Some errors on the /api routes will result in status 400 and an error object being returned. Errors of these
-            kinds are most likely caused by trying to pass invalid parameters.</li>
-        <li>Trying to access a non-existent /api route is handled by the catch-all route handler in
-            /controllers/index.js and a status code of 404 is returned.</li>
-        <li>If there is no connection to the database, all /api routes will return status 500 and an error object
-            indictating such.</li>
-        <li>If any /api routes are unsuccessful for unforeseen reasons or actual server errors, they pass their error
-            via next(error) to the error handler in /controllers/index.js which returns a status code of 500 and the
-            error.</li>
-    </ul>
-    <hr>
-    <hr>
-    <h2><strong>/api/rooms</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/rooms'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <h2>Unsuccessful attempts on /api routes</h2>
+            <ul>
+                <li>Some errors on the /api routes will result in status 400 and an error object being returned. Errors
+                    of these
+                    kinds are most likely caused by trying to pass invalid parameters.</li>
+                <li>Trying to access a non-existent /api route is handled by the catch-all route handler in
+                    /controllers/index.js and a status code of 404 is returned.</li>
+                <li>If there is no connection to the database, all /api routes will return status 500 and an error
+                    object
+                    indictating such.</li>
+                <li>If any /api routes are unsuccessful for unforeseen reasons or actual server errors, they pass their
+                    error
+                    via next(error) to the error handler in /controllers/index.js which returns a status code of 500 and
+                    the
+                    error.</li>
+            </ul>
+        </aside>
+
+        <hr>
+
+        <article>
+            <h2><strong>/api/rooms</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/rooms'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;room_id&quot;: 1,
@@ -231,10 +347,10 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/rooms/:id'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/rooms/:id'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;room_id&quot;: 21,
@@ -250,13 +366,13 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/rooms/all-ids-nums'</h2>
-    </blockquote>
-    <ul>
-        <li>Returns an array of room objects with just each room's room_id and room_num.</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/rooms/all-ids-nums'</h2>
+            </blockquote>
+            <ul>
+                <li>Returns an array of room objects with just each room's room_id and room_num.</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;room_id&quot;: 1,
@@ -267,14 +383,14 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/rooms/house-status'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in no parameters.</li>
-        <li>Returns detailed house status for the hotel.</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/rooms/house-status'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in no parameters.</li>
+                <li>Returns detailed house status for the hotel.</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;roomsToSell&quot;: 98,
@@ -285,21 +401,24 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/rooms/housekeeping-status'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a varying number of query parameters in the url... ranging from 0 to 10.</li>
-        <li>It returns an array of room objects for all rooms meeting the criteria of the query parameters.</li>
-        <li>Each of the room objects show detailed room status information.</li>
-        <li>It will return status 200 and an empty array if no rooms are found meeting the query parameters.</li>
-        <li>Possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover, dueout,
-            notreserved.</li>
-        <li>Possible options for all parameters are: 0 and 1.</li>
-        <li>Sample route with query parameters: <strong>/api/rooms/housekeeping-status?clean=1&amp;occupied=0</strong>
-        </li>
-    </ul>
-    <pre><code><code><div>[
+            <blockquote>
+                <h2>'/api/rooms/housekeeping-status'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a varying number of query parameters in the url... ranging from 0 to 10.</li>
+                <li>It returns an array of room objects for all rooms meeting the criteria of the query parameters.</li>
+                <li>Each of the room objects show detailed room status information.</li>
+                <li>It will return status 200 and an empty array if no rooms are found meeting the query parameters.
+                </li>
+                <li>Possible query parameters: inactive, clean, dirty, occupied, vacant, arrived, departed, stayover,
+                    dueout,
+                    notreserved.</li>
+                <li>Possible options for all parameters are: 0 and 1.</li>
+                <li>Sample route with query parameters:
+                    <strong>/api/rooms/housekeeping-status?clean=1&amp;occupied=0</strong>
+                </li>
+            </ul>
+            <pre><code><code><div>[
     {
         &quot;room_num&quot;: &quot;231&quot;,
         &quot;clean&quot;: 0,
@@ -317,22 +436,24 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/rooms/available-list/:date'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a date parameter in the url (in the 'YYYY-MM-DD' format, eg: /api/rooms/available-list/2019-11-18).
-        </li>
-        <li>It returns status 200 and an array of active room objects which are available on the date in the url
-            parameter.</li>
-        <li>It will return status 200 and an empty array if no available rooms are found for the days after that
-            starting date.</li>
-        <li>It will return status 400 (and a json with a message property) if the date param is not in 'YYYY-MM-DD'
-            format.</li>
-        <li>It includes the date availability ends for each room (or &quot;n/a&quot; if a room has unlimited
-            availability).</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/rooms/available-list/:date'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a date parameter in the url (in the 'YYYY-MM-DD' format, eg:
+                    /api/rooms/available-list/2019-11-18).
+                </li>
+                <li>It returns status 200 and an array of active room objects which are available on the date in the url
+                    parameter.</li>
+                <li>It will return status 200 and an empty array if no available rooms are found for the days after that
+                    starting date.</li>
+                <li>It will return status 400 (and a json with a message property) if the date param is not in
+                    'YYYY-MM-DD'
+                    format.</li>
+                <li>It includes the date availability ends for each room (or &quot;n/a&quot; if a room has unlimited
+                    availability).</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;room_id&quot;: 1,
@@ -347,11 +468,11 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/rooms'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/rooms'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;room_num&quot;: &quot;301&quot;,
     &quot;room_type_id&quot;: 1,
@@ -362,11 +483,11 @@
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/rooms'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/rooms'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;room_id&quot;: 1,
     &quot;room_num&quot;: &quot;101&quot;,
@@ -378,48 +499,48 @@
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/rooms/clean-status'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <blockquote>
+                <h2>'/api/rooms/clean-status'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;room_id&quot;: 17,
     &quot;clean&quot;: 0
 }
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/rooms/occupied-status'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <blockquote>
+                <h2>'/api/rooms/occupied-status'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;room_id&quot;: 35,
     &quot;occupied&quot;: 1
 }
 </div></code></code></pre>
-    <h2>this route needs
-        to be reworked so the id param is not in the url... it should be in the body</h2>
-    <blockquote>
-        <h2>'/api/rooms/:id/checked-out'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a room_id parameter in the url.</li>
-        <li>It sets the room's status to '<strong>clean=0</strong> and <strong>occupied=0</strong>'.</li>
-    </ul>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/rooms/:id'</h2>
-    </blockquote>
-    <hr>
-    <hr>
-    <h2><strong>/api/users</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/users'</h2>
-    </blockquote>
-    <ul>
-        <li>Note: Passwords are not included in the response.</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <h2>this route needs
+                to be reworked so the id param is not in the url... it should be in the body</h2>
+            <blockquote>
+                <h2>'/api/rooms/:id/checked-out'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a room_id parameter in the url.</li>
+                <li>It sets the room's status to '<strong>clean=0</strong> and <strong>occupied=0</strong>'.</li>
+            </ul>
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/rooms/:id'</h2>
+            </blockquote>
+            <hr>
+
+            <h2><strong>/api/users</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/users'</h2>
+            </blockquote>
+            <ul>
+                <li>Note: Passwords are not included in the response.</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;user_id&quot;: 3,
@@ -432,13 +553,13 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/users/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Note: Passwords are not included in the response.</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/users/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Note: Passwords are not included in the response.</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;user_id&quot;: 1,
@@ -451,17 +572,19 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/users'</h2>
-    </blockquote>
-    <ul>
-        <li>If the submitted username is already taken, it returns a status code 202 and a &quot;Username is already in
-            use!&quot; response.</li>
-        <li>If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and
-            a &quot;Username and/or Password don't meet length standards!&quot; response.</li>
-    </ul>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/users'</h2>
+            </blockquote>
+            <ul>
+                <li>If the submitted username is already taken, it returns a status code 202 and a &quot;Username is
+                    already in
+                    use!&quot; response.</li>
+                <li>If the submitted username and/or password are less than 6 characters long, it returns a status code
+                    406 and
+                    a &quot;Username and/or Password don't meet length standards!&quot; response.</li>
+            </ul>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;username&quot;: &quot;Jan-Front-Desk&quot;,
     &quot;password&quot;: &quot;new_password&quot;,
@@ -469,17 +592,19 @@
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/users'</h2>
-    </blockquote>
-    <ul>
-        <li>If the submitted username is already taken, it returns a status code 202 and a &quot;Username is already in
-            use!&quot; response.</li>
-        <li>If the submitted username and/or password are less than 6 characters long, it returns a status code 406 and
-            a &quot;Username and/or Password don't meet length standards!&quot; response.</li>
-    </ul>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/users'</h2>
+            </blockquote>
+            <ul>
+                <li>If the submitted username is already taken, it returns a status code 202 and a &quot;Username is
+                    already in
+                    use!&quot; response.</li>
+                <li>If the submitted username and/or password are less than 6 characters long, it returns a status code
+                    406 and
+                    a &quot;Username and/or Password don't meet length standards!&quot; response.</li>
+            </ul>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;user_id&quot;: 6,
     &quot;username&quot;: &quot;manager123&quot;,
@@ -488,18 +613,18 @@
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/users/:id'</h2>
-    </blockquote>
-    <hr>
-    <hr>
-    <h2><strong>/api/customers</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/customers'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/users/:id'</h2>
+            </blockquote>
+            <hr>
+
+            <h2><strong>/api/customers</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/customers'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;customer_id&quot;: 1,
@@ -520,10 +645,10 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/customers/:id'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/customers/:id'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;customer_id&quot;: 1,
@@ -541,11 +666,11 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/customers'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/customers'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;first_name&quot;: &quot;John&quot;,
     &quot;last_name&quot;: &quot;Doe&quot;,
@@ -560,11 +685,11 @@
     &quot;cc_expiration&quot;: &quot;05 / 23&quot;
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/customers'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/customers'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;customer_id&quot;: 123,
     &quot;first_name&quot;: &quot;John&quot;,
@@ -580,27 +705,28 @@
     &quot;cc_expiration&quot;: &quot;05 / 23&quot;
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/customers/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Customers cannot be deleted if they are part of any existing reservations due to MySQL foreign key
-            constraints.</li>
-    </ul>
-    <hr>
-    <hr>
-    <h2>/api/reservations</h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/reservations'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in no parameters.</li>
-        <li>Returns all reservations (with partial customer and res_room info) in an array of reservation objects.</li>
-        <li>Each res_room on a reservation is returned on its own row.</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/customers/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Customers cannot be deleted if they are part of any existing reservations due to MySQL foreign key
+                    constraints.</li>
+            </ul>
+            <hr>
+
+            <h2>/api/reservations</h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/reservations'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in no parameters.</li>
+                <li>Returns all reservations (with partial customer and res_room info) in an array of reservation
+                    objects.</li>
+                <li>Each res_room on a reservation is returned on its own row.</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;reservation_id&quot;: 1001,
@@ -618,16 +744,17 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/reservations/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a reservation_id parameter in the url.</li>
-        <li>Returns an array containing a single reservation object.</li>
-        <li>This route should be used in conjunction with the <strong>/api/reservations/:id/res-rooms</strong> route to
-            get detailed info about all rooms associated with this reservation.</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/reservations/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a reservation_id parameter in the url.</li>
+                <li>Returns an array containing a single reservation object.</li>
+                <li>This route should be used in conjunction with the <strong>/api/reservations/:id/res-rooms</strong>
+                    route to
+                    get detailed info about all rooms associated with this reservation.</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;reservation_id&quot;: 1001,
@@ -649,17 +776,19 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/reservations/:id/res-rooms'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a reservation_id parameter in the url.</li>
-        <li>Returns an array of all res_rooms (and detailed res_room info) associated with a single reservation as
-            objects.</li>
-        <li>This route should be used in conjunction with the <strong>/api/reservations/:id</strong> route to get more
-            info about the reservation.</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/reservations/:id/res-rooms'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a reservation_id parameter in the url.</li>
+                <li>Returns an array of all res_rooms (and detailed res_room info) associated with a single reservation
+                    as
+                    objects.</li>
+                <li>This route should be used in conjunction with the <strong>/api/reservations/:id</strong> route to
+                    get more
+                    info about the reservation.</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;res_room_id&quot;: 1001,
@@ -682,21 +811,25 @@
 	}
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/reservations'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a list of parameters in the body object.</li>
-        <li>This route accesses the reservation model which uses a database transaction that sequentially queries 3
-            tables (<strong>customers, reservations and res_rooms</strong>)... with either all succeeding/committing or
-            rolling back if any of them fail.</li>
-        <li>The <strong>resRoomsArr</strong> property of the body is an array that contains an object element for each
-            res_room in the reservation.</li>
-        <li>If successful, it returns status code 201 and a JSON object including the reservation_id, the customer_id
-            and the final res_room_id of the inserted reservation.</li>
-    </ul>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/reservations'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a list of parameters in the body object.</li>
+                <li>This route accesses the reservation model which uses a database transaction that sequentially
+                    queries 3
+                    tables (<strong>customers, reservations and res_rooms</strong>)... with either all
+                    succeeding/committing or
+                    rolling back if any of them fail.</li>
+                <li>The <strong>resRoomsArr</strong> property of the body is an array that contains an object element
+                    for each
+                    res_room in the reservation.</li>
+                <li>If successful, it returns status code 201 and a JSON object including the reservation_id, the
+                    customer_id
+                    and the final res_room_id of the inserted reservation.</li>
+            </ul>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;customerObj&quot;: {
         &quot;first_name&quot;: &quot;Peter&quot;,
@@ -738,22 +871,22 @@
     ]
 }
 </div></code></code></pre>
-    <pre><code><code><div>// sample response from this route
+            <pre><code><code><div>// sample response from this route
 {
     &quot;reservation_id&quot;: 1206,
     &quot;customer_id&quot;: 209,
     &quot;res_room_id&quot;: 1204
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/reservations'</h2>
-    </blockquote>
-    <ul>
-        <li>This route is used to update information about a reservation, but not the rooms associated with the
-            reservation.</li>
-    </ul>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/reservations'</h2>
+            </blockquote>
+            <ul>
+                <li>This route is used to update information about a reservation, but not the rooms associated with the
+                    reservation.</li>
+            </ul>
+            <pre><code><code><div>// sample request body for this route
 {
 	&quot;reservation_id&quot;: 1201,
 	&quot;customer_id&quot;: 201,
@@ -763,27 +896,28 @@
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/reservations/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>This route is used to delete a reservation.</li>
-        <li>It will also delete all resRooms associated with the reservation through the cascading of the foreign keys.
-        </li>
-    </ul>
-    <hr>
-    <hr>
-    <h2>/api/res-rooms</h2>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/reservations/res-rooms/assign'</h2>
-    </blockquote>
-    <ul>
-        <li>This route is used for assigning a room number and room type to a res_room.</li>
-        <li>It will have its confirmation code updated by the reservationsController as needed.</li>
-    </ul>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/reservations/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>This route is used to delete a reservation.</li>
+                <li>It will also delete all resRooms associated with the reservation through the cascading of the
+                    foreign keys.
+                </li>
+            </ul>
+            <hr>
+
+            <h2>/api/res-rooms</h2>
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/reservations/res-rooms/assign'</h2>
+            </blockquote>
+            <ul>
+                <li>This route is used for assigning a room number and room type to a res_room.</li>
+                <li>It will have its confirmation code updated by the reservationsController as needed.</li>
+            </ul>
+            <pre><code><code><div>// sample request body for this route
 {
 	&quot;res_room_id&quot;: 1201,
     &quot;room_type_id&quot;: 1,
@@ -793,14 +927,14 @@
     &quot;confirmation_code&quot;: &quot;191130201001&quot;
 }
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/reservations/res-rooms/reassign'</h2>
-    </blockquote>
-    <ul>
-        <li>This route is used for re-assigning a room number and room type to a res_room.</li>
-        <li>It will not change the confirmation code associated with the room being reassigned.</li>
-    </ul>
-    <pre><code><code><div>// sample request body for this route
+            <blockquote>
+                <h2>'/api/reservations/res-rooms/reassign'</h2>
+            </blockquote>
+            <ul>
+                <li>This route is used for re-assigning a room number and room type to a res_room.</li>
+                <li>It will not change the confirmation code associated with the room being reassigned.</li>
+            </ul>
+            <pre><code><code><div>// sample request body for this route
 {
 	&quot;res_room_id&quot;: 1202,
     &quot;room_type_id&quot;: 1,
@@ -809,13 +943,13 @@
     &quot;reservation_id&quot;: 1201
 }
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/reservations/res-rooms'</h2>
-    </blockquote>
-    <ul>
-        <li>This route is used for changing information about a res_room.</li>
-    </ul>
-    <pre><code><code><div>// sample request body for this route
+            <blockquote>
+                <h2>'/api/reservations/res-rooms'</h2>
+            </blockquote>
+            <ul>
+                <li>This route is used for changing information about a res_room.</li>
+            </ul>
+            <pre><code><code><div>// sample request body for this route
 {
 	&quot;res_room_id&quot;: 1200,
     &quot;room_type_id&quot;: 2,
@@ -827,14 +961,14 @@
     &quot;allow_charges&quot;: 1
 }
 </div></code></code></pre>
-    <hr>
-    <hr>
-    <h2><strong>/api/room-types</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/room-types'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <hr>
+
+            <h2><strong>/api/room-types</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/room-types'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;room_type_id&quot;: 1,
@@ -846,10 +980,10 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/room-types/:id'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/room-types/:id'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;room_type_id&quot;: 1,
@@ -858,17 +992,18 @@
     }
 ]
 </div></code></code></pre>
-    <h2>this route needs
-        some work to get rid of the data[0] object and it needs a better desciption</h2>
-    <blockquote>
-        <h2>'/api/room-types/availability/:date'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a date parameter in the url (in the YYYY-MM-DD format).</li>
-        <li>Returns an array of 14 days worth of availability objects... each of which shows detailed availabilty for
-            that day.</li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <h2>this route needs
+                some work to get rid of the data[0] object and it needs a better desciption</h2>
+            <blockquote>
+                <h2>'/api/room-types/availability/:date'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a date parameter in the url (in the YYYY-MM-DD format).</li>
+                <li>Returns an array of 14 days worth of availability objects... each of which shows detailed
+                    availabilty for
+                    that day.</li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;fieldCount&quot;: 0,
@@ -896,39 +1031,39 @@
     ]
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/room-types'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/room-types'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;type&quot;: &quot;Double&quot;,
     &quot;room_rate&quot;: 109.99
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/room-types'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/room-types'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;room_type_id&quot;: 2,
     &quot;type&quot;: &quot;King&quot;,
     &quot;room_rate&quot;: &quot;119.99&quot;
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/room-types/:id'</h2>
-    </blockquote>
-    <hr>
-    <hr>
-    <h2><strong>/api/invoices</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/invoices'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/room-types/:id'</h2>
+            </blockquote>
+            <hr>
+
+            <h2><strong>/api/invoices</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/invoices'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;invoice_id&quot;: 1,
@@ -941,18 +1076,20 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/invoices/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in an invoice_id parameter in the url.</li>
-        <li>Returns status 200 and all the details associated with the invoice (customer, company, reservation,
-            res_room, room, room_type, payments, taxes, charges) in an array containing a single compound object.</li>
-        <li>Returns status 200 and an empty array if nothing was found for that invoice_id.</li>
-        <li>It will return status 400 (and a json with a message property) if the invoice_id param is not an integer.
-        </li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/invoices/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in an invoice_id parameter in the url.</li>
+                <li>Returns status 200 and all the details associated with the invoice (customer, company, reservation,
+                    res_room, room, room_type, payments, taxes, charges) in an array containing a single compound
+                    object.</li>
+                <li>Returns status 200 and an empty array if nothing was found for that invoice_id.</li>
+                <li>It will return status 400 (and a json with a message property) if the invoice_id param is not an
+                    integer.
+                </li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;invoice_id&quot;: 1,
@@ -988,17 +1125,18 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/invoices/:id/invoice-taxes'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in an invoice_id parameter in the url.</li>
-        <li>Returns status 200 and all taxes associated with an invoice_id in an array of tax objects.</li>
-        <li>Returns status 200 and an empty array if no taxes were found for that invoice_id.</li>
-        <li>It will return status 400 (and a json with a message property) if the invoice_id param is not an integer.
-        </li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/invoices/:id/invoice-taxes'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in an invoice_id parameter in the url.</li>
+                <li>Returns status 200 and all taxes associated with an invoice_id in an array of tax objects.</li>
+                <li>Returns status 200 and an empty array if no taxes were found for that invoice_id.</li>
+                <li>It will return status 400 (and a json with a message property) if the invoice_id param is not an
+                    integer.
+                </li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;invoice_tax_id&quot;: 1,
@@ -1011,17 +1149,19 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/invoices/:id/invoice-payments'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in an invoice_id parameter in the url.</li>
-        <li>Returns status 200 and all payments associated with an invoice_id in an array of payment objects.</li>
-        <li>Returns status 200 and an empty array if no payments were found for that invoice_id.</li>
-        <li>It will return status 400 (and a json with a message property) if the invoice_id param is not an integer.
-        </li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/invoices/:id/invoice-payments'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in an invoice_id parameter in the url.</li>
+                <li>Returns status 200 and all payments associated with an invoice_id in an array of payment objects.
+                </li>
+                <li>Returns status 200 and an empty array if no payments were found for that invoice_id.</li>
+                <li>It will return status 400 (and a json with a message property) if the invoice_id param is not an
+                    integer.
+                </li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;invoice_payment_id&quot;: 1,
@@ -1035,29 +1175,33 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/invoices'</h2>
-    </blockquote>
-    <ul>
-        <li>It adds a new invoice, plus the items associated with that invoice (invoice_taxes and invoice_payments).
-        </li>
-        <li>This route also does the following:
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/invoices'</h2>
+            </blockquote>
             <ul>
-                <li>Marks the res_room of the invoice as &quot;checked_out=1&quot;.</li>
-                <li>Marks the room of the res_room as &quot;occupied=0&quot; and &quot;clean=0&quot;.</li>
+                <li>It adds a new invoice, plus the items associated with that invoice (invoice_taxes and
+                    invoice_payments).
+                </li>
+                <li>This route also does the following:
+                    <ul>
+                        <li>Marks the res_room of the invoice as &quot;checked_out=1&quot;.</li>
+                        <li>Marks the room of the res_room as &quot;occupied=0&quot; and &quot;clean=0&quot;.</li>
+                    </ul>
+                </li>
+                <li>It does all of the above in the invoice model using a database transaction that sequentially queries
+                    5
+                    tables (<strong>invoices, invoice_taxes, invoice_payments, res_rooms and rooms</strong>)... with
+                    either all
+                    succeeding/committing or rolling back if any of them fail.</li>
+                <li>Takes in a list of parameters in the body object.</li>
+                <li>If successful, it returns status code 201 and an object with the insertId of the new document as the
+                    only
+                    property.</li>
+                <li>On this endpoint, the &quot;insertId&quot; will be the new invoice_id.</li>
+                <li>If unsuccessful, it returns status code 400 and an error object.</li>
             </ul>
-        </li>
-        <li>It does all of the above in the invoice model using a database transaction that sequentially queries 5
-            tables (<strong>invoices, invoice_taxes, invoice_payments, res_rooms and rooms</strong>)... with either all
-            succeeding/committing or rolling back if any of them fail.</li>
-        <li>Takes in a list of parameters in the body object.</li>
-        <li>If successful, it returns status code 201 and an object with the insertId of the new document as the only
-            property.</li>
-        <li>On this endpoint, the &quot;insertId&quot; will be the new invoice_id.</li>
-        <li>If unsuccessful, it returns status code 400 and an error object.</li>
-    </ul>
-    <pre><code><code><div>// sample request body for this route
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;invoiceObj&quot;: {
         &quot;res_room_id&quot;: 1001,
@@ -1091,26 +1235,27 @@
     ]
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/invoices/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in an invoice_id parameter in the url.</li>
-        <li>This will permanently delete an invoice, plus any taxes and payments that were associated with that invoice
-            through foreign key cascade on delete.</li>
-        <li>If successful, it returns status code 204 and nothing else.</li>
-        <li>If unsuccessful, it returns status code 400 and an error object.</li>
-    </ul>
-    <hr>
-    <hr>
-    <h2><strong>/api/taxes</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/taxes'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <h3><strong>PUT methods:</strong></h3>
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/invoices/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in an invoice_id parameter in the url.</li>
+                <li>This will permanently delete an invoice, plus any taxes and payments that were associated with that
+                    invoice
+                    through foreign key cascade on delete.</li>
+                <li>If successful, it returns status code 204 and nothing else.</li>
+                <li>If unsuccessful, it returns status code 400 and an error object.</li>
+            </ul>
+            <hr>
+
+            <h2><strong>/api/taxes</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/taxes'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
 	    &quot;tax_id&quot;: 1,
@@ -1123,10 +1268,10 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/taxes/:id'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/taxes/:id'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
 	    &quot;tax_id&quot;: 1,
@@ -1136,21 +1281,21 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/taxes'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/taxes'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;tax_name&quot;: &quot;Special Tax&quot;,
     &quot;tax_rate&quot;: 2.625
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/taxes'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/taxes'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;tax_id&quot;: 1,
     &quot;tax_name&quot;: &quot;County Tax&quot;,
@@ -1158,18 +1303,18 @@
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/taxes/:id'</h2>
-    </blockquote>
-    <hr>
-    <hr>
-    <h2><strong>/api/charges</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/charges'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/taxes/:id'</h2>
+            </blockquote>
+            <hr>
+
+            <h2><strong>/api/charges</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/charges'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;charge_id&quot;: 1,
@@ -1183,10 +1328,10 @@
 	}
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/charges/:id'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/charges/:id'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;charge_id&quot;: 1,
@@ -1197,18 +1342,20 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/charges/res-rooms/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a res_room_id parameter in the url.</li>
-        <li>Returns all charges associated with a res_room in an array of charges objects.</li>
-        <li>It will return status 200 and all charges associated with a res_room in an array of charges objects.</li>
-        <li>It will return status 200 and an empty array if no charges were found for that res_room id.</li>
-        <li>It will return status 400 (and a json with a message property) if the res_room id param is not an integer.
-        </li>
-    </ul>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/charges/res-rooms/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a res_room_id parameter in the url.</li>
+                <li>Returns all charges associated with a res_room in an array of charges objects.</li>
+                <li>It will return status 200 and all charges associated with a res_room in an array of charges objects.
+                </li>
+                <li>It will return status 200 and an empty array if no charges were found for that res_room id.</li>
+                <li>It will return status 400 (and a json with a message property) if the res_room id param is not an
+                    integer.
+                </li>
+            </ul>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;charge_id&quot;: 1,
@@ -1222,11 +1369,11 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/charges'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/charges'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;res_room_id&quot;: 1200,
     &quot;charge_type_id&quot;: 3,
@@ -1234,11 +1381,11 @@
     &quot;taxable&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/charges'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/charges'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;charge_id&quot;: 1,
     &quot;res_room_id&quot;: 1200,
@@ -1247,27 +1394,27 @@
     &quot;taxable&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/charges/:id'</h2>
-    </blockquote>
-    <blockquote>
-        <h2>'/api/charges/res-rooms/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in a res_room_id parameter in the url.</li>
-        <li>This will permanently delete all charges associated with a res_room.</li>
-        <li>If successful, it returns status code 204.</li>
-        <li>If unsuccessful, it returns status code 400 and an error object.</li>
-    </ul>
-    <hr>
-    <hr>
-    <h2><strong>/api/charge-types</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/charge-types'</h2>
-    </blockquote>
-    <pre><code><code><div>[
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/charges/:id'</h2>
+            </blockquote>
+            <blockquote>
+                <h2>'/api/charges/res-rooms/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in a res_room_id parameter in the url.</li>
+                <li>This will permanently delete all charges associated with a res_room.</li>
+                <li>If successful, it returns status code 204.</li>
+                <li>If unsuccessful, it returns status code 400 and an error object.</li>
+            </ul>
+            <hr>
+
+            <h2><strong>/api/charge-types</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/charge-types'</h2>
+            </blockquote>
+            <pre><code><code><div>[
     {
         &quot;charge_type_id&quot;: 1,
         &quot;charge_type&quot;: &quot;Phone&quot;,
@@ -1278,10 +1425,10 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/charge-types/:id'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/charge-types/:id'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;charge_type_id&quot;: 3,
@@ -1290,43 +1437,43 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/charge-types'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/charge-types'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;charge_type&quot;: &quot;Gift Certificate&quot;,
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/charge-types'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/charge-types'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;charge_type_id&quot;: 1,
     &quot;charge_type&quot;: &quot;Phone&quot;,
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/charge-types/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Charge_types cannot be deleted if they are part of any existing charges due to MySQL foreign key
-            constraints.</li>
-    </ul>
-    <hr>
-    <hr>
-    <h2><strong>/api/payment-types</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/payment-types'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/charge-types/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Charge_types cannot be deleted if they are part of any existing charges due to MySQL foreign key
+                    constraints.</li>
+            </ul>
+            <hr>
+
+            <h2><strong>/api/payment-types</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/payment-types'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;payment_type_id&quot;: 1,
@@ -1338,10 +1485,10 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/payment-types/:id'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/payment-types/:id'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;payment_type_id&quot;: 1,
@@ -1350,43 +1497,43 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/payment-types'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/payment-types'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;payment_type&quot;: &quot;Travelers Check&quot;,
     &quot;active&quot;: 1
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/payment-types'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/payment-types'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;payment_type_id&quot;: 5,
     &quot;payment_type&quot;: &quot;Travelers Check2&quot;,
     &quot;active&quot;: 0
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/payment-types/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Payment_types cannot be deleted if they are part of any existing payments due to MySQL foreign key
-            constraints.</li>
-    </ul>
-    <hr>
-    <hr>
-    <h2><strong>/api/companies</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/companies'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/payment-types/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Payment_types cannot be deleted if they are part of any existing payments due to MySQL foreign key
+                    constraints.</li>
+            </ul>
+            <hr>
+
+            <h2><strong>/api/companies</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/companies'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;company_id&quot;: 1,
@@ -1407,10 +1554,10 @@
     }
 ]
 </div></code></code></pre>
-    <blockquote>
-        <h2>'/api/companies/:id'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample response from this route
+            <blockquote>
+                <h2>'/api/companies/:id'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample response from this route
 [
     {
         &quot;company_id&quot;: 1,
@@ -1428,11 +1575,11 @@
     }
 ]
 </div></code></code></pre>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/companies'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/companies'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;company_name&quot;: &quot;Union Sand&quot;,
     &quot;address&quot;: &quot;234 Bank St&quot;,
@@ -1447,11 +1594,11 @@
     &quot;tax_exempt&quot;: 0
 }
 </div></code></code></pre>
-    <h3><strong>PUT methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/companies'</h2>
-    </blockquote>
-    <pre><code><code><div>// sample request body for this route
+            <h3><strong>PUT methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/companies'</h2>
+            </blockquote>
+            <pre><code><code><div>// sample request body for this route
 {
     &quot;company_id&quot;: 1,
     &quot;company_name&quot;: &quot;Union Sand&quot;,
@@ -1467,41 +1614,43 @@
     &quot;tax_exempt&quot;: 0
 }
 </div></code></code></pre>
-    <h3><strong>DELETE methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/companies/:id'</h2>
-    </blockquote>
-    <ul>
-        <li>Companies cannot be deleted if they are part of any existing reservations due to MySQL foreign key
-            constraints.</li>
-    </ul>
-    <hr>
-    <hr>
-    <h2><strong>/api/auth</strong></h2>
-    <h3><strong>GET methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/auth'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in no parameters.</li>
-        <li>It outputs status code 200 and a message from the /api/auth route root.</li>
-    </ul>
-    <blockquote>
-        <h2>'/api/auth/logout'</h2>
-    </blockquote>
-    <ul>
-        <li>Takes in no parameters.</li>
-        <li>It is used by Passport JS to log out a user.</li>
-        <li>It calls: <strong>req.logout();</strong>, then sets the req.user object to that of a guest.</li>
-    </ul>
-    <h3><strong>POST methods:</strong></h3>
-    <blockquote>
-        <h2>'/api/auth/login'</h2>
-    </blockquote>
-    <ul>
-        <li>It is used by Passport JS to log in a user.</li>
-        <li>Takes in 2 parameters in the body object (username and password).</li>
-    </ul>
+            <h3><strong>DELETE methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/companies/:id'</h2>
+            </blockquote>
+            <ul>
+                <li>Companies cannot be deleted if they are part of any existing reservations due to MySQL foreign key
+                    constraints.</li>
+            </ul>
+            <hr>
+
+            <h2><strong>/api/auth</strong></h2>
+            <h3><strong>GET methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/auth'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in no parameters.</li>
+                <li>It outputs status code 200 and a message from the /api/auth route root.</li>
+            </ul>
+            <blockquote>
+                <h2>'/api/auth/logout'</h2>
+            </blockquote>
+            <ul>
+                <li>Takes in no parameters.</li>
+                <li>It is used by Passport JS to log out a user.</li>
+                <li>It calls: <strong>req.logout();</strong>, then sets the req.user object to that of a guest.</li>
+            </ul>
+            <h3><strong>POST methods:</strong></h3>
+            <blockquote>
+                <h2>'/api/auth/login'</h2>
+            </blockquote>
+            <ul>
+                <li>It is used by Passport JS to log in a user.</li>
+                <li>Takes in 2 parameters in the body object (username and password).</li>
+            </ul>
+        </article>
+    </main>
 
 </body>
 
